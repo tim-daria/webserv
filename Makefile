@@ -6,24 +6,29 @@
 #    By: dtimofee <dtimofee@student.42berlin.de>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/04 12:41:15 by dtimofee          #+#    #+#              #
-#    Updated: 2025/12/23 15:28:39 by dtimofee         ###   ########.fr        #
+#    Updated: 2026/02/03 15:40:55 by dtimofee         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 CXX = c++
 
-CXXFLAGS = -Wall -Wextra -Werror -std=c++98
+CXXFLAGS = -Wall -Wextra -Werror -std=c++98 -Iinclude
 
 NAME = webserv
-SRCS = src/main.cpp
-OBJS = $(SRCS:.cpp=.o)
+SRC_DIR = src/
+OBJ_DIR = obj/
+SRC_FILES = \
+		main.cpp \
+SRCS = $(addprefix $(SRC_DIR), $(SRC_FILES))
+OBJS = $(patsubst $(SRC_DIR)%.cpp, $(OBJ_DIR)%.o, $(SRCS))
 
 all: $(NAME)
 
 $(NAME): $(OBJS)
 	$(CXX) $(CXXFLAGS) -o $(NAME) $(OBJS)
 
-%.o: %.cpp
+$(OBJ_DIR)%.o: $(SRC_DIR)%.cpp
+	mkdir -p $(OBJ_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 test:
@@ -31,7 +36,7 @@ test:
 	@echo "Done!"
 
 clean:
-	rm -f $(OBJS)
+	rm -rf $(OBJ_DIR)
 
 fclean: clean
 	rm -f $(NAME)
