@@ -10,20 +10,32 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <iostream>
-#include <sys/socket.h>
 #include <netinet/in.h>
+#include <sys/socket.h>
+#include <unistd.h>
 
-int main()
-{
-	int serverSocket = socket(AF_INET, SOCK_STREAM, 0);
+#include <iostream>
 
-	sockaddr_in serverAddress;
-	serverAddress.sin_family = AF_INET;
-    serverAddress.sin_port = htons(8080);
-    serverAddress.sin_addr.s_addr = INADDR_ANY;
+int main() {
+  int serverSocket = socket(AF_INET, SOCK_STREAM, 0);
 
-	bind(serverSocket, (struct sockaddr*)&serverAddress, sizeof(serverAddress));
-	listen(serverSocket, 5);
+  sockaddr_in serverAddress;
+  serverAddress.sin_family = AF_INET;
+  serverAddress.sin_port = htons(8080);
+  serverAddress.sin_addr.s_addr = INADDR_ANY;
 
+  while (1) {
+    bind(serverSocket, (sockaddr*)&serverAddress, sizeof(serverAddress));
+    listen(serverSocket, 5);
+    int client = accept(serverSocket, NULL, NULL);
+    char buffer[1024] = {0};
+    read(client, buffer, 1024);
+    const char* response =
+        "HTTP/1.1 200 OK\r\n"
+        "Content-Type: text/plain\r\n"
+        "\r\n"
+        "Hello from mini webserv!\n";
+    write(client, response, strlen(response));
+    close(client);
+  }
 }

@@ -17,8 +17,7 @@ CXXFLAGS = -Wall -Wextra -Werror -std=c++98 -Iinclude
 NAME = webserv
 SRC_DIR = src/
 OBJ_DIR = obj/
-SRC_FILES = \
-		main.cpp \
+SRC_FILES = main.cpp
 SRCS = $(addprefix $(SRC_DIR), $(SRC_FILES))
 OBJS = $(patsubst $(SRC_DIR)%.cpp, $(OBJ_DIR)%.o, $(SRCS))
 
@@ -43,4 +42,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re test
