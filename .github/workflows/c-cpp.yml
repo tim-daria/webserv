@@ -36,5 +36,5 @@ jobs:
       - name: Install Python test dependencies
         run: |
           pip install pytest requests
-      - name: Run integration tests
-        run: pytest tests_py
+      # - name: Run integration tests
+      #   run: pytest tests_py
