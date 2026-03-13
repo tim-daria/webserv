@@ -35,6 +35,6 @@ jobs:
         run: make test
       - name: Install Python test dependencies
         run: |
-        pip install pytest requests
+          pip install pytest requests
       - name: Run integration tests
         run: pytest tests_py
