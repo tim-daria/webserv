@@ -12,16 +12,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-    - name: Install build tools
-      run: |
-          sudo apt-get update && sudo apt-get install -y build-essential clang clang-format clang-tidy python3-pip
-    - name: Check formatting (CI safety check)
-      run: |
-          clang-format --dry-run --Werror $(find . -name "*.cpp" -o -name "*.hpp" -o -name "*.h")
-    - name: Run clang-tidy with GitHub annotations
-      uses: cpp-linter/cpp-linter-action@v2
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Install build tools
+        run: |
+            sudo apt-get update && sudo apt-get install -y build-essential clang clang-format clang-tidy python3-pip
+      - name: Check formatting (CI safety check)
+        run: |
+            clang-format --dry-run --Werror $(find . -name "*.cpp" -o -name "*.hpp" -o -name "*.h")
+      - name: Run clang-tidy with GitHub annotations
+        uses: cpp-linter/cpp-linter-action@v2
         with:
           style: ''
           tidy-checks: ''
@@ -29,12 +29,12 @@ jobs:
           extensions: 'cpp'
           tidy: true
           format: false
-    - name: Build project
-      run: make all
-    - name: Run C++ tests
-      run: make test
-    - name: Install Python test dependencies
-      run: |
+      - name: Build project
+        run: make all
+      - name: Run C++ tests
+        run: make test
+      - name: Install Python test dependencies
+        run: |
         pip install pytest requests
-    - name: Run integration tests
-      run: pytest tests_py
+      - name: Run integration tests
+        run: pytest tests_py
