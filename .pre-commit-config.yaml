@@ -6,7 +6,7 @@ repos:
     rev: v1.1.12
     hooks:
       - id: clang-format
-        args: [-i] # Other coding style: LLVM, GNU, Chromium, Microsoft, Mozilla, WebKit.
+        args: [-i, --style=file]
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
     hooks:

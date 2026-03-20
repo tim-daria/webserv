@@ -25,7 +25,7 @@ int main() {
     serverAddress.sin_port = htons(8080);
     serverAddress.sin_addr.s_addr = INADDR_ANY;
 
-    while (1) {
+    while (true) {
         bind(serverSocket, (sockaddr*)&serverAddress, sizeof(serverAddress));
         listen(serverSocket, 5);
         int client = accept(serverSocket, NULL, NULL);
@@ -39,4 +39,5 @@ int main() {
         write(client, response, std::strlen(response));
         close(client);
     }
+    return 0;
 }
