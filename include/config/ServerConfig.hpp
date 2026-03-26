@@ -6,7 +6,7 @@
 /*   By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 15:09:14 by nefimov           #+#    #+#             */
-/*   Updated: 2026/03/26 17:08:51 by nefimov          ###   ########.fr       */
+/*   Updated: 2026/03/26 17:26:53 by nefimov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,15 +17,16 @@
 #include <string>
 #include <vector>
 
-class RouteConfig;
+#include "config/RouteConfig.hpp"
+// class RouteConfig;
 
 class ServerConfig {
    public:
-    std::vector<std::pair<std::string, int>> listen;  // Interface:Port pairs
-    std::string serverName;                           // Server name for virtual hosts
-    std::map<int, std::string> errorPages;            // Default error pages Code:Path pairs
-    size_t clientMaxBodySize;                         // Max allowd size for client request body
-    std::vector<RouteConfig> routes;                  // List of routes for this server
+    std::vector<std::pair<std::string, int> > listen;  // Interface:Port pairs
+    std::string serverName;                            // Server name for virtual hosts
+    std::map<int, std::string> errorPages;             // Default error pages Code:Path pairs
+    size_t clientMaxBodySize;                          // Max allowd size for client request body
+    std::vector<RouteConfig> routes;                   // List of routes for this server
 
     void add_listen(const std::string& interface, int port) {
         listen.push_back(std::make_pair(interface, port));
