@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: dtimofee <dtimofee@student.42berlin.de>    +#+  +:+       +#+         #
+#    By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/04 12:41:15 by dtimofee          #+#    #+#              #
-#    Updated: 2026/02/03 15:40:55 by dtimofee         ###   ########.fr        #
+#    Updated: 2026/03/26 17:08:31 by nefimov          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,7 @@ CXXFLAGS = -Wall -Wextra -Werror -std=c++98 -Iinclude
 NAME = webserv
 SRC_DIR = src/
 OBJ_DIR = obj/
-SRC_FILES = main.cpp
+SRC_FILES = main.cpp config/ServerConfig.cpp
 SRCS = $(addprefix $(SRC_DIR), $(SRC_FILES))
 OBJS = $(patsubst $(SRC_DIR)%.cpp, $(OBJ_DIR)%.o, $(SRCS))
 
