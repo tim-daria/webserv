@@ -6,41 +6,36 @@
 /*   By: tsemenov <tsemenov@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 16:12:38 by tsemenov          #+#    #+#             */
-/*   Updated: 2026/03/16 16:55:16 by tsemenov         ###   ########.fr       */
+/*   Updated: 2026/03/31 22:37:19 by tsemenov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include <errno.h>
-#include <fcntl.h>
-#include <netdb.h>       // addrinfo, getaddrinfo
-#include <netinet/in.h>  // sockaddr_in
 #include <poll.h>
-#include <sys/socket.h>  // socket, bind, listen
-#include <unistd.h>      // close
 
-#include <cstring>  // strerror
-#include <fstream>
-#include <iostream>
-#include <sstream>
-#include <stdexcept>  // runtime_error
-#include <string>
 #include <vector>
+
+#include "ServerConfig.hpp"
 
 class Server {
    private:
     int _sockfd;
-    int _port;
+    ServerConfig _config;
+    Server();
+    Server(const Server& other);
+    Server& operator=(const Server& other);
 
    public:
-    Server(int port);
+    Server(const ServerConfig& config);
     ~Server();
 
     int get_fd() const;
 
-    void init_serv();
-    // void run_serv();
+    void initServ();
+    void runServ();
+    void acceptNew(std::vector<struct pollfd>& fds);
+    void handleClient(std::vector<struct pollfd>& fds, size_t index);
 };
 
 // nc localhost 8080

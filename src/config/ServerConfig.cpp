@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerConfig.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+        */
+/*   By: tsemenov <tsemenov@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 17:06:49 by nefimov           #+#    #+#             */
-/*   Updated: 2026/03/31 13:19:18 by nefimov          ###   ########.fr       */
+/*   Updated: 2026/03/31 21:27:36 by tsemenov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ std::ostream& operator<<(std::ostream& out, const ServerConfig& cfg) {
             out << it->first << ":" << it->second << ";" << std::endl;
         }
         // Print server name
-        if (cfg.serverName != "") out << "    server_name " << cfg.serverName << std::endl;
+        out << "    server_name " << cfg.serverName << std::endl;
         // Print error pages
         out << std::endl;
         for (std::map<int, std::string>::const_iterator it = cfg.errorPages.begin();

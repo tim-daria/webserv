@@ -8,6 +8,8 @@ Nikolai Efimov
 Tanya Semenova
 Daria Timofeeva
 
-## Resources:
+## Resources
 
 - [Beej's Guide to Network Programming](https://beej.us/guide/bgnet/)
+- [RFC 9110](https://www.rfc-editor.org/rfc/rfc9110.html)
+- [MDN Guides](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview)
