@@ -6,18 +6,21 @@
 #    By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/04 12:41:15 by dtimofee          #+#    #+#              #
-#    Updated: 2026/03/26 17:29:23 by nefimov          ###   ########.fr        #
+#    Updated: 2026/03/31 12:51:06 by nefimov          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 CXX = c++
 
-CXXFLAGS = -Wall -Wextra -Werror -std=c++98 -Iinclude
+INC_DIRS = include include/config
+IFLAG = $(addprefix -I, $(INC_DIRS))
+
+CXXFLAGS = -Wall -Wextra -Werror -std=c++98 $(IFLAG)
 
 NAME = webserv
 SRC_DIR = src/
 OBJ_DIR = obj/
-SRC_FILES = main.cpp config/ServerConfig.cpp
+SRC_FILES = main.cpp config/ServerConfig.cpp config/RouteConfig.cpp
 SRCS = $(addprefix $(SRC_DIR), $(SRC_FILES))
 OBJS = $(patsubst $(SRC_DIR)%.cpp, $(OBJ_DIR)%.o, $(SRCS))
 

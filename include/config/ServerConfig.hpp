@@ -6,7 +6,7 @@
 /*   By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 15:09:14 by nefimov           #+#    #+#             */
-/*   Updated: 2026/03/26 17:26:53 by nefimov          ###   ########.fr       */
+/*   Updated: 2026/03/31 13:06:12 by nefimov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 #include <string>
 #include <vector>
 
-#include "config/RouteConfig.hpp"
+#include "RouteConfig.hpp"
 // class RouteConfig;
 
 class ServerConfig {
@@ -38,7 +38,11 @@ class ServerConfig {
 
     void add_route(const RouteConfig& route) { routes.push_back(route); }
 
+    static ServerConfig makeDefault();
+    void applyDefaults();
     void print();
 };
+
+std::ostream& operator<<(std::ostream& out, const ServerConfig& config);
 
 #endif
