@@ -27,20 +27,20 @@ class HttpResponse {
     HttpResponse& operator=(const HttpResponse& other);
 
     static std::map<int, std::string> initStatusMessages() {
-        std::map<int, std::string> m;
-        m[200] = "OK";
-        m[201] = "Created";
-        // m[204] = "No Content";
-        // m[301] = "Moved Permanently";
-        // m[302] = "Found";
-        m[400] = "Bad Request";
-        // m[401] = "Unauthorized";
-        m[403] = "Forbidden";
-        m[404] = "Not Found";
-        m[405] = "Method Not Allowed";
-        m[500] = "Internal Server Error";
-        m[503] = "Service Unavailable";
-        return m;
+        std::map<int, std::string> msg;
+        msg[200] = "OK";
+        msg[201] = "Created";
+        // msg[204] = "No Content";
+        // msg[301] = "Moved Permanently";
+        // msg[302] = "Found";
+        msg[400] = "Bad Request";
+        // msg[401] = "Unauthorized";
+        msg[403] = "Forbidden";
+        msg[404] = "Not Found";
+        msg[405] = "Method Not Allowed";
+        msg[500] = "Internal Server Error";
+        msg[503] = "Service Unavailable";
+        return msg;
     };
     static const std::map<int, std::string> status_messages_;
 

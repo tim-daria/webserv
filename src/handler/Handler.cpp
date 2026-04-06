@@ -20,13 +20,15 @@ Handler::~Handler() {}
 
 // Handler::Handler(RouteConfig config): config_(config) {};
 
-HttpResponse Handler::handle(HttpRequest& request) { return get_default_response(request); }
+HttpResponse Handler::handle_request(HttpRequest& request) { return get_default_response(request); }
 
 HttpResponse Handler::get_default_response(const HttpRequest&) {
     std::stringstream body;
+    std::stringstream len;
     std::vector<std::pair<std::string, std::string> > default_headers;
     body << "<h1>Hello webserv!</h1>";
     default_headers.push_back(std::make_pair("Content-Type", "text/html"));
-    default_headers.push_back(std::make_pair("Content-Length", std::to_string(body.str().size())));
+    len << body.str().size();
+    default_headers.push_back(std::make_pair("Content-Length", len.str()));
     return HttpResponse(200, body.str(), default_headers);
 }

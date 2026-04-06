@@ -33,5 +33,5 @@ class Handler {
     // Handler(RouteConfig config);
     ~Handler();
 
-    HttpResponse handle(HttpRequest& request);
+    HttpResponse handle_request(HttpRequest& request);
 };

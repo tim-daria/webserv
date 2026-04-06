@@ -225,8 +225,8 @@ void Server::handleClient(std::vector<struct pollfd>& fds, size_t index) {
     } else {
         // Use Handler to process the request
         Handler handler;
-        // HttpResponse response = handler.handle(request);
-        std::string response_str = handler.handle(request).toString();
+
+        std::string response_str = handler.handle_request(request).toString();
 
         std::cout << "--> Sending response!" << std::endl;
         std::cout << "Response sent to client_fd " << client_fd << ":\n"
