@@ -1,25 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   HttpResponse.hpp                                   :+:      :+:    :+:   */
+/*   HtppRequest.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dtimofee <dtimofee@student.42berlin.de>    #+#  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026-03-20 16:43:12 by dtimofee          #+#    #+#             */
-/*   Updated: 2026-03-20 16:43:12 by dtimofee         ###   ########.fr       */
+/*   Created: 2026-03-20 18:22:51 by dtimofee          #+#    #+#             */
+/*   Updated: 2026-03-20 18:22:51 by dtimofee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#pragma once
 #include <cstring>
 #include <map>
+#include <string>
 
-class HttpResponse {
-   private:
-    int status_code_;
-    std::map<std::string, std::string> headers_;
-    std::string body_;
-
+class HttpRequest {
    public:
-    HttpResponse();
-    ~HttpResponse();
+    std::string method;
+    std::string path;
+    std::map<std::string, std::string> headers;
+    std::string body;
 };

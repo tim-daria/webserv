@@ -10,25 +10,27 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#pragma once
+
 #include "HttpRequest.hpp"
 #include "HttpResponse.hpp"
 #include "RouteConfig.hpp"
 
 class Handler {
    private:
-    RouteConfig config;
+    RouteConfig config_;
 
-    Handler();
     Handler(const Handler& other);
     Handler& operator=(const Handler& other);
 
-    HttpResponse get_default_response(HttpRequest request);
-    HttpResponse handleGet(HttpRequest request);
-    HttpResponse handlePost(HttpRequest request);
-    HttpResponse handleDelete(HttpRequest request);
+    HttpResponse get_default_response(const HttpRequest& request);
+    // HttpResponse handleGet(HttpRequest request);
+    // HttpResponse handlePost(HttpRequest request);
+    // HttpResponse handleDelete(HttpRequest request);
 
    public:
-    Handler(RouteConfig config);
+    Handler();
+    // Handler(RouteConfig config);
     ~Handler();
 
     HttpResponse handle(HttpRequest request);
