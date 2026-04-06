@@ -20,7 +20,7 @@ Handler::~Handler() {}
 
 // Handler::Handler(RouteConfig config): config_(config) {};
 
-HttpResponse Handler::handle(HttpRequest request) { return get_default_response(request); }
+HttpResponse Handler::handle(HttpRequest& request) { return get_default_response(request); }
 
 HttpResponse Handler::get_default_response(const HttpRequest&) {
     std::stringstream body;
