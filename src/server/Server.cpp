@@ -18,14 +18,14 @@
 #include <sys/socket.h>  // socket, bind, listen
 #include <unistd.h>      // close
 
+#include <cerrno>
 #include <cstring>  // strerror
 #include <iostream>
 #include <sstream>
 #include <stdexcept>  // runtime_error
 #include <string>
-#include <cerrno>
 
-
+#include "Handler.hpp"
 
 Server::Server(const ServerConfig& config) : _sockfd(-1), _config(config) {}
 
@@ -33,8 +33,7 @@ Server::~Server() {
     if (_sockfd != -1) close(_sockfd);
 }
 
-Server::Server(const Server& other)
-    : _sockfd(-1), _config(other._config) {
+Server::Server(const Server& other) : _sockfd(-1), _config(other._config) {
     // Do not copy socket fd, only config
 }
 
@@ -204,31 +203,37 @@ void Server::handleClient(std::vector<struct pollfd>& fds, size_t index) {
     // print request from browser:
     std::cout << "Request from client_fd " << client_fd << ":\n" << buf << std::endl;
 
+    // Parse HTTP request
+    HttpRequest request;
     std::string request_str(buf);
-    if (request_str.find("GET /favicon.ico") != std::string::npos) {
+
+    // Parse first line (METHOD PATH HTTP/VERSION)
+    size_t first_space = request_str.find(' ');
+    size_t second_space = request_str.find(' ', first_space + 1);
+
+    if (first_space != std::string::npos && second_space != std::string::npos) {
+        request.method = request_str.substr(0, first_space);
+        request.path = request_str.substr(first_space + 1, second_space - first_space - 1);
+    }
+
+    // Handle favicon request
+    if (request.path == "/favicon.ico") {
         std::cout << "--> This is just a favicon request, sending 404" << std::endl;
         std::string response =
             "HTTP/1.0 404 Not Found\r\nContent-Length: 0\r\nConnection: close\r\n\r\n";
         send(client_fd, response.c_str(), response.size(), 0);
     } else {
-        std::cout << "--> Sending main page!" << std::endl;
+        // Use Handler to process the request
+        Handler handler;
 
-        std::stringstream ss_html;
-        ss_html << "<h1>Hello webserv!</h1><p>Client FD: " << client_fd << "</p>";
-        std::string html = ss_html.str();
+        std::string response_str = handler.handle_request(request).toString();
 
-        std::stringstream ss_len;
-        ss_len << html.size();
-        std::string response = "HTTP/1.0 200 OK\r\nContent-Type: text/html\r\nContent-Length: " +
-                               ss_len.str() + "\r\nConnection: close\r\n\r\n" + html;
-
-        // print responce sent to browser:
-        std::cout << "Response sent to client_fd " << client_fd << ":\n" << response << std::endl;
-        send(client_fd, response.c_str(), response.size(), 0);
-        // send might send less bytes than should
-        // how to send them, too?
-        // -1 on failure
+        std::cout << "--> Sending response!" << std::endl;
+        std::cout << "Response sent to client_fd " << client_fd << ":\n"
+                  << response_str << std::endl;
+        send(client_fd, response_str.c_str(), response_str.size(), 0);
     }
+
     close(client_fd);
     fds.erase(fds.begin() + index);
 }

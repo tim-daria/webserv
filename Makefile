@@ -12,7 +12,7 @@
 
 CXX = c++
 
-INC_DIRS = include include/config include/server
+INC_DIRS = include include/config include/server include/handler
 IFLAG = $(addprefix -I, $(INC_DIRS))
 
 CXXFLAGS = -Wall -Wextra -Werror -std=c++98 $(IFLAG)
@@ -20,7 +20,7 @@ CXXFLAGS = -Wall -Wextra -Werror -std=c++98 $(IFLAG)
 NAME = webserv
 SRC_DIR = src/
 OBJ_DIR = obj/
-SRC_FILES = main.cpp config/ServerConfig.cpp config/RouteConfig.cpp
+SRC_FILES = main.cpp config/ServerConfig.cpp config/RouteConfig.cpp handler/Handler.cpp handler/HttpResponse.cpp
 SRC_FILES += server/Server.cpp
 SRCS = $(addprefix $(SRC_DIR), $(SRC_FILES))
 OBJS = $(patsubst $(SRC_DIR)%.cpp, $(OBJ_DIR)%.o, $(SRCS))
