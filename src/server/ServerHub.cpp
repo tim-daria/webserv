@@ -6,7 +6,7 @@
 /*   By: tsemenov <tsemenov@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/06 16:23:17 by tsemenov          #+#    #+#             */
-/*   Updated: 2026/04/07 23:37:20 by tsemenov         ###   ########.fr       */
+/*   Updated: 2026/04/08 14:41:30 by tsemenov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ void ServerHub::runServers() {
         checkTimeouts();
     }
     // if shut down:
-    std::cout << "Server shutting down" << std::endl;
+    std::cout << "\nServer shutting down" << std::endl;
 }
 
 bool ServerHub::isServerFd(int fd) {
@@ -188,6 +188,7 @@ void ServerHub::handleWrite(size_t index) {
 
 void ServerHub::disconnectClient(size_t index) {
     int client_fd = _fds[index].fd;
+		std::cout << "Client on fd " << client_fd << " timed out" << std::endl;
     close(client_fd);  // ServerHub owns the fd lifecycle
     _clients.erase(client_fd);
     _fds.erase(_fds.begin() + index);

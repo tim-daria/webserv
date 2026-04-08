@@ -21,7 +21,7 @@ TEST_CXXFLAGS = -Wall -Wextra -std=c++11 $(IFLAG)
 NAME = webserv
 SRC_DIR = src/
 OBJ_DIR = obj/
-SRC_FILES = config/ServerConfig.cpp config/RouteConfig.cpp
+SRC_FILES = globals.cpp config/ServerConfig.cpp config/RouteConfig.cpp
 SRC_FILES += handler/Handler.cpp handler/HttpResponse.cpp
 SRC_FILES += server/Server.cpp server/Client.cpp server/ServerHub.cpp
 ALL_SRC_FILES = main.cpp $(SRC_FILES)

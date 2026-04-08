@@ -18,7 +18,7 @@
 #include "ServerConfig.hpp"
 #include "ServerHub.hpp"
 
-volatile bool g_running = true;
+extern volatile bool g_running;
 
 static void signalHandler(int) { g_running = false; }
 
