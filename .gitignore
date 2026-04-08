@@ -43,3 +43,7 @@
 .vscode
 obj/
 .DS_Store
+.venv
+.env
+.pytest_cache
+__pycache__

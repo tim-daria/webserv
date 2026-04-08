@@ -30,6 +30,6 @@ jobs:
         run: make test
       - name: Install Python test dependencies
         run: |
-          pip install pytest requests
-      # - name: Run integration tests
-      #   run: pytest tests_py
+          pip install pytest requests psutil
+      - name: Run integration tests
+        run: pytest integration_tests

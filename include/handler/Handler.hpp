@@ -18,7 +18,7 @@
 
 class Handler {
    private:
-    RouteConfig config_;
+    RouteConfig _config;
 
     Handler(const Handler& other);
     Handler& operator=(const Handler& other);
