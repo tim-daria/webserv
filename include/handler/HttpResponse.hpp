@@ -19,9 +19,9 @@
 
 class HttpResponse {
    private:
-    int status_code_;
-    std::string body_;
-    std::vector<std::pair<std::string, std::string> > headers_;
+    int _status_code;
+    std::string _body;
+    std::vector<std::pair<std::string, std::string> > _headers;
 
     HttpResponse();
     HttpResponse& operator=(const HttpResponse& other);
@@ -42,7 +42,7 @@ class HttpResponse {
         msg[503] = "Service Unavailable";
         return msg;
     };
-    static const std::map<int, std::string> status_messages_;
+    static const std::map<int, std::string> _status_messages;
 
    public:
     HttpResponse(int status_code, const std::string& body,

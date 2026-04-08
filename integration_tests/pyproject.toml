@@ -1,0 +1,10 @@
+[project]
+name = "integration-tests"
+version = "0.1.0"
+description = "Integration tests for webserv"
+requires-python = ">=3.12"
+dependencies = [
+    "psutil>=7.2.2",
+    "pytest",
+    "requests",
+]
