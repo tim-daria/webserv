@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Handler.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dtimofee <dtimofee@student.42berlin.de>    #+#  +:+       +#+        */
+/*   By: tsemenov <tsemenov@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026-03-30 13:53:22 by dtimofee          #+#    #+#             */
-/*   Updated: 2026-03-30 13:53:22 by dtimofee         ###   ########.fr       */
+/*   Created: 2026/03/30 13:53:22 by dtimofee          #+#    #+#             */
+/*   Updated: 2026/04/07 21:34:31 by tsemenov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,16 @@ Handler::~Handler() {}
 
 // Handler::Handler(RouteConfig config): config_(config) {};
 
-HttpResponse Handler::handle_request(HttpRequest& request) { return get_default_response(request); }
+HttpResponse Handler::handle_request(HttpRequest& request) {
+    // Browsers automatically request /favicon.ico — return 404 with empty body
+    if (request.path == "/favicon.ico") {
+        std::vector<std::pair<std::string, std::string> > headers;
+        headers.push_back(std::make_pair("Content-Length", "0"));
+        return HttpResponse(404, "", headers);
+    }
+    // TODO: route by method and path using config (Part 2)
+    return get_default_response(request);
+}
 
 HttpResponse Handler::get_default_response(const HttpRequest&) {
     std::stringstream body;

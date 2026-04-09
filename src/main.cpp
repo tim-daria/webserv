@@ -10,23 +10,32 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <csignal>
 #include <exception>
 #include <iostream>
+#include <vector>
 
-#include "Server.hpp"
-#include "config/ServerConfig.hpp"
+#include "ServerConfig.hpp"
+#include "ServerHub.hpp"
+
+extern volatile bool g_running;
+
+static void signalHandler(int) { g_running = false; }
 
 int main() {
-    try {
-        // Use default config for testing/demo
-        ServerConfig config = ServerConfig::makeDefault();
-        config.print();  // Print config for debugging
+    signal(SIGPIPE, SIG_IGN);
+    signal(SIGINT, signalHandler);
+    signal(SIGTERM, signalHandler);
 
-        Server serv(config);
-        serv.initServ();
-        serv.runServ();
+    try {
+        std::vector<ServerConfig> configs;
+        configs.push_back(ServerConfig::makeDefault());
+
+        ServerHub hub(configs);
+        hub.runServers();
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;
+        return 1;
     }
     return 0;
 }

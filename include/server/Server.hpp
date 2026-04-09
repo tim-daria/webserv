@@ -6,15 +6,15 @@
 /*   By: tsemenov <tsemenov@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 16:12:38 by tsemenov          #+#    #+#             */
-/*   Updated: 2026/03/31 22:37:19 by tsemenov         ###   ########.fr       */
+/*   Updated: 2026/04/07 23:42:47 by tsemenov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include <poll.h>
+#include <netdb.h>  // addrinfo, getaddrinfo
 
-#include <vector>
+#include <cstddef>
 
 #include "ServerConfig.hpp"
 
@@ -22,20 +22,25 @@ class Server {
    private:
     int _sockfd;
     ServerConfig _config;
+
     Server();
-    Server(const Server& other);
-    Server& operator=(const Server& other);
+
+    // init helpers:
+    struct addrinfo* createAddress(int port);
+    void createSocket(struct addrinfo* addr);
+    void configureSocket();
+    void bindAndListen(struct addrinfo* addr);
 
    public:
     Server(const ServerConfig& config);
+    Server(const Server& other);
+    Server& operator=(const Server& other);
     ~Server();
 
     int get_fd() const;
+    const ServerConfig& getConfig() const;
 
-    void initServ();
-    void runServ();
-    void acceptNew(std::vector<struct pollfd>& fds);
-    void handleClient(std::vector<struct pollfd>& fds, size_t index);
+    void initServ(size_t index);
 };
 
 // nc localhost 8080

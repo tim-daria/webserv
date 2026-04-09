@@ -6,7 +6,7 @@
 #    By: tsemenov <tsemenov@student.42berlin.de>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/04 12:41:15 by dtimofee          #+#    #+#              #
-#    Updated: 2026/03/31 21:30:45 by tsemenov         ###   ########.fr        #
+#    Updated: 2026/04/08 16:11:11 by tsemenov         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,8 +21,9 @@ TEST_CXXFLAGS = -Wall -Wextra -std=c++11 $(IFLAG)
 NAME = webserv
 SRC_DIR = src/
 OBJ_DIR = obj/
-SRC_FILES = config/ServerConfig.cpp config/RouteConfig.cpp handler/Handler.cpp handler/HttpResponse.cpp
-SRC_FILES += server/Server.cpp
+SRC_FILES = globals.cpp config/ServerConfig.cpp config/RouteConfig.cpp
+SRC_FILES += handler/Handler.cpp handler/HttpResponse.cpp
+SRC_FILES += server/Server.cpp server/Client.cpp server/ServerHub.cpp
 ALL_SRC_FILES = main.cpp $(SRC_FILES)
 SRCS = $(addprefix $(SRC_DIR), $(ALL_SRC_FILES))
 OBJS = $(patsubst $(SRC_DIR)%.cpp, $(OBJ_DIR)%.o, $(SRCS))

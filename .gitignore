@@ -47,3 +47,5 @@ obj/
 .env
 .pytest_cache
 __pycache__
+
+webserv
