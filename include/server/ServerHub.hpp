@@ -33,10 +33,10 @@ class ServerHub {
     ~ServerHub();
 
     void runServers();
-    void acceptNewClient(int server_fd);
+    void acceptNewClient(int server_fd, size_t serverIndex);
     void handleRead(size_t index);
     void handleWrite(size_t index);
     void disconnectClient(size_t index);
     void checkTimeouts();
-    bool isServerFd(int fd);
+    int getServerIndex(int fd);  // returns index into _servers, or -1 if not a server fd
 };

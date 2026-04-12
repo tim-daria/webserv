@@ -16,9 +16,9 @@
 
 Handler::Handler() {}
 
-Handler::~Handler() {}
+Handler::Handler(const ServerConfig& config) : _serverConfig(config) {}
 
-// Handler::Handler(RouteConfig config): config_(config) {};
+Handler::~Handler() {}
 
 HttpResponse Handler::handle_request(HttpRequest& request) {
     // Browsers automatically request /favicon.ico — return 404 with empty body
