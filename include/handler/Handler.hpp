@@ -15,10 +15,12 @@
 #include "HttpRequest.hpp"
 #include "HttpResponse.hpp"
 #include "RouteConfig.hpp"
+#include "ServerConfig.hpp"
 
 class Handler {
    private:
     RouteConfig _config;
+    ServerConfig _serverConfig;
 
     Handler(const Handler& other);
     Handler& operator=(const Handler& other);
@@ -30,7 +32,7 @@ class Handler {
 
    public:
     Handler();
-    // Handler(RouteConfig config);
+    Handler(const ServerConfig& config);
     ~Handler();
 
     HttpResponse handle_request(HttpRequest& request);

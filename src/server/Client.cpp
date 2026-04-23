@@ -18,9 +18,10 @@
 #include <cstdlib>  // strtol
 #include <iostream>
 
-Client::Client() : _fd(-1), _lastActive(0) {}
+Client::Client() : _fd(-1), _serverIndex(0), _lastActive(0) {}
 Client::Client(const Client& other)
     : _fd(other._fd),
+      _serverIndex(other._serverIndex),
       _readBuffer(other._readBuffer),
       _writeBuffer(other._writeBuffer),
       _lastActive(other._lastActive) {}
@@ -29,7 +30,8 @@ Client& Client::operator=(const Client& other) {
     return *this;
 }
 
-Client::Client(int fd) : _fd(fd), _lastActive(time(NULL)) {}
+Client::Client(int fd, size_t serverIndex)
+    : _fd(fd), _serverIndex(serverIndex), _lastActive(time(NULL)) {}
 
 Client::~Client() {}
 
@@ -82,6 +84,7 @@ bool Client::isRequestComplete() {
     return _readBuffer.size() >= body_start + content_len;
 }
 
+size_t Client::get_serverIndex() const { return _serverIndex; }
 const std::string& Client::get_readBuffer() const { return _readBuffer; }
 const std::string& Client::get_writeBuffer() const { return _writeBuffer; }
 void Client::set_writeBuffer(const std::string& response) { _writeBuffer = response; }

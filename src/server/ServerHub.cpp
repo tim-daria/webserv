@@ -6,7 +6,7 @@
 /*   By: tsemenov <tsemenov@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/06 16:23:17 by tsemenov          #+#    #+#             */
-/*   Updated: 2026/04/08 14:41:30 by tsemenov         ###   ########.fr       */
+/*   Updated: 2026/04/12 14:00:41 by tsemenov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,11 +80,12 @@ void ServerHub::runServers() {
                 // if there's data to read:
             } else if (_fds[i].revents & POLLIN) {
                 // if POLLIN on a server fd, it's a new connection request
-                if (isServerFd(_fds[i].fd))
-                    acceptNewClient(_fds[i].fd);
+                int sIdx = getServerIndex(_fds[i].fd);  // if >= 0, it's server
+                if (sIdx >= 0)
+                    acceptNewClient(_fds[i].fd, static_cast<size_t>(sIdx));
                 else  // if POLLIN on a client_fd, it's a data from an existing connection
                     handleRead(i);
-                // if the client fd is ready to send responce to the browser:
+                // if the client fd is ready to send response to the browser:
             } else if (_fds[i].revents & POLLOUT) {
                 handleWrite(i);
             }
@@ -95,15 +96,14 @@ void ServerHub::runServers() {
     std::cout << "\nServer shutting down" << std::endl;
 }
 
-bool ServerHub::isServerFd(int fd) {
+// Returns index into _servers if fd belongs to a server, -1 otherwise
+int ServerHub::getServerIndex(int fd) {
     for (size_t i = 0; i < _servers.size(); ++i)
-        if (_servers[i].get_fd() == fd) {
-            return true;
-        }
-    return false;
+        if (_servers[i].get_fd() == fd) return static_cast<int>(i);
+    return -1;
 }
 
-void ServerHub::acceptNewClient(int server_fd) {
+void ServerHub::acceptNewClient(int server_fd, size_t serverIndex) {
     // create a struct that will be filled by OS on accept:
     struct sockaddr_in client_addr = {};
     socklen_t client_len = sizeof(client_addr);
@@ -122,8 +122,8 @@ void ServerHub::acceptNewClient(int server_fd) {
         return;
     }
 
-    // save fd and a new Client object into the map:
-    _clients.insert(std::make_pair(client_fd, Client(client_fd)));
+    // save fd and a new Client object into the map (Client knows which server it belongs to):
+    _clients.insert(std::make_pair(client_fd, Client(client_fd, serverIndex)));
 
     // save client_fd in the arr of fds, used by poll()
     // poll() needs a pollfd, not fd:
@@ -160,8 +160,9 @@ void ServerHub::handleRead(size_t index) {
         req.path = raw.substr(first_space + 1, second_space - first_space - 1);
     }
 
-    // Dispatch to Handler
-    Handler handler;
+    // Dispatch to Handler with the server config that accepted this client
+    const ServerConfig& cfg = _servers[client.get_serverIndex()].getConfig();
+    Handler handler(cfg);
     client.set_writeBuffer(handler.handle_request(req).toString());
 
     // Stop watching for reads, start watching for writes
@@ -188,7 +189,7 @@ void ServerHub::handleWrite(size_t index) {
 
 void ServerHub::disconnectClient(size_t index) {
     int client_fd = _fds[index].fd;
-		std::cout << "Client on fd " << client_fd << " timed out" << std::endl;
+    std::cout << "Client on fd " << client_fd << " disconnected" << std::endl;
     close(client_fd);  // ServerHub owns the fd lifecycle
     _clients.erase(client_fd);
     _fds.erase(_fds.begin() + index);

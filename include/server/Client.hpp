@@ -18,6 +18,7 @@
 class Client {
    private:
     int _fd;
+    size_t _serverIndex;
     std::string _readBuffer;
     std::string _writeBuffer;
     time_t _lastActive;
@@ -25,7 +26,7 @@ class Client {
     Client();
 
    public:
-    Client(int fd);
+    Client(int fd, size_t serverIndex);
     Client(const Client& other);
     Client& operator=(const Client& other);
     ~Client();
@@ -33,6 +34,7 @@ class Client {
     bool isMsgReceived();
     bool isRequestComplete();
 
+    size_t get_serverIndex() const;
     time_t get_lastActive() const;
     const std::string& get_readBuffer() const;
     const std::string& get_writeBuffer() const;
