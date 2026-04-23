@@ -28,6 +28,7 @@ HttpResponse Handler::handle_request(HttpRequest& request) {
         return HttpResponse(404, "", headers);
     }
     // TODO: route by method and path using config (Part 2)
+    RouteConfig _location = _config.findMatchingLocation(request.path);
     return get_default_response(request);
 }
 
