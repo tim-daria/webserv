@@ -41,6 +41,15 @@ void ServerConfig::applyDefaults() {
     add_route(r);
 }
 
+const RouteConfig* ServerConfig::findMatchingLocation(std::string path) {
+    for (std::vector<RouteConfig>::const_iterator it = routes.begin(); it != routes.end(); ++it) {
+        if (it->url == path) {
+            return &(*it);
+        }
+    }
+    return (nullptr);
+}
+
 std::ostream& operator<<(std::ostream& out, const ServerConfig& cfg) {
     out << "server {" << std::endl;
     {

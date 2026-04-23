@@ -19,12 +19,13 @@
 
 class Handler {
    private:
-    RouteConfig _config;
+    RouteConfig _location;
     ServerConfig _serverConfig;
 
     Handler(const Handler& other);
     Handler& operator=(const Handler& other);
 
+    bool isAcceptedMethod(std::string method);
     HttpResponse get_default_response(const HttpRequest& request);
     // HttpResponse handleGet(HttpRequest request);
     // HttpResponse handlePost(HttpRequest request);
