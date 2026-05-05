@@ -6,7 +6,7 @@
 /*   By: tsemenov <tsemenov@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/02 22:30:06 by dtimofee          #+#    #+#             */
-/*   Updated: 2026/03/31 21:36:04 by tsemenov         ###   ########.fr       */
+/*   Updated: 2026/05/06 14:47:13 by tsemenov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ int main() {
 //         char buffer[1024] = {0};
 //         read(client, buffer, 1024);
 //         const char* response =
-//             "HTTP/1.1 200 OK\r\n"
+//             "HTTP/1.0 200 OK\r\n"
 //             "Content-Type: text/plain\r\n"
 //             "\r\n"
 //             "Hello from mini webserv!\n";
