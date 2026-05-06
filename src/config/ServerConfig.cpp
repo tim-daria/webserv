@@ -41,13 +41,31 @@ void ServerConfig::applyDefaults() {
     add_route(r);
 }
 
-const RouteConfig* ServerConfig::findMatchingLocation(std::string path) {
-    for (std::vector<RouteConfig>::const_iterator it = routes.begin(); it != routes.end(); ++it) {
-        if (it->url == path) {
-            return &(*it);
+RouteConfig* ServerConfig::findMatchingLocation(std::string path) {
+    // Deleting / ath the end of the path /photos/ → /photos
+    if (path.length() > 1 && path[path.length() - 1] == '/')
+        path = path.substr(0, path.length() - 1);
+
+    RouteConfig* best_match = nullptr;
+    size_t best_length = 0;
+
+    for (std::vector<RouteConfig>::iterator it = routes.begin(); it != routes.end(); ++it) {
+        // Does the request path start with this location?
+        if (path.find(it->url) != 0) continue;
+
+        // Check end of the word — protection against /photo matches to /photos
+        size_t url_len = it->url.size();
+        bool boundary = (path.size() == url_len) || (path[url_len] == '/') || (it->url == "/");
+
+        if (!boundary) continue;
+
+        // Is this match longer then previous one?
+        if (url_len > best_length) {
+            best_length = url_len;
+            best_match = &(*it);
         }
     }
-    return (nullptr);
+    return best_match;
 }
 
 std::ostream& operator<<(std::ostream& out, const ServerConfig& cfg) {

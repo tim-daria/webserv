@@ -34,6 +34,7 @@ class RouteConfig {
         cgiHandlers.insert(std::make_pair(extension, handler));
     }
 
+    bool isMethodAllowed(std::string method);
     void print();
 };
 
