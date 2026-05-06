@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webserv | Home</title>
+    <link rel="stylesheet" href="/assets/styles.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="container">
+            <a href="/" class="logo">Webserv</a>
+            <div class="nav-links">
+                <a href="/upload">Upload</a>
+                <a href="/uploads">Uploads</a>
+                <a href="/submit">Submit</a>
+                <a href="/delete">Delete</a>
+                <a href="/cgi-bin/script.py">CGI</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section class="hero">
+            <h1>Welcome to Webserv</h1>
+            <p class="subtitle">An HTTP/1.0 server — 42 Berlin</p>
+        </section>
+
+        <h2 class="section-title">Locations</h2>
+        <div class="grid">
+            <div class="card">
+                <h3>GET /</h3>
+                <p>Static file serving. Serves <code>index.html</code>, assets, and all pages from <code>./www</code>.</p>
+                <a href="/" class="btn">Home</a>
+            </div>
+
+            <div class="card">
+                <h3>POST /upload</h3>
+                <p>Upload a file to the server using <code>multipart/form-data</code>. Files are stored in <code>/uploads</code>.</p>
+                <a href="/upload" class="btn">Upload File</a>
+            </div>
+
+            <div class="card">
+                <h3>GET DELETE /uploads</h3>
+                <p>Browse uploaded files with directory listing enabled. Delete files via DELETE requests.</p>
+                <a href="/uploads" class="btn">Browse Uploads</a>
+            </div>
+
+            <div class="card">
+                <h3>POST /submit</h3>
+                <p>Submit a form using <code>application/x-www-form-urlencoded</code>.</p>
+                <a href="/submit" class="btn">Submit Form</a>
+            </div>
+
+            <div class="card">
+                <h3>DELETE /delete</h3>
+                <p>Send DELETE requests to remove files from the server.</p>
+                <a href="/delete" class="btn danger">Delete File</a>
+            </div>
+
+            <div class="card">
+                <h3>GET POST /cgi-bin</h3>
+                <p>Run CGI scripts. Python scripts are executed via <code>/usr/bin/python3</code>.</p>
+                <a href="/cgi-bin/script.py" class="btn info">Run CGI Script</a>
+            </div>
+        </div>
+
+        <h2 class="section-title">Test how errors work:</h2>
+        <div class="error-grid">
+            <a href="/bad%00.html" class="btn warn">400 Bad Request</a>
+            <a href="/auth_required" class="btn warn">401 Unauthorized</a>
+            <a href="/somewhere" class="btn warn">404 Not Found</a>
+            <a href="/method_not_allowed" class="btn warn">405 Method Not Allowed</a>
+        </div>
+    </main>
+
+    <footer class="container">
+        <p>&copy; 2026 42 School Project &mdash; Nikolai Efimov, Tanya Semenova, Daria Timofeeva</p>
+    </footer>
+
+</body>
+</html>

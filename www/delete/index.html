@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webserv | Delete File</title>
+    <link rel="stylesheet" href="/assets/styles.css">
+</head>
+<body>
+
+    <header class="header">
+        <nav class="container">
+            <a href="/" class="logo">Webserv</a>
+            <div class="nav-links">
+                <a href="/pages/methods/upload.html">Upload (POST)</a>
+                <a href="/pages/methods/submit.html">Submit (POST)</a>
+                <a href="/pages/methods/delete.html">Delete (DELETE)</a>
+                <a href="/cgi-bin/script.py">CGI Demo</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section class="hero">
+            <h1>Delete a File</h1>
+            <p class="subtitle">Sends a DELETE request to remove a file from the server.</p>
+        </section>
+
+        <div class="form-card">
+            <h2>Delete Resource</h2>
+            <p class="desc">Enter the path of a file in <code>/uploads/</code> to delete it. This sends an HTTP DELETE request to that path.</p>
+
+            <form id="delete-form">
+                <div class="form-group">
+                    <label for="filepath">File path</label>
+                    <input type="text" id="filepath" name="filepath" placeholder="/uploads/myfile.txt" required>
+                </div>
+                <button type="submit" class="btn danger">Delete File</button>
+            </form>
+
+            <div id="result"></div>
+        </div>
+    </main>
+
+		
+    <footer class="container">
+        <p>&copy; 2026 42 School Project &mdash; Nikolai Efimov, Tanya Semenova, Daria Timofeeva</p>
+    </footer>
+
+</body>
+</html>

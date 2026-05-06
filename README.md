@@ -104,4 +104,5 @@ server {
 
 - [Beej's Guide to Network Programming](https://beej.us/guide/bgnet/)
 - [RFC 9110](https://www.rfc-editor.org/rfc/rfc9110.html)
+- [RFC 1945](https://greenbytes.de/tech/webdav/rfc1945.html#POST)
 - [MDN Guides](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview)
