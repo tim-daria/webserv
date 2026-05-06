@@ -19,17 +19,23 @@
 
 class Handler {
    private:
-    RouteConfig _location;
     ServerConfig _serverConfig;
 
     Handler(const Handler& other);
     Handler& operator=(const Handler& other);
 
-    bool isAcceptedMethod(std::string method);
+    int checkPath(const std::string& path, struct stat& info);
+
     HttpResponse get_default_response(const HttpRequest& request);
-    // HttpResponse handleGet(HttpRequest request);
+    HttpResponse handleGet(const HttpRequest& request, RouteConfig* _location);
     // HttpResponse handlePost(HttpRequest request);
     // HttpResponse handleDelete(HttpRequest request);
+    HttpResponse handleDirectory(const std::string& path, RouteConfig* _location);
+    HttpResponse serveFile(const std::string& path);
+
+    HttpResponse makeError(int status);
+    // std::string readFile(std::string path);
+    std::string getContentType(const std::string& path);
 
    public:
     Handler();

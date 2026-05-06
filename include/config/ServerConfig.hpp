@@ -37,7 +37,7 @@ class ServerConfig {
     }
 
     void add_route(const RouteConfig& route) { routes.push_back(route); }
-    const RouteConfig* findMatchingLocation(std::string path);
+    RouteConfig* findMatchingLocation(std::string path);
 
     static ServerConfig makeDefault();
     void applyDefaults();
