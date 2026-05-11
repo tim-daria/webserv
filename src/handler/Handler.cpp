@@ -12,6 +12,7 @@
 
 #include "Handler.hpp"
 
+#include <dirent.h>
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -32,12 +33,12 @@ int Handler::checkPath(const std::string& path, struct stat& info) {
         if (access(path.c_str(), X_OK) != 0) {
             return 403;
         }
-        return 0;
+        return 200;
     }
     if (access(path.c_str(), R_OK) != 0) {
         return 403;
     }
-    return 0;
+    return 200;
 }
 
 std::string Handler::getContentType(const std::string& path) {
@@ -73,12 +74,12 @@ std::string Handler::getContentType(const std::string& path) {
 HttpResponse Handler::serveFile(const std::string& path) {
     int fd = open(path.c_str(), O_RDONLY);
     if (fd == -1) {
-        makeError(404);
+        return makeError(404);
     }
     std::string body;
     char buf[1024];
     int bytes;
-    while (bytes = read(fd, buf, sizeof(buf)) > 0) {
+    while ((bytes = read(fd, buf, sizeof(buf))) > 0) {
         body.append(buf, bytes);
     }
     std::vector<std::pair<std::string, std::string> > headers;
@@ -87,7 +88,41 @@ HttpResponse Handler::serveFile(const std::string& path) {
     return HttpResponse(200, body, headers);
 }
 
-HttpResponse Handler::handleDirectory(const std::string& path, RouteConfig* _location) {}
+HttpResponse Handler::generateListing(const std::string& path) {
+    DIR* dir = opendir(path.c_str());
+    if (!dir) {
+        return makeError(403);
+    }
+    struct dirent* dp;
+    while ((dp = readdir(dir)) != NULL) {
+    }
+}
+
+HttpResponse Handler::handleDirectory(const std::string& path, RouteConfig* _location) {
+    struct stat info;
+    std::string index_path = path + "/" + _location->defaultFile;
+    int status = checkPath(index_path, info);
+    if (status == 200 && S_ISREG(info.st_mode)) {
+        return serveFile(index_path);
+    }
+    if (status == 404 && _location->directoryListing) {
+        return generateListing(path);
+    }
+    return makeError(403);
+}
+
+HttpResponse Handler::handleGet(const HttpRequest& request, RouteConfig* _location) {
+    std::string fullPath = _location->rootDirectory + request.path;
+    struct stat info;
+    int status = checkPath(fullPath, info);
+    if (status != 200) {
+        return makeError(status);
+    }
+    if (S_ISDIR(info.st_mode)) {
+        return handleDirectory(fullPath, _location);
+    }
+    return serveFile(fullPath);
+}
 
 HttpResponse Handler::handle_request(HttpRequest& request) {
     RouteConfig* _location = _serverConfig.findMatchingLocation(request.path);
@@ -103,19 +138,6 @@ HttpResponse Handler::handle_request(HttpRequest& request) {
         return get_default_response(request);
     }
     return makeError(405);
-}
-
-HttpResponse Handler::handleGet(const HttpRequest& request, RouteConfig* _location) {
-    std::string fullPath = _location->rootDirectory + request.path;
-    struct stat info;
-    int status = checkPath(fullPath, info);
-    if (status != 0) {
-        makeError(status);
-    }
-    if (S_ISDIR(info.st_mode)) {
-        return handleDirectory(fullPath, _location);
-    }
-    return serveFile(fullPath);
 }
 
 HttpResponse Handler::get_default_response(const HttpRequest&) {

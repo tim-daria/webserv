@@ -36,6 +36,7 @@ class Handler {
     HttpResponse makeError(int status);
     // std::string readFile(std::string path);
     std::string getContentType(const std::string& path);
+    HttpResponse generateListing(const std::string& path);
 
    public:
     Handler();
