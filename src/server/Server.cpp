@@ -23,7 +23,7 @@
 #include <sstream>
 #include <stdexcept>  // runtime_error
 
-Server::Server(const ServerConfig& config) : _sockfd(-1), _config(config) {}
+Server::Server(ServerConfig& config) : _sockfd(-1), _config(config) {}
 Server::Server(const Server& other) : _sockfd(-1), _config(other._config) {}
 Server& Server::operator=(const Server& other) {
     (void)other;
@@ -36,7 +36,7 @@ Server::~Server() {
 
 int Server::get_fd() const { return _sockfd; }
 
-const ServerConfig& Server::getConfig() const { return _config; }
+ServerConfig& Server::getConfig() { return _config; }
 
 // Resolves the port to an addrinfo struct. Caller must freeaddrinfo
 struct addrinfo* Server::createAddress(int port) {

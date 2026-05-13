@@ -32,13 +32,13 @@ class Server {
     void bindAndListen(struct addrinfo* addr);
 
    public:
-    Server(const ServerConfig& config);
+    Server(ServerConfig& config);
     Server(const Server& other);
     Server& operator=(const Server& other);
     ~Server();
 
     int get_fd() const;
-    const ServerConfig& getConfig() const;
+    ServerConfig& getConfig();
 
     void initServ(size_t index);
 };

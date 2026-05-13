@@ -30,7 +30,6 @@ class Handler {
     Handler();
     Handler(const Handler& other);
     Handler& operator=(const Handler& other);
-    ~Handler();
 
     // int checkPath(const std::string& path, struct stat& info);
 
@@ -50,6 +49,7 @@ class Handler {
 
    public:
     Handler(ServerConfig& config);
+    ~Handler();
 
     HttpResponse handle_request(HttpRequest& request);
 };

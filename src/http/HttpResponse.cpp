@@ -13,7 +13,7 @@
 #include "HttpResponse.hpp"
 
 HttpResponse::HttpResponse(int status_code, const std::string& body,
-                           const std::vector<std::pair<std::string, std::string>>& headers)
+                           const std::vector<std::pair<std::string, std::string> >& headers)
     : _status_code(status_code), _body(body), _headers(headers) {}
 
 HttpResponse::HttpResponse(const HttpResponse& other)
@@ -46,7 +46,7 @@ std::string HttpResponse::getStatusText() const {
 
 HttpResponse HttpResponse::make(int status_code, const std::string& body,
                                 const std::string& content_type) {
-    std::vector<std::pair<std::string, std::string>> headers;
+    std::vector<std::pair<std::string, std::string> > headers;
     headers.push_back(std::make_pair("Content-Type", content_type));
     headers.push_back(std::make_pair("Content-Length", std::to_string(body.size())));
     return HttpResponse(status_code, body, headers);
@@ -59,7 +59,7 @@ std::string HttpResponse::toString() const {
     ss << "HTTP/1.0 " << _status_code << " " << getStatusText();
     ss << "\r\n";
 
-    for (std::vector<std::pair<std::string, std::string>>::const_iterator it = _headers.begin();
+    for (std::vector<std::pair<std::string, std::string> >::const_iterator it = _headers.begin();
          it != _headers.end(); ++it) {
         ss << it->first << ": " << it->second << "\r\n";
     }
