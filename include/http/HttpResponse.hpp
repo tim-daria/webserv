@@ -17,6 +17,19 @@
 #include <string>
 #include <vector>
 
+enum HttpStatus {
+    HTTP_OK = 200,
+    HTTP_CREATED = 201,
+    HTTP_NO_CONTENT = 204,
+    HTTP_MOVED_PERMANENTLY = 301,
+    HTTP_BAD_REQUEST = 400,
+    HTTP_FORBIDDEN = 403,
+    HTTP_NOT_FOUND = 404,
+    HTTP_METHOD_NOT_ALLOWED = 405,
+    HTTP_PAYLOAD_TOO_LARGE = 413,
+    HTTP_INTERNAL_ERROR = 500
+};
+
 class HttpResponse {
    private:
     int _status_code;
@@ -25,24 +38,7 @@ class HttpResponse {
 
     HttpResponse();
     HttpResponse& operator=(const HttpResponse& other);
-
-    static std::map<int, std::string> initStatusMessages() {
-        std::map<int, std::string> msg;
-        msg[200] = "OK";
-        msg[201] = "Created";
-        // msg[204] = "No Content";
-        // msg[301] = "Moved Permanently";
-        // msg[302] = "Found";
-        msg[400] = "Bad Request";
-        // msg[401] = "Unauthorized";
-        msg[403] = "Forbidden";
-        msg[404] = "Not Found";
-        msg[405] = "Method Not Allowed";
-        msg[500] = "Internal Server Error";
-        msg[503] = "Service Unavailable";
-        return msg;
-    };
-    static const std::map<int, std::string> _status_messages;
+    std::string getStatusText() const;
 
    public:
     HttpResponse(int status_code, const std::string& body,
@@ -50,5 +46,8 @@ class HttpResponse {
     HttpResponse(const HttpResponse& other);
     ~HttpResponse();
 
+    static HttpResponse make(int status_code, const std::string& body,
+                             const std::string& content_type);
+    // static HttpResponse makeEmpty(int status_code);
     std::string toString() const;
 };

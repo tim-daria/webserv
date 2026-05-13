@@ -12,6 +12,9 @@
 
 #pragma once
 
+#include "AutoIndex.hpp"
+#include "ErrorHandler.hpp"
+#include "FileService.hpp"
 #include "HttpRequest.hpp"
 #include "HttpResponse.hpp"
 #include "RouteConfig.hpp"
@@ -19,29 +22,34 @@
 
 class Handler {
    private:
-    ServerConfig _serverConfig;
+    ServerConfig& _serverConfig;
+    ErrorHandler _errorHandler;
+    FileService _fileService;
+    AutoIndex _autoIndex;
 
+    Handler();
     Handler(const Handler& other);
     Handler& operator=(const Handler& other);
+    ~Handler();
 
-    int checkPath(const std::string& path, struct stat& info);
+    // int checkPath(const std::string& path, struct stat& info);
 
     HttpResponse get_default_response(const HttpRequest& request);
     HttpResponse handleGet(const HttpRequest& request, RouteConfig* _location);
-    // HttpResponse handlePost(HttpRequest request);
-    // HttpResponse handleDelete(HttpRequest request);
-    HttpResponse handleDirectory(const std::string& path, RouteConfig* _location);
+    // HttpResponse handlePost(const HttpRequest &request, RouteConfig* _location);
+    // HttpResponse handleDelete(const HttpRequest &request, RouteConfig* _location);
+    HttpResponse handleDirectory(const std::string& path, const std::string& uri,
+                                 RouteConfig* _location);
+
     HttpResponse serveFile(const std::string& path);
 
-    HttpResponse makeError(int status);
-    // std::string readFile(std::string path);
-    std::string getContentType(const std::string& path);
-    HttpResponse generateListing(const std::string& path);
+    // HttpResponse makeError(int status);
+    //  std::string readFile(std::string path);
+    // std::string getContentType(const std::string& path);
+    // HttpResponse generateListing(const std::string& path);
 
    public:
-    Handler();
-    Handler(const ServerConfig& config);
-    ~Handler();
+    Handler(ServerConfig& config);
 
     HttpResponse handle_request(HttpRequest& request);
 };
