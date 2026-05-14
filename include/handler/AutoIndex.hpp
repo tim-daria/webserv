@@ -16,8 +16,6 @@
 class AutoIndex {
    private:
     std::string generateRow(std::string name, const struct stat& info);
-    std::string formatSize(off_t size);
-    std::string formatTime(time_t time);
 
    public:
     int generate(const std::string& path, const std::string& uri, std::string& body);

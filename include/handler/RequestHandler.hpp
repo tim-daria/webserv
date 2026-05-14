@@ -31,8 +31,6 @@ class Handler {
     Handler(const Handler& other);
     Handler& operator=(const Handler& other);
 
-    // int checkPath(const std::string& path, struct stat& info);
-
     HttpResponse get_default_response(const HttpRequest& request);
     HttpResponse handleGet(const HttpRequest& request, RouteConfig* _location);
     // HttpResponse handlePost(const HttpRequest &request, RouteConfig* _location);
@@ -41,11 +39,6 @@ class Handler {
                                  RouteConfig* _location);
 
     HttpResponse serveFile(const std::string& path);
-
-    // HttpResponse makeError(int status);
-    //  std::string readFile(std::string path);
-    // std::string getContentType(const std::string& path);
-    // HttpResponse generateListing(const std::string& path);
 
    public:
     Handler(ServerConfig& config);

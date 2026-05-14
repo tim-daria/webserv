@@ -11,17 +11,19 @@
 /* ************************************************************************** */
 
 #pragma once
+#include "FileService.hpp"
 #include "HttpResponse.hpp"
 
 class ErrorHandler {
    private:
-    std::string _error_pages_path;  // путь к кастомным страницам ошибок
+    std::map<int, std::string> _errorPages;
+    FileService _fileService;
 
-    // std::string  getStatusText(int code) const;
-    std::string defaultPage(int code) const;
+    std::string getCustomPage(int code) const;
+    std::string getDefaultPage(int code) const;
 
    public:
-    ErrorHandler(const std::string& error_pages_path = "");
+    ErrorHandler(const std::map<int, std::string>& errorPages);
 
     HttpResponse makeError(int code) const;
 };

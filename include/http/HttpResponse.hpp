@@ -32,13 +32,12 @@ enum HttpStatus {
 
 class HttpResponse {
    private:
-    int _status_code;
+    int _statusCode;
     std::string _body;
     std::vector<std::pair<std::string, std::string> > _headers;
 
     HttpResponse();
     HttpResponse& operator=(const HttpResponse& other);
-    std::string getStatusText() const;
 
    public:
     HttpResponse(int status_code, const std::string& body,
@@ -46,8 +45,8 @@ class HttpResponse {
     HttpResponse(const HttpResponse& other);
     ~HttpResponse();
 
+    static std::string getStatusText(int statusCode);
     static HttpResponse make(int status_code, const std::string& body,
                              const std::string& content_type);
-    // static HttpResponse makeEmpty(int status_code);
     std::string toString() const;
 };

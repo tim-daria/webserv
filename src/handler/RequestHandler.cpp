@@ -22,55 +22,9 @@
 #include "PathUtils.hpp"
 
 Handler::Handler(ServerConfig& config)
-    : _serverConfig(config), _errorHandler(), _fileService(), _autoIndex() {}
+    : _serverConfig(config), _errorHandler(config.errorPages), _fileService(), _autoIndex() {}
 
-// Handler::~Handler() {}
-
-// int Handler::checkPath(const std::string& path, struct stat& info) {
-//     if (stat(path.c_str(), &info) != 0) {
-//         return HTTP_NOT_FOUND;
-//     }
-//     if (S_ISDIR(info.st_mode)) {
-//         if (access(path.c_str(), X_OK) != 0) {
-//             return HTTP_FORBIDDEN;
-//         }
-//         return HTTP_OK;
-//     }
-//     if (access(path.c_str(), R_OK) != 0) {
-//         return HTTP_FORBIDDEN;
-//     }
-//     return HTTP_OK;
-// }
-
-// std::string Handler::getContentType(const std::string& path) {
-//     size_t dot_pos = path.rfind('.');
-//     if (dot_pos == std::string::npos) {
-//         return "application/octet-stream";
-//     }
-//     std::string ext = path.substr(dot_pos);
-//     struct MimeType {
-//         std::string extension;
-//         std::string type;
-//     };
-//     MimeType mimeTypes[] = {{".html", "text/html"},
-//                             {".css", "text/css"},
-//                             {".js", "application/javascript"},
-//                             {".jpg", "image/jpeg"},
-//                             {".jpeg", "image/jpeg"},
-//                             {".png", "image/png"},
-//                             {".gif", "image/gif"},
-//                             {".pdf", "application/pdf"},
-//                             {".txt", "text/plain"},
-//                             {".json", "application/json"},
-//                             {".ico", "image/x-icon"}};
-//     size_t size = sizeof(mimeTypes) / sizeof(mimeTypes[0]);
-//     for (size_t i = 0; i < size; i++) {
-//         if (mimeTypes[i].extension == ext) {
-//             return mimeTypes[i].type;
-//         }
-//     }
-//     return "application/octet-stream";
-// }
+Handler::~Handler() {}
 
 HttpResponse Handler::serveFile(const std::string& path) {
     std::string body;
@@ -79,21 +33,7 @@ HttpResponse Handler::serveFile(const std::string& path) {
         return _errorHandler.makeError(status);
     }
     return HttpResponse::make(HTTP_OK, body, PathUtils::getContentType(path));
-    // std::vector<std::pair<std::string, std::string> > headers;
-    // headers.push_back(std::make_pair("Content-Type", PathUtils::getContentType(path)));
-    // headers.push_back(std::make_pair("Content-Length", std::to_string(body.size())));
-    // return HttpResponse(HTTP_OK, body, headers);
 }
-
-// HttpResponse Handler::generateListing(const std::string& path) {
-//     DIR* dir = opendir(path.c_str());
-//     if (!dir) {
-//         return _errorHandler.makeError(HTTP_FORBIDDEN);
-//     }
-//     struct dirent* dp;
-//     while ((dp = readdir(dir)) != NULL) {
-//     }
-// }
 
 HttpResponse Handler::handleDirectory(const std::string& path, const std::string& uri,
                                       RouteConfig* _location) {

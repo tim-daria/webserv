@@ -14,14 +14,14 @@
 
 HttpResponse::HttpResponse(int status_code, const std::string& body,
                            const std::vector<std::pair<std::string, std::string> >& headers)
-    : _status_code(status_code), _body(body), _headers(headers) {}
+    : _statusCode(status_code), _body(body), _headers(headers) {}
 
 HttpResponse::HttpResponse(const HttpResponse& other)
-    : _status_code(other._status_code), _body(other._body), _headers(other._headers) {};
+    : _statusCode(other._statusCode), _body(other._body), _headers(other._headers) {};
 
 HttpResponse::~HttpResponse() {}
 
-std::string HttpResponse::getStatusText() const {
+std::string HttpResponse::getStatusText(int statusCode) {
     struct StatusText {
         HttpStatus code;
         std::string text;
@@ -39,7 +39,7 @@ std::string HttpResponse::getStatusText() const {
 
     size_t size = sizeof(statuses) / sizeof(statuses[0]);
     for (size_t i = 0; i < size; i++) {
-        if (statuses[i].code == _status_code) return statuses[i].text;
+        if (statuses[i].code == statusCode) return statuses[i].text;
     }
     return "Unknown";
 }
@@ -56,7 +56,7 @@ std::string HttpResponse::toString() const {
     std::stringstream ss;
 
     // Status line
-    ss << "HTTP/1.0 " << _status_code << " " << getStatusText();
+    ss << "HTTP/1.0 " << _statusCode << " " << getStatusText(_statusCode);
     ss << "\r\n";
 
     for (std::vector<std::pair<std::string, std::string> >::const_iterator it = _headers.begin();
