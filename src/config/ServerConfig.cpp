@@ -34,7 +34,7 @@ void ServerConfig::applyDefaults() {
 
     RouteConfig r;
     r.url = "/";
-    r.rootDirectory = "/var/www/html";
+    r.rootDirectory = "www";
     r.defaultFile = "index.html";
     r.add_acceptedMethod("GET");
     r.add_acceptedMethod("POST");

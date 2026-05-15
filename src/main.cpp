@@ -15,6 +15,7 @@
 #include <iostream>
 #include <vector>
 
+#include "Logger.hpp"
 #include "ServerConfig.hpp"
 #include "ServerHub.hpp"
 
@@ -26,6 +27,7 @@ int main() {
     signal(SIGPIPE, SIG_IGN);
     signal(SIGINT, signalHandler);
     signal(SIGTERM, signalHandler);
+    Logger::setLevel(DEBUG);
 
     try {
         std::vector<ServerConfig> configs;
