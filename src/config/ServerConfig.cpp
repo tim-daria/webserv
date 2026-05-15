@@ -46,7 +46,7 @@ RouteConfig* ServerConfig::findMatchingLocation(std::string path) {
     if (path.length() > 1 && path[path.length() - 1] == '/')
         path = path.substr(0, path.length() - 1);
 
-    RouteConfig* best_match = nullptr;
+    RouteConfig* best_match = NULL;
     size_t best_length = 0;
 
     for (std::vector<RouteConfig>::iterator it = routes.begin(); it != routes.end(); ++it) {
