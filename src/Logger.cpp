@@ -56,3 +56,9 @@ std::string Logger::getColor(LogLevel level) {
             return "\033[0m";
     }
 }
+
+std::string toString(int value) {
+    std::ostringstream oss;
+    oss << value;
+    return oss.str();
+}
