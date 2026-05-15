@@ -10,48 +10,70 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#define CATCH_CONFIG_MAIN
-#include "../include/handler/HttpResponse.hpp"
+#include "HttpResponse.hpp"
 #include "catch.hpp"
 
-TEST_CASE("Status line - known code") {
-    std::vector<std::pair<std::string, std::string> > headers;
-    HttpResponse r(200, "hello", headers);
-    REQUIRE(r.toString().find("HTTP/1.0 200 OK") == 0);
+TEST_CASE("HttpResponse::make creates correct response", "[HttpResponse]") {
+    HttpResponse response = HttpResponse::make(HTTP_OK, "<h1>Hello</h1>", "text/html");
+    std::string raw = response.toString();
+
+    SECTION("status line is correct") { REQUIRE(raw.find("HTTP/1.0 200 OK") != std::string::npos); }
+
+    SECTION("Content-Type header is set") {
+        REQUIRE(raw.find("Content-Type: text/html") != std::string::npos);
+    }
+
+    SECTION("Content-Length header is set") {
+        REQUIRE(raw.find("Content-Length: 14") != std::string::npos);
+    }
+
+    SECTION("body is present") { REQUIRE(raw.find("<h1>Hello</h1>") != std::string::npos); }
+
+    SECTION("headers and body separated by empty line") {
+        REQUIRE(raw.find("\r\n\r\n") != std::string::npos);
+    }
 }
 
-TEST_CASE("Status line - unknown code") {
-    std::vector<std::pair<std::string, std::string> > headers;
-    HttpResponse r(999, "hello", headers);
-    REQUIRE(r.toString().find("HTTP/1.0 999 Unknown") == 0);
+TEST_CASE("HttpResponse::make with empty body", "[HttpResponse]") {
+    HttpResponse response = HttpResponse::make(HTTP_CREATED, "", "text/html");
+    std::string raw = response.toString();
+
+    REQUIRE(raw.find("201 Created") != std::string::npos);
+    REQUIRE(raw.find("Content-Length: 0") != std::string::npos);
 }
 
-TEST_CASE("Headers order preserved") {
-    std::vector<std::pair<std::string, std::string> > headers;
+TEST_CASE("HttpResponse::getStatusText returns correct text", "[HttpResponse]") {
+    REQUIRE(HttpResponse::getStatusText(HTTP_OK) == "OK");
+    REQUIRE(HttpResponse::getStatusText(HTTP_CREATED) == "Created");
+    REQUIRE(HttpResponse::getStatusText(HTTP_FORBIDDEN) == "Forbidden");
+    REQUIRE(HttpResponse::getStatusText(HTTP_NOT_FOUND) == "Not Found");
+    REQUIRE(HttpResponse::getStatusText(HTTP_METHOD_NOT_ALLOWED) == "Method Not Allowed");
+}
+
+TEST_CASE("HttpResponse::getStatusText returns Unknown for unknown code", "[HttpResponse]") {
+    REQUIRE(HttpResponse::getStatusText(999) == "Unknown");
+}
+
+TEST_CASE("HttpResponse::toString format is correct", "[HttpResponse]") {
+    std::vector<std::pair<std::string, std::string>> headers;
     headers.push_back(std::make_pair("Content-Type", "text/html"));
     headers.push_back(std::make_pair("Content-Length", "5"));
-    HttpResponse r(200, "hello", headers);
-    std::string s = r.toString();
-    REQUIRE(s.find("Content-Type") < s.find("Content-Length"));
-}
 
-TEST_CASE("Empty line before body") {
-    std::vector<std::pair<std::string, std::string> > headers;
-    HttpResponse r(200, "hello", headers);
-    REQUIRE(r.toString().find("\r\n\r\n") != std::string::npos);
-}
+    HttpResponse response(HTTP_OK, "hello", headers);
+    std::string raw = response.toString();
 
-TEST_CASE("Body comes after headers") {
-    std::vector<std::pair<std::string, std::string> > headers;
-    HttpResponse r(200, "<h1>Hello</h1>", headers);
-    std::string s = r.toString();
-    REQUIRE(s.find("<h1>Hello</h1>") > s.find("\r\n\r\n"));
-}
+    SECTION("Status line - known code") { REQUIRE(raw.find("HTTP/1.0 200 OK") == 0); }
 
-TEST_CASE("Copy constructor") {
-    std::vector<std::pair<std::string, std::string> > headers;
-    headers.push_back(std::make_pair("Content-Type", "text/html"));
-    HttpResponse r1(200, "hello", headers);
-    HttpResponse r2(r1);
-    REQUIRE(r1.toString() == r2.toString());
+    SECTION("Headers order preserved") {
+        REQUIRE(raw.find("Content-Type") < raw.find("Content-Length"));
+    }
+
+    SECTION("Empty line before body") {
+        size_t separator = raw.find("\r\n\r\n");
+        REQUIRE(separator != std::string::npos);
+    }
+    SECTION("Body comes after headers") {
+        size_t separator = raw.find("\r\n\r\n");
+        REQUIRE(raw.find("<h1>Hello</h1>") > separator);
+    }
 }

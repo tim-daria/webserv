@@ -39,7 +39,7 @@ TEST_NAME = run_tests
 SRCS_NO_MAIN = $(addprefix $(SRC_DIR), $(SRC_FILES))
 OBJS_NO_MAIN = $(patsubst $(SRC_DIR)%.cpp, $(OBJ_DIR)%.o, $(SRCS_NO_MAIN))
 
-TEST_FILES = tests_response.cpp
+TEST_FILES = io.cpp tests_response.cpp tests_error_handler.cpp tests_filesystem.cpp tests_autoindex.cpp tests_request_handler.cpp
 TEST_SRCS = $(addprefix $(TEST_DIR), $(TEST_FILES))
 TEST_OBJS = $(patsubst $(TEST_DIR)%.cpp, $(TEST_OBJ_DIR)%.o, $(TEST_SRCS))
 

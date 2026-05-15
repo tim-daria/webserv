@@ -56,5 +56,5 @@ HttpResponse ErrorHandler::makeError(int code) const {
         LOG_WARNING("Building default error page for error: " + std::to_string(code));
         body = getDefaultPage(code);
     }
-    return HttpResponse::make(code, body, "text'html");
+    return HttpResponse::make(code, body, "text/html");
 }
