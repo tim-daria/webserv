@@ -30,6 +30,8 @@ class Logger {
     static void setLevel(LogLevel level);
 };
 
+static std::string toString(int value);
+
 #define LOG_DEBUG(msg) Logger::log(DEBUG, msg, __FILE__, __LINE__)
 #define LOG_INFO(msg) Logger::log(INFO, msg, __FILE__, __LINE__)
 #define LOG_WARNING(msg) Logger::log(WARNING, msg, __FILE__, __LINE__)

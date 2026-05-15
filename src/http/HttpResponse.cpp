@@ -12,6 +12,8 @@
 
 #include "HttpResponse.hpp"
 
+#include "Logger.hpp"
+
 HttpResponse::HttpResponse(int status_code, const std::string& body,
                            const std::vector<std::pair<std::string, std::string> >& headers)
     : _statusCode(status_code), _body(body), _headers(headers) {}
@@ -48,7 +50,7 @@ HttpResponse HttpResponse::make(int status_code, const std::string& body,
                                 const std::string& content_type) {
     std::vector<std::pair<std::string, std::string> > headers;
     headers.push_back(std::make_pair("Content-Type", content_type));
-    headers.push_back(std::make_pair("Content-Length", std::to_string(body.size())));
+    headers.push_back(std::make_pair("Content-Length", ::toString(body.size())));
     return HttpResponse(status_code, body, headers);
 }
 
