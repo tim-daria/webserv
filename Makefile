@@ -6,7 +6,7 @@
 #    By: tsemenov <tsemenov@student.42berlin.de>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/04 12:41:15 by dtimofee          #+#    #+#              #
-#    Updated: 2026/04/08 16:11:11 by tsemenov         ###   ########.fr        #
+#    Updated: 2026/05/14 22:16:01 by tsemenov         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,6 +26,7 @@ SRC_FILES += handler/RequestHandler.cpp handler/AutoIndex.cpp handler/ErrorHandl
 SRC_FILES += filesystem/FileService.cpp filesystem/PathUtils.cpp
 SRC_FILES += http/HttpResponse.cpp
 SRC_FILES += server/Server.cpp server/Client.cpp server/ServerHub.cpp
+SRC_FILE += utils.cpp
 ALL_SRC_FILES = main.cpp $(SRC_FILES)
 SRCS = $(addprefix $(SRC_DIR), $(ALL_SRC_FILES))
 OBJS = $(patsubst $(SRC_DIR)%.cpp, $(OBJ_DIR)%.o, $(SRCS))

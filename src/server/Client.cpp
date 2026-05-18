@@ -6,11 +6,12 @@
 /*   By: tsemenov <tsemenov@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/05 21:22:39 by tsemenov          #+#    #+#             */
-/*   Updated: 2026/04/07 23:27:09 by tsemenov         ###   ########.fr       */
+/*   Updated: 2026/05/13 14:46:59 by tsemenov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Client.hpp"
+#include "utils.hpp"
 
 #include <sys/socket.h>  // recv
 #include <unistd.h>      // close
@@ -18,9 +19,12 @@
 #include <cstdlib>  // strtol
 #include <iostream>
 
-Client::Client() : _fd(-1), _serverIndex(0), _lastActive(0) {}
+int Client::_nextIndex = 0;
+
+Client::Client() : _index(++_nextIndex), _fd(-1), _serverIndex(0), _lastActive(0) {}
 Client::Client(const Client& other)
-    : _fd(other._fd),
+    : _index(other._index),
+      _fd(other._fd),
       _serverIndex(other._serverIndex),
       _readBuffer(other._readBuffer),
       _writeBuffer(other._writeBuffer),
@@ -31,7 +35,7 @@ Client& Client::operator=(const Client& other) {
 }
 
 Client::Client(int fd, size_t serverIndex)
-    : _fd(fd), _serverIndex(serverIndex), _lastActive(time(NULL)) {}
+    : _index(++_nextIndex), _fd(fd), _serverIndex(serverIndex), _lastActive(time(NULL)) {}
 
 Client::~Client() {}
 
@@ -55,10 +59,10 @@ bool Client::isMsgReceived() {
     return true;
 }
 
-static std::string toLowerCase(std::string str) {
-    for (size_t i = 0; i < str.length(); ++i) str[i] = std::tolower((unsigned char)str[i]);
-    return str;
-}
+// static std::string toLowerCase(std::string str) {
+//     for (size_t i = 0; i < str.length(); ++i) str[i] = std::tolower((unsigned char)str[i]);
+//     return str;
+// }
 
 bool Client::isRequestComplete() {
     // is header received?
@@ -84,6 +88,7 @@ bool Client::isRequestComplete() {
     return _readBuffer.size() >= body_start + content_len;
 }
 
+int Client::get_index() const { return _index; }
 size_t Client::get_serverIndex() const { return _serverIndex; }
 const std::string& Client::get_readBuffer() const { return _readBuffer; }
 const std::string& Client::get_writeBuffer() const { return _writeBuffer; }
