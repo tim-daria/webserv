@@ -14,6 +14,16 @@
 
 #include <iostream>
 
+bool RouteConfig::isMethodAllowed(std::string method) {
+    for (std::vector<std::string>::iterator it = acceptedMethods.begin();
+         it != acceptedMethods.end(); ++it) {
+        if (*it == method) {
+            return true;
+        }
+    }
+    return false;
+}
+
 void RouteConfig::print() { std::cout << *this << std::endl; }
 
 std::ostream& operator<<(std::ostream& out, const RouteConfig& conf) {

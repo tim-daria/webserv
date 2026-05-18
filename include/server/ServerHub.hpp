@@ -29,7 +29,7 @@ class ServerHub {
     ServerHub& operator=(const ServerHub& other);
 
    public:
-    ServerHub(const std::vector<ServerConfig>& configs);
+    ServerHub(std::vector<ServerConfig>& configs);
     ~ServerHub();
 
     void runServers();

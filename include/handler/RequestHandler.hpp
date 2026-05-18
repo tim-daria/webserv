@@ -12,6 +12,9 @@
 
 #pragma once
 
+#include "AutoIndex.hpp"
+#include "ErrorHandler.hpp"
+#include "FileService.hpp"
 #include "HttpRequest.hpp"
 #include "HttpResponse.hpp"
 #include "RouteConfig.hpp"
@@ -19,20 +22,26 @@
 
 class Handler {
    private:
-    RouteConfig _config;
-    ServerConfig _serverConfig;
+    ServerConfig& _serverConfig;
+    ErrorHandler _errorHandler;
+    FileService _fileService;
+    AutoIndex _autoIndex;
 
+    Handler();
     Handler(const Handler& other);
     Handler& operator=(const Handler& other);
 
     HttpResponse get_default_response(const HttpRequest& request);
-    // HttpResponse handleGet(HttpRequest request);
-    // HttpResponse handlePost(HttpRequest request);
-    // HttpResponse handleDelete(HttpRequest request);
+    HttpResponse handleGet(const HttpRequest& request, RouteConfig* _location);
+    // HttpResponse handlePost(const HttpRequest &request, RouteConfig* _location);
+    // HttpResponse handleDelete(const HttpRequest &request, RouteConfig* _location);
+    HttpResponse handleDirectory(const std::string& path, const std::string& uri,
+                                 RouteConfig* _location);
+
+    HttpResponse serveFile(const std::string& path);
 
    public:
-    Handler();
-    Handler(const ServerConfig& config);
+    Handler(ServerConfig& config);
     ~Handler();
 
     HttpResponse handle_request(HttpRequest& request);

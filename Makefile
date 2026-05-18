@@ -12,7 +12,7 @@
 
 CXX = c++
 
-INC_DIRS = include include/config include/server include/handler
+INC_DIRS = include include/config include/server include/handler include/http include/filesystem
 IFLAG = $(addprefix -I, $(INC_DIRS))
 
 CXXFLAGS = -Wall -Wextra -Werror -std=c++98 $(IFLAG)
@@ -21,8 +21,10 @@ TEST_CXXFLAGS = -Wall -Wextra -std=c++11 $(IFLAG)
 NAME = webserv
 SRC_DIR = src/
 OBJ_DIR = obj/
-SRC_FILES = globals.cpp config/ServerConfig.cpp config/RouteConfig.cpp
-SRC_FILES += handler/Handler.cpp handler/HttpResponse.cpp
+SRC_FILES = globals.cpp config/ServerConfig.cpp config/RouteConfig.cpp Logger.cpp
+SRC_FILES += handler/RequestHandler.cpp handler/AutoIndex.cpp handler/ErrorHandler.cpp
+SRC_FILES += filesystem/FileService.cpp filesystem/PathUtils.cpp
+SRC_FILES += http/HttpResponse.cpp
 SRC_FILES += server/Server.cpp server/Client.cpp server/ServerHub.cpp
 ALL_SRC_FILES = main.cpp $(SRC_FILES)
 SRCS = $(addprefix $(SRC_DIR), $(ALL_SRC_FILES))
@@ -37,7 +39,7 @@ TEST_NAME = run_tests
 SRCS_NO_MAIN = $(addprefix $(SRC_DIR), $(SRC_FILES))
 OBJS_NO_MAIN = $(patsubst $(SRC_DIR)%.cpp, $(OBJ_DIR)%.o, $(SRCS_NO_MAIN))
 
-TEST_FILES = tests_response.cpp
+TEST_FILES = io.cpp tests_response.cpp tests_error_handler.cpp tests_filesystem.cpp tests_autoindex.cpp tests_request_handler.cpp
 TEST_SRCS = $(addprefix $(TEST_DIR), $(TEST_FILES))
 TEST_OBJS = $(patsubst $(TEST_DIR)%.cpp, $(TEST_OBJ_DIR)%.o, $(TEST_SRCS))
 

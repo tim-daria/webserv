@@ -23,8 +23,8 @@
 #include <sstream>
 #include <stdexcept>
 
-#include "Handler.hpp"
 #include "HttpRequest.hpp"
+#include "RequestHandler.hpp"
 #include "ServerConfig.hpp"
 
 extern volatile bool g_running;
@@ -45,7 +45,7 @@ ServerHub::~ServerHub() {
 }
 
 // one Server per listen entry across all configs:
-ServerHub::ServerHub(const std::vector<ServerConfig>& configs) {
+ServerHub::ServerHub(std::vector<ServerConfig>& configs) {
     // create and initialize servers, store them in arr:
     for (size_t i = 0; i < configs.size(); ++i) {
         for (size_t j = 0; j < configs[i].listen.size(); ++j) {
@@ -161,7 +161,7 @@ void ServerHub::handleRead(size_t index) {
     }
 
     // Dispatch to Handler with the server config that accepted this client
-    const ServerConfig& cfg = _servers[client.get_serverIndex()].getConfig();
+    ServerConfig& cfg = _servers[client.get_serverIndex()].getConfig();
     Handler handler(cfg);
     client.set_writeBuffer(handler.handle_request(req).toString());
 

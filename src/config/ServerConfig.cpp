@@ -34,11 +34,38 @@ void ServerConfig::applyDefaults() {
 
     RouteConfig r;
     r.url = "/";
-    r.rootDirectory = "/var/www/html";
+    r.rootDirectory = "www";
     r.defaultFile = "index.html";
     r.add_acceptedMethod("GET");
     r.add_acceptedMethod("POST");
     add_route(r);
+}
+
+RouteConfig* ServerConfig::findMatchingLocation(std::string path) {
+    // Deleting / ath the end of the path /photos/ → /photos
+    if (path.length() > 1 && path[path.length() - 1] == '/')
+        path = path.substr(0, path.length() - 1);
+
+    RouteConfig* best_match = NULL;
+    size_t best_length = 0;
+
+    for (std::vector<RouteConfig>::iterator it = routes.begin(); it != routes.end(); ++it) {
+        // Does the request path start with this location?
+        if (path.find(it->url) != 0) continue;
+
+        // Check end of the word — protection against /photo matches to /photos
+        size_t url_len = it->url.size();
+        bool boundary = (path.size() == url_len) || (path[url_len] == '/') || (it->url == "/");
+
+        if (!boundary) continue;
+
+        // Is this match longer then previous one?
+        if (url_len > best_length) {
+            best_length = url_len;
+            best_match = &(*it);
+        }
+    }
+    return best_match;
 }
 
 std::ostream& operator<<(std::ostream& out, const ServerConfig& cfg) {
