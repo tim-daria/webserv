@@ -6,7 +6,7 @@
 /*   By: tsemenov <tsemenov@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/20 18:22:51 by dtimofee          #+#    #+#             */
-/*   Updated: 2026/05/20 11:28:24 by tsemenov         ###   ########.fr       */
+/*   Updated: 2026/05/20 21:36:09 by tsemenov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ class HttpRequest {
     void _parseBody();
     void _parseData();
     void _logResult(const std::string& preview) const;
+		bool _isImplemented(const std::string& method);
 
     HttpRequest(const HttpRequest& other);
     HttpRequest& operator=(const HttpRequest& other);

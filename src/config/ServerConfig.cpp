@@ -6,7 +6,7 @@
 /*   By: tsemenov <tsemenov@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 17:06:49 by nefimov           #+#    #+#             */
-/*   Updated: 2026/05/20 00:14:55 by tsemenov         ###   ########.fr       */
+/*   Updated: 2026/05/20 21:45:51 by tsemenov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ void ServerConfig::applyDefaults() {
     r.add_acceptedMethod("POST");
     add_route(r);
 
+		// hardcoded to make testing for 405 & 501 work correctly
     RouteConfig method_not_allowed;
     method_not_allowed.url = "/method_not_allowed";
     method_not_allowed.rootDirectory = "www";

@@ -6,7 +6,7 @@
 /*   By: tsemenov <tsemenov@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/05 16:21:17 by tsemenov          #+#    #+#             */
-/*   Updated: 2026/05/20 11:28:28 by tsemenov         ###   ########.fr       */
+/*   Updated: 2026/05/20 21:41:04 by tsemenov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,10 @@ std::string HttpRequest::getHeader(const std::string& key) const {
     return "";
 }
 
+bool HttpRequest::_isImplemented(const std::string& method) {
+    return method == "GET" || method == "POST" || method == "DELETE";
+}
+
 void HttpRequest::_parseFirstLine() {
     size_t end = _buf.find("\r\n");
     if (end == std::string::npos) {
@@ -86,7 +90,7 @@ void HttpRequest::_parseFirstLine() {
     }
 
     _method = line.substr(0, pos1);
-    if (_method != "GET" && _method != "POST" && _method != "DELETE") {
+    if (!_isImplemented(_method)) {
         _state = PARSING_ERROR;
         _errorCode = HTTP_METHOD_NOT_IMPLEMENTED;  // 501
         return;

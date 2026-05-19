@@ -6,7 +6,7 @@
 /*   By: tsemenov <tsemenov@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/06 16:23:17 by tsemenov          #+#    #+#             */
-/*   Updated: 2026/05/20 17:03:20 by tsemenov         ###   ########.fr       */
+/*   Updated: 2026/05/20 21:07:49 by tsemenov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include <fcntl.h>
 #include <netinet/in.h>
 #include <poll.h>
+#include <signal.h> 	
 #include <sys/socket.h>
 #include <unistd.h>
 

@@ -6,7 +6,7 @@
 /*   By: tsemenov <tsemenov@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/18 14:23:40 by tsemenov          #+#    #+#             */
-/*   Updated: 2026/05/20 11:28:21 by tsemenov         ###   ########.fr       */
+/*   Updated: 2026/05/20 21:33:51 by tsemenov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ int RequestValidator::_checkRouteAndMethod(const HttpRequest& request, const Ser
     const RouteConfig* route = config.findMatchingLocation(request.getPath());
     if (!route) return HTTP_NOT_FOUND;
     if (!route->isMethodAllowed(request.getMethod())) return HTTP_METHOD_NOT_ALLOWED;
+		// if (!isImplemented(request.getMethod())) return HTTP_METHOD_NOT_IMPLEMENTED;
     return 0;
 }
 
