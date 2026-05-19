@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   tests_autoindex.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dtimofee <dtimofee@student.42berlin.de>    #+#  +:+       +#+        */
+/*   By: tsemenov <tsemenov@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026-05-15 11:00:27 by dtimofee          #+#    #+#             */
-/*   Updated: 2026-05-15 11:00:27 by dtimofee         ###   ########.fr       */
+/*   Created: 2026/05/15 11:00:27 by dtimofee          #+#    #+#             */
+/*   Updated: 2026/05/20 11:12:01 by tsemenov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "AutoIndex.hpp"
 #include "catch.hpp"
-#include "io.cpp"
+#include "io.hpp"
 
 TEST_CASE("AutoIndex::generate", "[AutoIndex]") {
     AutoIndex autoIndex;

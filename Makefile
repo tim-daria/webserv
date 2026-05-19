@@ -6,7 +6,7 @@
 #    By: tsemenov <tsemenov@student.42berlin.de>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/04 12:41:15 by dtimofee          #+#    #+#              #
-#    Updated: 2026/05/14 22:16:01 by tsemenov         ###   ########.fr        #
+#    Updated: 2026/05/20 11:36:24 by tsemenov         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,9 +24,9 @@ OBJ_DIR = obj/
 SRC_FILES = globals.cpp config/ServerConfig.cpp config/RouteConfig.cpp Logger.cpp
 SRC_FILES += handler/RequestHandler.cpp handler/AutoIndex.cpp handler/ErrorHandler.cpp
 SRC_FILES += filesystem/FileService.cpp filesystem/PathUtils.cpp
-SRC_FILES += http/HttpResponse.cpp
+SRC_FILES += http/HttpResponse.cpp http/HttpRequest.cpp http/RequestValidator.cpp
 SRC_FILES += server/Server.cpp server/Client.cpp server/ServerHub.cpp
-SRC_FILE += utils.cpp
+SRC_FILES += utils.cpp
 ALL_SRC_FILES = main.cpp $(SRC_FILES)
 SRCS = $(addprefix $(SRC_DIR), $(ALL_SRC_FILES))
 OBJS = $(patsubst $(SRC_DIR)%.cpp, $(OBJ_DIR)%.o, $(SRCS))
@@ -40,7 +40,7 @@ TEST_NAME = run_tests
 SRCS_NO_MAIN = $(addprefix $(SRC_DIR), $(SRC_FILES))
 OBJS_NO_MAIN = $(patsubst $(SRC_DIR)%.cpp, $(OBJ_DIR)%.o, $(SRCS_NO_MAIN))
 
-TEST_FILES = io.cpp tests_response.cpp tests_error_handler.cpp tests_filesystem.cpp tests_autoindex.cpp tests_request_handler.cpp
+TEST_FILES = io.cpp tests_response.cpp tests_error_handler.cpp tests_filesystem.cpp tests_autoindex.cpp tests_request_handler.cpp tests_request_parsing.cpp tests_validator.cpp
 TEST_SRCS = $(addprefix $(TEST_DIR), $(TEST_FILES))
 TEST_OBJS = $(patsubst $(TEST_DIR)%.cpp, $(TEST_OBJ_DIR)%.o, $(TEST_SRCS))
 
@@ -48,28 +48,36 @@ TEST_OBJS = $(patsubst $(TEST_DIR)%.cpp, $(TEST_OBJ_DIR)%.o, $(TEST_SRCS))
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	$(CXX) $(CXXFLAGS) -o $(NAME) $(OBJS)
+	@echo "Building server..."
+	@$(CXX) $(CXXFLAGS) -o $(NAME) $(OBJS)
+	@echo "./$(NAME) is ready"
 
 $(OBJ_DIR)%.o: $(SRC_DIR)%.cpp
 # 	mkdir -p $(OBJ_DIR)
-	mkdir -p $(dir $@)
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+	@mkdir -p $(dir $@)
+	@$(CXX) $(CXXFLAGS) -c $< -o $@
 
 $(TEST_OBJ_DIR)%.o: $(TEST_DIR)%.cpp
-	mkdir -p $(dir $@)
-	$(CXX) $(TEST_CXXFLAGS) -I$(TEST_DIR) -c $< -o $@
+	@echo "Compiling tests..."
+	@mkdir -p $(dir $@)
+	@$(CXX) $(TEST_CXXFLAGS) -I$(TEST_DIR) -c $< -o $@
 
 $(TEST_NAME): $(OBJS_NO_MAIN) $(TEST_OBJS)
-	$(CXX) $(TEST_CXXFLAGS) -I$(TEST_DIR) -o $(TEST_NAME) $(OBJS_NO_MAIN) $(TEST_OBJS)
+	@$(CXX) $(TEST_CXXFLAGS) -I$(TEST_DIR) -o $(TEST_NAME) $(OBJS_NO_MAIN) $(TEST_OBJS)
 
 test: $(TEST_NAME)
-	./$(TEST_NAME)
+	@echo "Running tests..."
+	@./$(TEST_NAME)
 
 clean:
-	rm -rf $(OBJ_DIR)
+	@echo "Running clean..."
+	@rm -rf $(OBJ_DIR)
+	@echo "Clean done"
 
 fclean: clean
-	rm -f $(NAME) $(TEST_NAME)
+	@echo "Running fclean..."
+	@rm -f $(NAME) $(TEST_NAME)
+	@echo "All cleaned"
 
 re: fclean all
 

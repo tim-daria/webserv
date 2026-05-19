@@ -6,7 +6,7 @@
 /*   By: tsemenov <tsemenov@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/05 21:14:15 by tsemenov          #+#    #+#             */
-/*   Updated: 2026/04/07 23:25:18 by tsemenov         ###   ########.fr       */
+/*   Updated: 2026/05/19 22:46:32 by tsemenov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@
 
 class Client {
    private:
+    static int _nextIndex;  // shared counter
+    int _index;             // unique index for every object
     int _fd;
     size_t _serverIndex;
     std::string _readBuffer;
@@ -34,11 +36,12 @@ class Client {
     bool isMsgReceived();
     bool isRequestComplete();
 
-    size_t get_serverIndex() const;
-    time_t get_lastActive() const;
-    const std::string& get_readBuffer() const;
-    const std::string& get_writeBuffer() const;
-    void set_writeBuffer(const std::string& response);
+    int getIndex() const;
+    size_t getServerIndex() const;
+    time_t getLastActive() const;
+    const std::string& getReadBuffer() const;
+    const std::string& getWriteBuffer() const;
+    void setWriteBuffer(const std::string& response);
 
-    void clear_writeBuffer(size_t bytes);
+    void clearWriteBuffer(size_t bytes);
 };

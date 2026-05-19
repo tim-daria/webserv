@@ -1,22 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.hpp                                          :+:      :+:    :+:   */
+/*   RequestValidator.hpp                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tsemenov <tsemenov@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/05/13 14:35:11 by tsemenov          #+#    #+#             */
-/*   Updated: 2026/05/14 22:52:08 by tsemenov         ###   ########.fr       */
+/*   Created: 2026/05/17 00:03:24 by tsemenov          #+#    #+#             */
+/*   Updated: 2026/05/20 11:28:30 by tsemenov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include <map>
-#include <string>
+class HttpRequest;
+class ServerConfig;
 
-std::string toLowerCase(std::string str);
-std::string stripSpaces(const std::string& str);
+class RequestValidator {
+   private:
+    static int _checkRouteAndMethod(const HttpRequest& request, const ServerConfig& config);
+    static void _logResult(const HttpRequest& request, int code);
 
-std::map<int, std::string> initStatusMessages();
-extern const std::map<int, std::string> STATUS_MESSAGES;
+   public:
+    static int validate(const HttpRequest& request, const ServerConfig& config);
+};

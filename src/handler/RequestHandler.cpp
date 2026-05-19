@@ -37,8 +37,10 @@ HttpResponse Handler::serveFile(const std::string& path) {
     return HttpResponse::make(HTTP_OK, body, PathUtils::getContentType(path));
 }
 
+// const RouteConfig* because routes are read-only after server startup —
+// we only read defaultFile and directoryListing, never mutate the config:
 HttpResponse Handler::handleDirectory(const std::string& path, const std::string& uri,
-                                      RouteConfig* _location) {
+                                      const RouteConfig* _location) {
     struct stat info;
     std::string indexPath = path + "/" + _location->defaultFile;
     LOG_DEBUG("Path to default file: " + indexPath);
@@ -59,8 +61,10 @@ HttpResponse Handler::handleDirectory(const std::string& path, const std::string
     return _errorHandler.makeError(HTTP_FORBIDDEN);
 }
 
-HttpResponse Handler::handleGet(const HttpRequest& request, RouteConfig* _location) {
-    std::string fullPath = _location->rootDirectory + request.path;
+// request.getPath() replaces the old direct field access request.path —
+// _path is private, access must go through the getter:
+HttpResponse Handler::handleGet(const HttpRequest& request, const RouteConfig* _location) {
+    std::string fullPath = _location->rootDirectory + request.getPath();
     LOG_DEBUG("GET request for path: " + fullPath);
 
     struct stat info;
@@ -71,27 +75,32 @@ HttpResponse Handler::handleGet(const HttpRequest& request, RouteConfig* _locati
     }
     if (S_ISDIR(info.st_mode)) {
         LOG_INFO("Serving directory: " + fullPath);
-        return handleDirectory(fullPath, request.path, _location);
+        return handleDirectory(fullPath, request.getPath(), _location);
     }
     LOG_INFO("Serving file: " + fullPath);
     return serveFile(fullPath);
 }
 
+// handle_request receives an already-parsed and validated request.
+// The 404/405 checks below are defense-in-depth — RequestValidator in ServerHub
+// should have caught these first, but Handle can also be called independently:
 HttpResponse Handler::handle_request(HttpRequest& request) {
     LOG_INFO("Handling request");
-    RouteConfig* _location = _serverConfig.findMatchingLocation(request.path);
+    // findMatchingLocation is now const, returns const RouteConfig* —
+    // routes are not modified during request handling:
+    const RouteConfig* _location = _serverConfig.findMatchingLocation(request.getPath());
     if (!_location) {
-        LOG_WARNING("Location matching failed: " + request.path);
+        LOG_WARNING("Location matching failed: " + request.getPath());
         return _errorHandler.makeError(HTTP_NOT_FOUND);
     }
     LOG_DEBUG("Found matching location: " + _location->url);
-    if (!_location->isMethodAllowed(request.method)) {
-        LOG_WARNING("Method check failed: " + request.method);
+    if (!_location->isMethodAllowed(request.getMethod())) {
+        LOG_WARNING("Method check failed: " + request.getMethod());
         return _errorHandler.makeError(HTTP_METHOD_NOT_ALLOWED);
     }
-    if (request.method == "GET") {
+    if (request.getMethod() == "GET") {
         return handleGet(request, _location);
-    } else if (request.method == "POST" || request.method == "DELETE") {
+    } else if (request.getMethod() == "POST" || request.getMethod() == "DELETE") {
         return get_default_response(request);
     }
     return _errorHandler.makeError(HTTP_METHOD_NOT_ALLOWED);
