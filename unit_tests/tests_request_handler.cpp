@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   tests_request_handler.cpp                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dtimofee <dtimofee@student.42berlin.de>    #+#  +:+       +#+        */
+/*   By: tsemenov <tsemenov@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026-05-15 10:57:35 by dtimofee          #+#    #+#             */
-/*   Updated: 2026-05-15 10:57:35 by dtimofee         ###   ########.fr       */
+/*   Created: 2026/05/15 10:57:35 by dtimofee          #+#    #+#             */
+/*   Updated: 2026/05/19 23:51:53 by tsemenov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #define CATCH_CONFIG_MAIN
 #include "RequestHandler.hpp"
 #include "catch.hpp"
-#include "io.cpp"
+#include "io.hpp"
 
 TEST_CASE("RequestHandler — method not allowed", "[RequestHandler]") {
     // Creates default config with location just for GET
@@ -31,8 +31,8 @@ TEST_CASE("RequestHandler — method not allowed", "[RequestHandler]") {
 
     SECTION("GET allowed returns 200") {
         HttpRequest request;
-        request.method = "GET";
-        request.path = "/index.html";
+        std::string raw = "GET /index.html HTTP/1.1\r\n\r\n";
+        request.processData(raw.c_str(), raw.size());
 
         HttpResponse response = handler.handle_request(request);
         REQUIRE(response.toString().find("200 OK") != std::string::npos);
@@ -40,8 +40,8 @@ TEST_CASE("RequestHandler — method not allowed", "[RequestHandler]") {
 
     SECTION("POST not allowed returns 405") {
         HttpRequest request;
-        request.method = "POST";
-        request.path = "/index.html";
+        std::string raw = "POST /index.html HTTP/1.1\r\nContent-Length: 0\r\n\r\n";
+        request.processData(raw.c_str(), raw.size());
 
         HttpResponse response = handler.handle_request(request);
         REQUIRE(response.toString().find("405") != std::string::npos);
@@ -49,8 +49,8 @@ TEST_CASE("RequestHandler — method not allowed", "[RequestHandler]") {
 
     SECTION("DELETE not allowed returns 405") {
         HttpRequest request;
-        request.method = "DELETE";
-        request.path = "/index.html";
+        std::string raw = "DELETE /index.html HTTP/1.1\r\n\r\n";
+        request.processData(raw.c_str(), raw.size());
 
         HttpResponse response = handler.handle_request(request);
         REQUIRE(response.toString().find("405") != std::string::npos);
@@ -71,8 +71,8 @@ TEST_CASE("RequestHandler — no matching location returns 404", "[RequestHandle
     Handler handler(config);
 
     HttpRequest request;
-    request.method = "GET";
-    request.path = "/other/page.html";  // no matching location
+    std::string raw = "GET /other/page.html HTTP/1.1\r\n\r\n";
+    request.processData(raw.c_str(), raw.size());
 
     HttpResponse response = handler.handle_request(request);
     REQUIRE(response.toString().find("404") != std::string::npos);
@@ -91,8 +91,8 @@ TEST_CASE("RequestHandler — GET nonexistent file returns 404", "[RequestHandle
     Handler handler(config);
 
     HttpRequest request;
-    request.method = "GET";
-    request.path = "/nonexistent.html";
+    std::string raw = "GET /nonexistent.html HTTP/1.1\r\n\r\n";
+    request.processData(raw.c_str(), raw.size());
 
     HttpResponse response = handler.handle_request(request);
     REQUIRE(response.toString().find("404") != std::string::npos);
