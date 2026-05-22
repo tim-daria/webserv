@@ -6,7 +6,7 @@
 #    By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/04 12:41:15 by dtimofee          #+#    #+#              #
-#    Updated: 2026/05/21 14:48:33 by nefimov          ###   ########.fr        #
+#    Updated: 2026/05/22 19:10:41 by nefimov          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -40,7 +40,7 @@ TEST_NAME = run_tests
 SRCS_NO_MAIN = $(addprefix $(SRC_DIR), $(SRC_FILES))
 OBJS_NO_MAIN = $(patsubst $(SRC_DIR)%.cpp, $(OBJ_DIR)%.o, $(SRCS_NO_MAIN))
 
-TEST_FILES = io.cpp tests_response.cpp tests_error_handler.cpp tests_filesystem.cpp tests_autoindex.cpp tests_request_handler.cpp tests_parser.cpp
+TEST_FILES = io.cpp tests_response.cpp tests_error_handler.cpp tests_filesystem.cpp tests_autoindex.cpp tests_request_handler.cpp tests_parser.cpp tests_parser_read_file.cpp
 TEST_SRCS = $(addprefix $(TEST_DIR), $(TEST_FILES))
 TEST_OBJS = $(patsubst $(TEST_DIR)%.cpp, $(TEST_OBJ_DIR)%.o, $(TEST_SRCS))
 
