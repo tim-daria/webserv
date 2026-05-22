@@ -14,8 +14,19 @@
 
 #include <iostream>
 
-bool RouteConfig::isMethodAllowed(std::string method) {
-    for (std::vector<std::string>::iterator it = acceptedMethods.begin();
+RouteConfig::RouteConfig()
+    : url(""),
+      rootDirectory(""),
+      directoryListing(false),
+      defaultFile(""),
+      uploadDirectory(""),
+      authRequired(false),
+      hasReturn(false),
+      returnStatus(0),
+      returnUri("") {}
+
+bool RouteConfig::isMethodAllowed(std::string method) const {
+    for (std::vector<std::string>::const_iterator it = acceptedMethods.begin();
          it != acceptedMethods.end(); ++it) {
         if (*it == method) {
             return true;
