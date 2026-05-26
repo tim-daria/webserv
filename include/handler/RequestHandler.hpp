@@ -32,11 +32,11 @@ class Handler {
     Handler& operator=(const Handler& other);
 
     HttpResponse get_default_response(const HttpRequest& request);
-    HttpResponse handleGet(const HttpRequest& request, RouteConfig* _location);
-    // HttpResponse handlePost(const HttpRequest &request, RouteConfig* _location);
-    // HttpResponse handleDelete(const HttpRequest &request, RouteConfig* _location);
+    HttpResponse handleGet(const HttpRequest& request, const RouteConfig* _location);
+    // HttpResponse handlePost(const HttpRequest &request, const RouteConfig* _location);
+    // HttpResponse handleDelete(const HttpRequest &request, const RouteConfig* _location);
     HttpResponse handleDirectory(const std::string& path, const std::string& uri,
-                                 RouteConfig* _location);
+                                 const RouteConfig* _location);
 
     HttpResponse serveFile(const std::string& path);
 

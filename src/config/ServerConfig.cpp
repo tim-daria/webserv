@@ -6,7 +6,7 @@
 /*   By: tsemenov <tsemenov@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 17:06:49 by nefimov           #+#    #+#             */
-/*   Updated: 2026/03/31 21:27:36 by tsemenov         ###   ########.fr       */
+/*   Updated: 2026/05/20 21:45:51 by tsemenov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,14 @@ void ServerConfig::applyDefaults() {
 
     serverName = "webserv";
     add_listen("127.0.0.1", 8080);
-    set_errorPage(404, "/errors/404.html");
+    set_errorPage(400, "www/errors/400.html");
+    set_errorPage(403, "www/errors/403.html");
+    set_errorPage(404, "www/errors/404.html");
+    set_errorPage(405, "www/errors/405.html");
+    set_errorPage(411, "www/errors/411.html");
+    set_errorPage(413, "www/errors/413.html");
+    set_errorPage(500, "www/errors/500.html");
+    set_errorPage(501, "www/errors/501.html");
     clientMaxBodySize = 1048576;
 
     RouteConfig r;
@@ -39,17 +46,28 @@ void ServerConfig::applyDefaults() {
     r.add_acceptedMethod("GET");
     r.add_acceptedMethod("POST");
     add_route(r);
+
+		// hardcoded to make testing for 405 & 501 work correctly
+    RouteConfig method_not_allowed;
+    method_not_allowed.url = "/method_not_allowed";
+    method_not_allowed.rootDirectory = "www";
+    method_not_allowed.defaultFile = "index.html";
+    method_not_allowed.add_acceptedMethod("DELETE");
+    add_route(method_not_allowed);
 }
 
-RouteConfig* ServerConfig::findMatchingLocation(std::string path) {
+// Made const so it can be called on const ServerConfig& (e.g. in RequestValidator).
+// Returns const RouteConfig* because the caller should not mutate config data:
+const RouteConfig* ServerConfig::findMatchingLocation(std::string path) const {
     // Deleting / ath the end of the path /photos/ → /photos
     if (path.length() > 1 && path[path.length() - 1] == '/')
         path = path.substr(0, path.length() - 1);
 
-    RouteConfig* best_match = NULL;
+    const RouteConfig* best_match = NULL;
     size_t best_length = 0;
 
-    for (std::vector<RouteConfig>::iterator it = routes.begin(); it != routes.end(); ++it) {
+    // const_iterator required inside a const method — routes is const here:
+    for (std::vector<RouteConfig>::const_iterator it = routes.begin(); it != routes.end(); ++it) {
         // Does the request path start with this location?
         if (path.find(it->url) != 0) continue;
 

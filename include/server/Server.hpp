@@ -6,7 +6,7 @@
 /*   By: tsemenov <tsemenov@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 16:12:38 by tsemenov          #+#    #+#             */
-/*   Updated: 2026/04/07 23:42:47 by tsemenov         ###   ########.fr       */
+/*   Updated: 2026/05/19 22:46:41 by tsemenov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ class Server {
     Server& operator=(const Server& other);
     ~Server();
 
-    int get_fd() const;
+    int getFd() const;
     ServerConfig& getConfig();
 
     void initServ(size_t index);

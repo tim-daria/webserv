@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   RouteConfig.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+        */
+/*   By: tsemenov <tsemenov@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 15:09:14 by nefimov           #+#    #+#             */
-/*   Updated: 2026/03/31 12:37:25 by nefimov          ###   ########.fr       */
+/*   Updated: 2026/05/19 16:27:56 by tsemenov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ class RouteConfig {
         cgiHandlers.insert(std::make_pair(extension, handler));
     }
 
-    bool isMethodAllowed(std::string method);
+    bool isMethodAllowed(std::string method) const;
     void print();
 };
 

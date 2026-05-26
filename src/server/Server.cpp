@@ -6,7 +6,7 @@
 /*   By: tsemenov <tsemenov@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 16:07:29 by tsemenov          #+#    #+#             */
-/*   Updated: 2026/04/07 23:44:58 by tsemenov         ###   ########.fr       */
+/*   Updated: 2026/05/19 23:24:35 by tsemenov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@
 #include <sstream>
 #include <stdexcept>  // runtime_error
 
+#include "Logger.hpp"
+
 Server::Server(ServerConfig& config) : _sockfd(-1), _config(config) {}
 Server::Server(const Server& other) : _sockfd(-1), _config(other._config) {}
 Server& Server::operator=(const Server& other) {
@@ -34,7 +36,7 @@ Server::~Server() {
     if (_sockfd != -1) close(_sockfd);
 }
 
-int Server::get_fd() const { return _sockfd; }
+int Server::getFd() const { return _sockfd; }
 
 ServerConfig& Server::getConfig() { return _config; }
 
@@ -67,6 +69,11 @@ void Server::configureSocket() {
     if (setsockopt(_sockfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes)) != 0) {
         throw std::runtime_error("Failed to set SO_REUSEADDR");
     }
+    // SO_REUSEPORT allows restarting the server immediately after a crash or
+    // Ctrl-Z suspension without waiting for the OS TIME_WAIT period to expire:
+    if (setsockopt(_sockfd, SOL_SOCKET, SO_REUSEPORT, &yes, sizeof(yes)) != 0) {
+        throw std::runtime_error("Failed to set SO_REUSEPORT");
+    }
     if (fcntl(_sockfd, F_SETFL, O_NONBLOCK) < 0) {
         throw std::runtime_error("Failed to set O_NONBLOCK");
     }
@@ -98,7 +105,9 @@ void Server::initServ(size_t index) {
     configureSocket();
     bindAndListen(addr);
 
-    std::cout << "Server listening on port " << port << " (fd " << _sockfd << ")" << std::endl;
+    std::ostringstream oss_fcntl;
+    oss_fcntl << "Server listening on port " << port << " (fd " << _sockfd << ")";
+    LOG_INFO(oss_fcntl.str());
 }
 
 // we fill the struct via getsockaddr:

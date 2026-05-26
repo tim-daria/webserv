@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   HttpResponse.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dtimofee <dtimofee@student.42berlin.de>    #+#  +:+       +#+        */
+/*   By: tsemenov <tsemenov@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026-03-20 16:42:41 by dtimofee          #+#    #+#             */
-/*   Updated: 2026-03-20 16:42:41 by dtimofee         ###   ########.fr       */
+/*   Created: 2026/03/20 16:42:41 by dtimofee          #+#    #+#             */
+/*   Updated: 2026/05/05 16:21:02 by tsemenov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

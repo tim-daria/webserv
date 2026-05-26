@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   RouteConfig.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+        */
+/*   By: tsemenov <tsemenov@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 17:06:49 by nefimov           #+#    #+#             */
-/*   Updated: 2026/03/31 13:15:24 by nefimov          ###   ########.fr       */
+/*   Updated: 2026/05/19 23:13:16 by tsemenov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,9 @@
 
 #include <iostream>
 
-bool RouteConfig::isMethodAllowed(std::string method) {
-    for (std::vector<std::string>::iterator it = acceptedMethods.begin();
+// Made const so it can be called on const RouteConfig* returned by findMatchingLocation:
+bool RouteConfig::isMethodAllowed(std::string method) const {
+    for (std::vector<std::string>::const_iterator it = acceptedMethods.begin();
          it != acceptedMethods.end(); ++it) {
         if (*it == method) {
             return true;
