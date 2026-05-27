@@ -6,7 +6,7 @@
 /*   By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/22 16:46:05 by nefimov           #+#    #+#             */
-/*   Updated: 2026/05/22 16:46:06 by nefimov          ###   ########.fr       */
+/*   Updated: 2026/05/27 12:10:33 by nefimov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,7 @@ ServerConfig ParserImpl::parseServerBlock() {
 
     ServerConfig cfg = ServerConfig::makeDefault();
     RouteConfig serverDefaults;
-    if (!cfg.routes.empty()) serverDefaults = cfg.routes[0];
+    // if (!cfg.routes.empty()) serverDefaults = cfg.routes[0];
     cfg.routes.clear();
 
     bool hasExplicitListen = false;
@@ -128,6 +128,9 @@ ServerConfig ParserImpl::parseServerBlock() {
     expectType(TOKEN_RBRACE, "expected '}' after server block");
 
     if (!pendingCgiExt.empty()) throwError(peek(), "cgi_ext without cgi_path");
+    // Check for mandatory server root directive
+    // LOG_DEBUG("serverDefaults.rootDirectory: " + serverDefaults.rootDirectory);
+    // if (serverDefaults.rootDirectory.empty()) throwError(peek(), "no server root location");
 
     if (parsedRoutes.empty()) {
         cfg.routes.push_back(serverDefaults);
