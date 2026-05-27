@@ -6,7 +6,7 @@
 /*   By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/22 16:45:39 by nefimov           #+#    #+#             */
-/*   Updated: 2026/05/22 16:45:40 by nefimov          ###   ########.fr       */
+/*   Updated: 2026/05/22 21:37:16 by nefimov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ Token Lexer::makeTokenWithPosition(TokenType type, const std::string& text, int 
     token.text = text;
     token.line = line;
     token.column = col;
-    LOG_DEBUG("Token \"" + toString(token.type) + " \'" + token.text + "\'\" created");
+    // LOG_DEBUG("Token \"" + toString(token.type) + " \'" + token.text + "\'\" created");
     return token;
 }
 
@@ -101,6 +101,6 @@ Token Lexer::readWord() {
     token.text = text;
     token.line = startLine;
     token.column = startCol;
-    LOG_DEBUG("Token \"" + toString(token.type) + " \'" + token.text + "\'\" created");
+    // LOG_DEBUG("Token \"" + toString(token.type) + " \'" + token.text + "\'\" created");
     return token;
 }
