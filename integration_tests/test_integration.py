@@ -69,10 +69,17 @@ class TestHTTPMethods:
 
         assert response.status_code in [200, 405]
 
-    def test_put_request(self, server_url, client):
+    def test_put_request_returns_501(self, server_url, client):
+        """PUT is not implemented by this server"""
         response = client.put(f"{server_url}/")
 
-        assert response.status_code in [405]
+        assert response.status_code == 501
+
+    def test_get_on_delete_only_route_returns_405(self, server_url, client):
+        """GET is a known method but not allowed on /method_not_allowed"""
+        response = client.get(f"{server_url}/method_not_allowed")
+
+        assert response.status_code == 405
 
 
 class TestServerEdgeCases:

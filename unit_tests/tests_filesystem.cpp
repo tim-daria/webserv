@@ -1,20 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   tests_file_service.cpp                             :+:      :+:    :+:   */
+/*   tests_filesystem.cpp                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dtimofee <dtimofee@student.42berlin.de>    #+#  +:+       +#+        */
+/*   By: tsemenov <tsemenov@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026-05-15 10:42:44 by dtimofee          #+#    #+#             */
-/*   Updated: 2026-05-15 10:42:44 by dtimofee         ###   ########.fr       */
+/*   Created: 2026/05/15 10:42:44 by dtimofee          #+#    #+#             */
+/*   Updated: 2026/05/20 11:12:05 by tsemenov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#include <sys/stat.h>
 
 #include "FileService.hpp"
 #include "HttpResponse.hpp"
 #include "PathUtils.hpp"
 #include "catch.hpp"
-#include "io.cpp"
+#include "io.hpp"
 
 TEST_CASE("FileService::readFile", "[FileService]") {
     FileService fs;
