@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tsemenov <tsemenov@student.42berlin.de>    +#+  +:+       +#+        */
+/*   By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/02 22:30:06 by dtimofee          #+#    #+#             */
-/*   Updated: 2026/05/06 14:47:13 by tsemenov         ###   ########.fr       */
+/*   Updated: 2026/05/28 16:08:54 by nefimov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include <vector>
 
 #include "Logger.hpp"
+#include "Parser.hpp"
 #include "ServerConfig.hpp"
 #include "ServerHub.hpp"
 
@@ -23,7 +24,7 @@ extern volatile bool g_running;
 
 static void signalHandler(int) { g_running = false; }
 
-int main() {
+int main(int argc, char* argv[]) {
     signal(SIGPIPE, SIG_IGN);
     signal(SIGINT, signalHandler);
     signal(SIGTERM, signalHandler);
@@ -31,7 +32,11 @@ int main() {
 
     try {
         std::vector<ServerConfig> configs;
-        configs.push_back(ServerConfig::makeDefault());
+        if (argc == 1) {
+            configs.push_back(ServerConfig::makeDefault());
+        } else {
+            configs = Parser::parseFile(argv[1]);
+        }
 
         ServerHub hub(configs);
         hub.runServers();
