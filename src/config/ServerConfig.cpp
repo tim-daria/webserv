@@ -14,6 +14,8 @@
 
 #include <iostream>
 
+#include "Logger.hpp"
+
 void ServerConfig::print() { std::cout << *this << std::endl; }
 
 ServerConfig ServerConfig::makeDefault() {
@@ -47,7 +49,7 @@ void ServerConfig::applyDefaults() {
     r.add_acceptedMethod("POST");
     add_route(r);
 
-		// hardcoded to make testing for 405 & 501 work correctly
+    // hardcoded to make testing for 405 & 501 work correctly
     RouteConfig method_not_allowed;
     method_not_allowed.url = "/method_not_allowed";
     method_not_allowed.rootDirectory = "www";
@@ -71,6 +73,7 @@ const RouteConfig* ServerConfig::findMatchingLocation(std::string path) const {
         // Does the request path start with this location?
         if (path.find(it->url) != 0) continue;
 
+        LOG_DEBUG("Current uri: " + it->url);
         // Check end of the word — protection against /photo matches to /photos
         size_t url_len = it->url.size();
         bool boundary = (path.size() == url_len) || (path[url_len] == '/') || (it->url == "/");

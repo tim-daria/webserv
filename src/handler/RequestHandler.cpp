@@ -37,8 +37,6 @@ HttpResponse Handler::serveFile(const std::string& path) {
     return HttpResponse::make(HTTP_OK, body, PathUtils::getContentType(path));
 }
 
-// const RouteConfig* because routes are read-only after server startup —
-// we only read defaultFile and directoryListing, never mutate the config:
 HttpResponse Handler::handleDirectory(const std::string& path, const std::string& uri,
                                       const RouteConfig* _location) {
     struct stat info;
@@ -61,8 +59,6 @@ HttpResponse Handler::handleDirectory(const std::string& path, const std::string
     return _errorHandler.makeError(HTTP_FORBIDDEN);
 }
 
-// request.getPath() replaces the old direct field access request.path —
-// _path is private, access must go through the getter:
 HttpResponse Handler::handleGet(const HttpRequest& request, const RouteConfig* _location) {
     std::string fullPath = _location->rootDirectory + request.getPath();
     LOG_DEBUG("GET request for path: " + fullPath);
@@ -81,13 +77,31 @@ HttpResponse Handler::handleGet(const HttpRequest& request, const RouteConfig* _
     return serveFile(fullPath);
 }
 
-// handle_request receives an already-parsed and validated request.
-// The 404/405 checks below are defense-in-depth — RequestValidator in ServerHub
-// should have caught these first, but Handle can also be called independently:
+HttpResponse Handler::handlePost(const HttpRequest& request, const RouteConfig* _location) {}
+
+HttpResponse Handler::handleDelete(const HttpRequest& request, const RouteConfig* _location) {
+    std::string fullPath = _location->rootDirectory + request.getPath();
+    LOG_DEBUG("DELETE request for path: " + fullPath);
+
+    struct stat info;
+    int status = _fileService.checkPath(fullPath, info);
+    if (status != HTTP_OK) {
+        LOG_WARNING("Path check failed: " + fullPath);
+        return _errorHandler.makeError(status);
+    }
+    if (S_ISDIR(info.st_mode)) {
+        LOG_WARNING("Trying to delete directory: " + fullPath);
+        return _errorHandler.makeError(HTTP_FORBIDDEN);
+    }
+    if (!_fileService.deleteFile(fullPath)) {
+        LOG_WARNING("Failed to delete a fail: " + fullPath);
+        return _errorHandler.makeError(HTTP_INTERNAL_ERROR);
+    }
+    return HttpResponse::make(HTTP_NO_CONTENT, "", "text/html");
+}
+
 HttpResponse Handler::handle_request(HttpRequest& request) {
     LOG_INFO("Handling request");
-    // findMatchingLocation is now const, returns const RouteConfig* —
-    // routes are not modified during request handling:
     const RouteConfig* _location = _serverConfig.findMatchingLocation(request.getPath());
     if (!_location) {
         LOG_WARNING("Location matching failed: " + request.getPath());
@@ -100,19 +114,21 @@ HttpResponse Handler::handle_request(HttpRequest& request) {
     }
     if (request.getMethod() == "GET") {
         return handleGet(request, _location);
-    } else if (request.getMethod() == "POST" || request.getMethod() == "DELETE") {
-        return get_default_response(request);
+    } else if (request.getMethod() == "POST") {
+        return handlePost(request, _location);
+    } else if (request.getMethod() == "DELETE") {
+        return handleDelete(request, _location);
     }
-    return _errorHandler.makeError(HTTP_METHOD_NOT_ALLOWED);
+    return _errorHandler.makeError(HTTP_METHOD_NOT_IMPLEMENTED);
 }
 
-HttpResponse Handler::get_default_response(const HttpRequest&) {
-    std::stringstream body;
-    std::stringstream len;
-    std::vector<std::pair<std::string, std::string> > default_headers;
-    body << "<h1>Hello webserv!</h1>";
-    default_headers.push_back(std::make_pair("Content-Type", "text/html"));
-    len << body.str().size();
-    default_headers.push_back(std::make_pair("Content-Length", len.str()));
-    return HttpResponse(HTTP_OK, body.str(), default_headers);
-}
+// HttpResponse Handler::get_default_response(const HttpRequest&) {
+//     std::stringstream body;
+//     std::stringstream len;
+//     std::vector<std::pair<std::string, std::string> > default_headers;
+//     body << "<h1>Hello webserv!</h1>";
+//     default_headers.push_back(std::make_pair("Content-Type", "text/html"));
+//     len << body.str().size();
+//     default_headers.push_back(std::make_pair("Content-Length", len.str()));
+//     return HttpResponse(HTTP_OK, body.str(), default_headers);
+// }
