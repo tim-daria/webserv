@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   RouteConfig.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tsemenov <tsemenov@student.42berlin.de>    +#+  +:+       +#+        */
+/*   By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 17:06:49 by nefimov           #+#    #+#             */
 /*   Updated: 2026/05/19 23:13:16 by tsemenov         ###   ########.fr       */
@@ -13,6 +13,17 @@
 #include "RouteConfig.hpp"
 
 #include <iostream>
+
+RouteConfig::RouteConfig()
+    : url(""),
+      rootDirectory(""),
+      directoryListing(false),
+      defaultFile(""),
+      uploadDirectory(""),
+      authRequired(false),
+      hasReturn(false),
+      returnStatus(0),
+      returnUri("") {}
 
 // Made const so it can be called on const RouteConfig* returned by findMatchingLocation:
 bool RouteConfig::isMethodAllowed(std::string method) const {

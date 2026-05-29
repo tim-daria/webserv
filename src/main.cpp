@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tsemenov <tsemenov@student.42berlin.de>    +#+  +:+       +#+        */
+/*   By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/02 22:30:06 by dtimofee          #+#    #+#             */
-/*   Updated: 2026/05/20 20:45:39 by tsemenov         ###   ########.fr       */
+/*   Updated: 2026/05/28 18:09:04 by nefimov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include <vector>
 
 #include "Logger.hpp"
+#include "Parser.hpp"
 #include "ServerConfig.hpp"
 #include "ServerHub.hpp"
 
@@ -40,11 +41,6 @@ static void sigChldHandler(int) {
 int main(int ac, char** av) {
     (void)av;
     (void)ac;
-
-    // if (ac < 2) {
-    // 	LOG_ERROR("No config file provided");
-    // 	return 1;
-    // }
 
     // ignore SIGPIPE (if writing to a pipe fd failed - it's closed)
     // ignore SIGTSTP (Ctrl-Z) — a server should not be suspendable
@@ -77,7 +73,11 @@ int main(int ac, char** av) {
 
     try {
         std::vector<ServerConfig> configs;
-        configs.push_back(ServerConfig::makeDefault());
+        if (ac == 1) {
+            configs.push_back(ServerConfig::makeDefault());
+        } else {
+            configs = Parser::parseFile(av[1]);
+        }
 
         ServerHub hub(configs);
         hub.runServers();
