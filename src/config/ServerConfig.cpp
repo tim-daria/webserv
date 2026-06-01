@@ -47,7 +47,7 @@ void ServerConfig::applyDefaults() {
     r.add_acceptedMethod("POST");
     add_route(r);
 
-		// hardcoded to make testing for 405 & 501 work correctly
+    // hardcoded to make testing for 405 & 501 work correctly
     RouteConfig method_not_allowed;
     method_not_allowed.url = "/method_not_allowed";
     method_not_allowed.rootDirectory = "www";
@@ -59,10 +59,6 @@ void ServerConfig::applyDefaults() {
 // Made const so it can be called on const ServerConfig& (e.g. in RequestValidator).
 // Returns const RouteConfig* because the caller should not mutate config data:
 const RouteConfig* ServerConfig::findMatchingLocation(std::string path) const {
-    // Deleting / ath the end of the path /photos/ → /photos
-    if (path.length() > 1 && path[path.length() - 1] == '/')
-        path = path.substr(0, path.length() - 1);
-
     const RouteConfig* best_match = NULL;
     size_t best_length = 0;
 
