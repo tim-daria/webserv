@@ -6,7 +6,7 @@
 /*   By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/22 16:46:18 by nefimov           #+#    #+#             */
-/*   Updated: 2026/05/28 15:25:48 by nefimov          ###   ########.fr       */
+/*   Updated: 2026/06/01 17:10:02 by nefimov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -624,6 +624,37 @@ TEST_CASE("Check return directive", "[Parser]") {
         std::string sampleConfig(
             "server {"
             "    return 301 /redirect\n"
+            "}\n");
+        REQUIRE_THROWS(Parser::parseString(sampleConfig, "sample"));
+    }
+}
+
+// upload_store ::= "upload_store" ws path ;
+TEST_CASE("Check upload_store directive", "[Parser]") {
+    SECTION("Correct input") {
+        std::string sampleConfig(
+            "server {"
+            "    upload_store /uploads;\n"
+            "}\n");
+        std::vector<ServerConfig> configs = Parser::parseString(sampleConfig, "sample");
+        REQUIRE(configs.size() == 1);
+        REQUIRE(configs[0].routes.size() == 1);
+        const RouteConfig& route = configs[0].routes[0];
+        REQUIRE(route.uploadDirectory == "/uploads");
+    }
+
+    SECTION("Wrong input. Without a value") {
+        std::string sampleConfig(
+            "server {"
+            "    upload_store ;\n"
+            "}\n");
+        REQUIRE_THROWS(Parser::parseString(sampleConfig, "sample"));
+    }
+
+    SECTION("Wrong input. Without a semicolon") {
+        std::string sampleConfig(
+            "server {"
+            "    upload_store /uploads\n"
             "}\n");
         REQUIRE_THROWS(Parser::parseString(sampleConfig, "sample"));
     }
