@@ -6,7 +6,7 @@
 /*   By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/02 22:30:06 by dtimofee          #+#    #+#             */
-/*   Updated: 2026/05/28 18:09:04 by nefimov          ###   ########.fr       */
+/*   Updated: 2026/06/01 16:23:30 by nefimov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,9 +74,11 @@ int main(int ac, char** av) {
     try {
         std::vector<ServerConfig> configs;
         if (ac == 1) {
-            configs.push_back(ServerConfig::makeDefault());
-        } else {
+            configs = Parser::parseFile("webserv.conf");
+        } else if (ac == 2) {
             configs = Parser::parseFile(av[1]);
+        } else {
+            throw std::runtime_error("too many arguments");
         }
 
         ServerHub hub(configs);

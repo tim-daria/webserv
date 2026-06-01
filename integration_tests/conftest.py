@@ -10,7 +10,7 @@ from pathlib import Path
 
 # Configuration
 SERVER_EXECUTABLE = Path(__file__).parent.parent / "webserv"
-SERVER_CONFIG = Path(__file__).parent.parent / "default.conf"
+SERVER_CONFIG = Path(__file__).parent.parent / "webserv.conf"
 SERVER_HOST = "127.0.0.1"
 SERVER_PORT = 8080
 SERVER_URL = f"http://{SERVER_HOST}:{SERVER_PORT}"
