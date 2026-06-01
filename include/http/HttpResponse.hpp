@@ -35,17 +35,20 @@ class HttpResponse {
    private:
     int _statusCode;
     std::string _body;
-    std::vector<std::pair<std::string, std::string> > _headers;
+    std::map<std::string, std::string> _headers;
+    // std::vector<std::pair<std::string, std::string> > _headers;
 
     HttpResponse();
     HttpResponse& operator=(const HttpResponse& other);
 
    public:
     HttpResponse(int status_code, const std::string& body,
-                 const std::vector<std::pair<std::string, std::string> >& headers);
+                 const std::map<std::string, std::string>& _headers);
+    //  const std::vector<std::pair<std::string, std::string> >& headers);
     HttpResponse(const HttpResponse& other);
     ~HttpResponse();
 
+    void addHeader(const std::string& key, const std::string& value);
     static std::string getStatusText(int statusCode);
     static HttpResponse make(int status_code, const std::string& body,
                              const std::string& content_type);

@@ -20,11 +20,11 @@ class FileService {
     int readFile(const std::string& path, std::string& content) const;
 
     // // Writing
-    // bool writeFile(const std::string& path,
-    //                const std::string& content) const;
+    bool writeFile(const std::string& path, const std::string& content) const;
 
     // Deleting
     bool deleteFile(const std::string& path) const;
 
     int checkPath(const std::string& path, struct stat& info) const;
+    int checkUploadDirectory(const std::string& path, struct stat& info) const;
 };

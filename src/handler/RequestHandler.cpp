@@ -77,7 +77,33 @@ HttpResponse Handler::handleGet(const HttpRequest& request, const RouteConfig* _
     return serveFile(fullPath);
 }
 
-HttpResponse Handler::handlePost(const HttpRequest& request, const RouteConfig* _location) {}
+HttpResponse Handler::handlePost(const HttpRequest& request, const RouteConfig* _location) {
+    std::string uploadPath = _location->uploadDirectory;
+    if (uploadPath.empty()) {
+        LOG_WARNING("No uploadPath");
+        return _errorHandler.makeError(HTTP_FORBIDDEN);
+    }
+    LOG_DEBUG("POST request for path: " + uploadPath);
+
+    struct stat info;
+    int status = _fileService.checkUploadDirectory(uploadPath, info);
+    if (status != HTTP_OK) {
+        LOG_WARNING("Path check failed: " + uploadPath);
+        return _errorHandler.makeError(status);
+    }
+
+    std::ostringstream filename;
+    filename << uploadPath << "/" << std::time(0) << "_" << std::rand();
+    LOG_INFO("Created a file: " + uploadPath);
+    if (!_fileService.writeFile(filename.str(), request.getBody())) {
+        LOG_WARNING("Writing to file failed: " + uploadPath);
+        return _errorHandler.makeError(HTTP_INTERNAL_ERROR);
+    }
+    HttpResponse res = HttpResponse::make(HTTP_CREATED, "", "text/html");
+
+    res.addHeader("Location", filename.str());
+    return res;
+}
 
 HttpResponse Handler::handleDelete(const HttpRequest& request, const RouteConfig* _location) {
     std::string fullPath = _location->rootDirectory + request.getPath();
@@ -103,15 +129,15 @@ HttpResponse Handler::handleDelete(const HttpRequest& request, const RouteConfig
 HttpResponse Handler::handle_request(HttpRequest& request) {
     LOG_INFO("Handling request");
     const RouteConfig* _location = _serverConfig.findMatchingLocation(request.getPath());
-    if (!_location) {
-        LOG_WARNING("Location matching failed: " + request.getPath());
-        return _errorHandler.makeError(HTTP_NOT_FOUND);
-    }
+    // if (!_location) {
+    //     LOG_WARNING("Location matching failed: " + request.getPath());
+    //     return _errorHandler.makeError(HTTP_NOT_FOUND);
+    // }
     LOG_DEBUG("Found matching location: " + _location->url);
-    if (!_location->isMethodAllowed(request.getMethod())) {
-        LOG_WARNING("Method check failed: " + request.getMethod());
-        return _errorHandler.makeError(HTTP_METHOD_NOT_ALLOWED);
-    }
+    // if (!_location->isMethodAllowed(request.getMethod())) {
+    //     LOG_WARNING("Method check failed: " + request.getMethod());
+    //     return _errorHandler.makeError(HTTP_METHOD_NOT_ALLOWED);
+    // }
     if (request.getMethod() == "GET") {
         return handleGet(request, _location);
     } else if (request.getMethod() == "POST") {

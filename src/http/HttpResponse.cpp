@@ -15,7 +15,8 @@
 #include "Logger.hpp"
 
 HttpResponse::HttpResponse(int status_code, const std::string& body,
-                           const std::vector<std::pair<std::string, std::string> >& headers)
+                           const std::map<std::string, std::string>& headers)
+    //    const std::vector<std::pair<std::string, std::string> >& headers)
     : _statusCode(status_code), _body(body), _headers(headers) {}
 
 HttpResponse::HttpResponse(const HttpResponse& other)
@@ -46,11 +47,18 @@ std::string HttpResponse::getStatusText(int statusCode) {
     return "Unknown";
 }
 
+void HttpResponse::addHeader(const std::string& key, const std::string& value) {
+    _headers[key] = value;
+}
+
 HttpResponse HttpResponse::make(int status_code, const std::string& body,
                                 const std::string& content_type) {
-    std::vector<std::pair<std::string, std::string> > headers;
-    headers.push_back(std::make_pair("Content-Type", content_type));
-    headers.push_back(std::make_pair("Content-Length", ::toString(body.size())));
+    // std::vector<std::pair<std::string, std::string> > headers;
+    std::map<std::string, std::string> headers;
+    headers["Content-Type"] = content_type;
+    headers["Content-Length"] = ::toString(body.size());
+    // headers.push_back(std::make_pair("Content-Type", content_type));
+    // headers.push_back(std::make_pair("Content-Length", ::toString(body.size())));
     return HttpResponse(status_code, body, headers);
 }
 
@@ -61,7 +69,8 @@ std::string HttpResponse::toString() const {
     ss << "HTTP/1.0 " << _statusCode << " " << getStatusText(_statusCode);
     ss << "\r\n";
 
-    for (std::vector<std::pair<std::string, std::string> >::const_iterator it = _headers.begin();
+    // for (std::vector<std::pair<std::string, std::string> >::const_iterator it = _headers.begin();
+    for (std::map<std::string, std::string>::const_iterator it = _headers.begin();
          it != _headers.end(); ++it) {
         ss << it->first << ": " << it->second << "\r\n";
     }
