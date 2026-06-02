@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerConfig.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tsemenov <tsemenov@student.42berlin.de>    +#+  +:+       +#+        */
+/*   By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 17:06:49 by nefimov           #+#    #+#             */
-/*   Updated: 2026/05/20 21:45:51 by tsemenov         ###   ########.fr       */
+/*   Updated: 2026/06/01 16:07:52 by nefimov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,14 +31,6 @@ void ServerConfig::applyDefaults() {
 
     serverName = "webserv";
     add_listen("127.0.0.1", 8080);
-    set_errorPage(400, "www/errors/400.html");
-    set_errorPage(403, "www/errors/403.html");
-    set_errorPage(404, "www/errors/404.html");
-    set_errorPage(405, "www/errors/405.html");
-    set_errorPage(411, "www/errors/411.html");
-    set_errorPage(413, "www/errors/413.html");
-    set_errorPage(500, "www/errors/500.html");
-    set_errorPage(501, "www/errors/501.html");
     clientMaxBodySize = 1048576;
 
     RouteConfig r;
@@ -46,7 +38,6 @@ void ServerConfig::applyDefaults() {
     r.rootDirectory = "www";
     r.defaultFile = "index.html";
     r.add_acceptedMethod("GET");
-    r.add_acceptedMethod("POST");
     add_route(r);
 
     // hardcoded to make testing for 405 & 501 work correctly
