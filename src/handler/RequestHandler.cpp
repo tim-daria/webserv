@@ -78,7 +78,7 @@ HttpResponse Handler::handleGet(const HttpRequest& request, const RouteConfig* _
 }
 
 HttpResponse Handler::handlePost(const HttpRequest& request, const RouteConfig* _location) {
-    std::string uploadPath = _location->uploadDirectory;
+    std::string uploadPath = _location->rootDirectory + _location->uploadDirectory;
     if (uploadPath.empty()) {
         LOG_WARNING("No uploadPath");
         return _errorHandler.makeError(HTTP_FORBIDDEN);
@@ -120,7 +120,7 @@ HttpResponse Handler::handleDelete(const HttpRequest& request, const RouteConfig
         return _errorHandler.makeError(HTTP_FORBIDDEN);
     }
     if (!_fileService.deleteFile(fullPath)) {
-        LOG_WARNING("Failed to delete a fail: " + fullPath);
+        LOG_WARNING("Failed to delete a file: " + fullPath);
         return _errorHandler.makeError(HTTP_INTERNAL_ERROR);
     }
     return HttpResponse::make(HTTP_NO_CONTENT, "", "text/html");
@@ -129,15 +129,7 @@ HttpResponse Handler::handleDelete(const HttpRequest& request, const RouteConfig
 HttpResponse Handler::handle_request(HttpRequest& request) {
     LOG_INFO("Handling request");
     const RouteConfig* _location = _serverConfig.findMatchingLocation(request.getPath());
-    // if (!_location) {
-    //     LOG_WARNING("Location matching failed: " + request.getPath());
-    //     return _errorHandler.makeError(HTTP_NOT_FOUND);
-    // }
     LOG_DEBUG("Found matching location: " + _location->url);
-    // if (!_location->isMethodAllowed(request.getMethod())) {
-    //     LOG_WARNING("Method check failed: " + request.getMethod());
-    //     return _errorHandler.makeError(HTTP_METHOD_NOT_ALLOWED);
-    // }
     if (request.getMethod() == "GET") {
         return handleGet(request, _location);
     } else if (request.getMethod() == "POST") {
@@ -147,14 +139,3 @@ HttpResponse Handler::handle_request(HttpRequest& request) {
     }
     return _errorHandler.makeError(HTTP_METHOD_NOT_IMPLEMENTED);
 }
-
-// HttpResponse Handler::get_default_response(const HttpRequest&) {
-//     std::stringstream body;
-//     std::stringstream len;
-//     std::vector<std::pair<std::string, std::string> > default_headers;
-//     body << "<h1>Hello webserv!</h1>";
-//     default_headers.push_back(std::make_pair("Content-Type", "text/html"));
-//     len << body.str().size();
-//     default_headers.push_back(std::make_pair("Content-Length", len.str()));
-//     return HttpResponse(HTTP_OK, body.str(), default_headers);
-// }

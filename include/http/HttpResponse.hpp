@@ -36,7 +36,6 @@ class HttpResponse {
     int _statusCode;
     std::string _body;
     std::map<std::string, std::string> _headers;
-    // std::vector<std::pair<std::string, std::string> > _headers;
 
     HttpResponse();
     HttpResponse& operator=(const HttpResponse& other);
@@ -44,7 +43,6 @@ class HttpResponse {
    public:
     HttpResponse(int status_code, const std::string& body,
                  const std::map<std::string, std::string>& _headers);
-    //  const std::vector<std::pair<std::string, std::string> >& headers);
     HttpResponse(const HttpResponse& other);
     ~HttpResponse();
 

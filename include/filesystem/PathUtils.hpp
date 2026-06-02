@@ -16,13 +16,8 @@
 
 class PathUtils {
    public:
-    // На будущее, точно использовать для редирекшенов Собрать путь к файлу
-    // static std::string buildPath(const std::string& root,
-    //                              const std::string& location,
-    //                              const std::string& request_path);
-
-    // Защита от ../
-    // static bool        isSafe(const std::string& path);
+    // static std::string buildFullPath(const std::string& root,
+    //                                  const std::string& request_path);
 
     // Content-Type по расширению
     static std::string getContentType(const std::string& path);

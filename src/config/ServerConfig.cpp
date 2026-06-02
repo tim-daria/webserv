@@ -73,7 +73,6 @@ const RouteConfig* ServerConfig::findMatchingLocation(std::string path) const {
         // Does the request path start with this location?
         if (path.find(it->url) != 0) continue;
 
-        LOG_DEBUG("Current uri: " + it->url);
         // Check end of the word — protection against /photo matches to /photos
         size_t url_len = it->url.size();
         bool boundary = (path.size() == url_len) || (path[url_len] == '/') || (it->url == "/");
