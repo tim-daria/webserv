@@ -46,8 +46,11 @@ class HttpResponse {
     HttpResponse(const HttpResponse& other);
     ~HttpResponse();
 
-    void addHeader(const std::string& key, const std::string& value);
     static std::string getStatusText(int statusCode);
+    int getStatusCode() const;
+    std::string getHeader(const std::string& key) const;
+
+    void addHeader(const std::string& key, const std::string& value);
     static HttpResponse make(int status_code, const std::string& body,
                              const std::string& content_type);
     std::string toString() const;

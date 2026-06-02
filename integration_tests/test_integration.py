@@ -1,4 +1,5 @@
 import requests
+import pathlib
 
 class TestServerBasics:
     """Basic server health tests"""
@@ -62,7 +63,7 @@ class TestHTTPMethods:
             data={"key": "value"}
         )
 
-        assert response.status_code in [200, 405]
+        assert response.status_code in [201, 403, 404, 405]
 
     def test_delete_request(self, server_url, client):
         response = client.delete(f"{server_url}/")

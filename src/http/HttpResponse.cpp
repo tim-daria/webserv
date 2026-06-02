@@ -23,6 +23,16 @@ HttpResponse::HttpResponse(const HttpResponse& other)
 
 HttpResponse::~HttpResponse() {}
 
+int HttpResponse::getStatusCode() const { return _statusCode; }
+
+std::string HttpResponse::getHeader(const std::string& key) const {
+    std::map<std::string, std::string>::const_iterator it = _headers.find(key);
+    if (it != _headers.end()) {
+        return it->second;
+    }
+    return "";
+}
+
 std::string HttpResponse::getStatusText(int statusCode) {
     struct StatusText {
         HttpStatus code;
