@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   RouteConfig.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tsemenov <tsemenov@student.42berlin.de>    +#+  +:+       +#+        */
+/*   By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 15:09:14 by nefimov           #+#    #+#             */
 /*   Updated: 2026/05/19 16:27:56 by tsemenov         ###   ########.fr       */
@@ -21,12 +21,17 @@ class RouteConfig {
    public:
     std::string url;                           // The URL/route path, e.g., /path
     std::vector<std::string> acceptedMethods;  // List of accepted HTTP methods
-    // std::string redirection; // HTTP redirection URL, if any
-    std::string rootDirectory;    // Directory where files for this route are located
-    bool directoryListing;        // Enable/disable directory listing
-    std::string defaultFile;      // Default file to serve for directories
-    std::string uploadDirectory;  // Directory to store uploaded files
+    std::string rootDirectory;                 // Directory where files for this route are located
+    bool directoryListing;                     // Enable/disable directory listing
+    std::string defaultFile;                   // Default file to serve for directories
+    std::string uploadDirectory;               // Directory to store uploaded files
     std::map<std::string, std::string> cgiHandlers;  // File extensions to CGI handler mapping
+    bool authRequired;                               // Require auth for this route
+    bool hasReturn;                                  // Has redirect rule
+    int returnStatus;                                // Redirect status code
+    std::string returnUri;                           // Redirect target URI
+
+    RouteConfig();
 
     void add_acceptedMethod(const std::string& method) { acceptedMethods.push_back(method); }
 
