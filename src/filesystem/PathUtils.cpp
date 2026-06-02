@@ -41,7 +41,8 @@ std::string PathUtils::getContentType(const std::string& path) {
 std::string PathUtils::bildPathForDirectory(const std::string& path,
                                             const std::string& defaultFile) {
     std::string indexPath;
-    if (path[path.length() - 1] == '/') {
+    int pathLen = path.length();
+    if (pathLen > 0 && path[pathLen - 1] == '/') {
         indexPath = path + defaultFile;
     } else {
         indexPath = path + "/" + defaultFile;
