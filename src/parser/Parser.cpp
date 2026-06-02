@@ -6,7 +6,7 @@
 /*   By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/22 16:45:56 by nefimov           #+#    #+#             */
-/*   Updated: 2026/05/22 19:07:24 by nefimov          ###   ########.fr       */
+/*   Updated: 2026/06/02 17:09:18 by nefimov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ std::vector<ServerConfig> Parser::parseFile(const std::string& path) {
     std::stringstream buffer;
     buffer << input.rdbuf();
     ParserImpl parser(buffer.str(), path);
+    LOG_INFO("Parsing file " + path);
     return parser.parseConfig();
 }
 
