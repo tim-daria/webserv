@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   PathUtils.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dtimofee <dtimofee@student.42berlin.de>    #+#  +:+       +#+        */
+/*   By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026-05-12 09:34:15 by dtimofee          #+#    #+#             */
-/*   Updated: 2026-05-12 09:34:15 by dtimofee         ###   ########.fr       */
+/*   Created: 2026/05/12 09:34:15 by dtimofee          #+#    #+#             */
+/*   Updated: 2026/06/02 18:45:55 by nefimov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,4 +48,19 @@ std::string PathUtils::bildPathForDirectory(const std::string& path,
         indexPath = path + "/" + defaultFile;
     }
     return indexPath;
+}
+
+std::string PathUtils::bildPathForFile(const std::string& root_path, const std::string& file_path) {
+    std::string result_path(root_path);
+
+    if (!result_path.empty() && result_path[result_path.length() - 1] == '/') {
+        // result_path.pop_back();
+        result_path.resize(result_path.length() - 1);
+    }
+    if (!file_path.empty() && file_path[0] != '/') {
+        result_path.append("/");
+    }
+    result_path.append(file_path);
+
+    return result_path;
 }
