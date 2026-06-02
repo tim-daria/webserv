@@ -40,7 +40,7 @@ HttpResponse Handler::serveFile(const std::string& path) {
 HttpResponse Handler::handleDirectory(const std::string& path, const std::string& uri,
                                       const RouteConfig* _location) {
     struct stat info;
-    std::string indexPath = path + "/" + _location->defaultFile;
+    std::string indexPath = PathUtils::bildPathForDirectory(path, _location->defaultFile);
     LOG_DEBUG("Path to default file: " + indexPath);
     int status = _fileService.checkPath(indexPath, info);
     if (status == HTTP_OK && S_ISREG(info.st_mode)) {
