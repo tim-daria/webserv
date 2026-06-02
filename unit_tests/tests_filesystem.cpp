@@ -96,3 +96,17 @@ TEST_CASE("PathUtils::getContentType handles path with dots", "[PathUtils]") {
     REQUIRE(PathUtils::getContentType("./my.site/index.html") == "text/html");
     REQUIRE(PathUtils::getContentType("./my.site/photo.jpg") == "image/jpeg");
 }
+
+TEST_CASE("PathUtils::buildPathForDirectory returns correct path", "[PathUtils]") {
+    SECTION("Path ending without /") {
+        std::string path = "./www/upload";
+        std::string defaultFile = "index.html";
+        REQUIRE(PathUtils::bildPathForDirectory(path, defaultFile) == "./www/upload/index.html");
+    }
+
+    SECTION("Path ending with /") {
+        std::string path = "./www/upload/";
+        std::string defaultFile = "index.html";
+        REQUIRE(PathUtils::bildPathForDirectory(path, defaultFile) == "./www/upload/index.html");
+    }
+}

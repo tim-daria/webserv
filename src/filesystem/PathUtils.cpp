@@ -38,12 +38,13 @@ std::string PathUtils::getContentType(const std::string& path) {
     return "application/octet-stream";
 }
 
-std::string PathUtils::bildPathForDirectory(const std::string& path, const std::string& location) {
+std::string PathUtils::bildPathForDirectory(const std::string& path,
+                                            const std::string& defaultFile) {
     std::string indexPath;
     if (path[path.length() - 1] == '/') {
-        indexPath = path + location;
+        indexPath = path + defaultFile;
     } else {
-        indexPath = path + "/" + location;
+        indexPath = path + "/" + defaultFile;
     }
     return indexPath;
 }
