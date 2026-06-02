@@ -28,7 +28,7 @@ std::string ErrorHandler::getCustomPage(int code) const {
     std::string body;
     int status = _fileService.readFile(it->second, body);
     if (status != HTTP_OK) {
-        LOG_WARNING("Incorrect path for custom error page: " + it->second + toString(code));
+        LOG_WARNING("Incorrect path for custom error page: " + it->second);
         return "";
     }
     return body;

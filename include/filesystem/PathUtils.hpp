@@ -21,10 +21,8 @@ class PathUtils {
     //                              const std::string& location,
     //                              const std::string& request_path);
 
-    // Защита от ../
-    // static bool        isSafe(const std::string& path);
-
-    // Content-Type по расширению
+    static std::string bildPathForDirectory(const std::string& path,
+                                            const std::string& defaultFile);
     static std::string getContentType(const std::string& path);
 
    private:
