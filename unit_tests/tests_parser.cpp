@@ -6,7 +6,7 @@
 /*   By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/22 16:46:18 by nefimov           #+#    #+#             */
-/*   Updated: 2026/05/22 18:55:48 by nefimov          ###   ########.fr       */
+/*   Updated: 2026/06/02 16:49:18 by nefimov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,4 +141,79 @@ TEST_CASE("Parser parses default.conf config file", "[Parser]") {
     REQUIRE(cgi->isMethodAllowed("POST"));
     REQUIRE(cgi->cgiHandlers.count(".py") == 1);
     REQUIRE(cgi->cgiHandlers.at(".py") == "/usr/bin/python3");
+}
+
+TEST_CASE("Check default index", "[Parser]") {
+    SECTION("Correct input all different index directives") {
+        std::string sampleConfig(
+            "server {"
+            "    listen 127.0.0.1:8080;\n"
+            "    index index_0.html;\n"
+            "    \n"
+            "    location / {\n"
+            "        index index_1.html;\n"
+            "    }\n"
+            "    location /download/ {\n"
+            "        index index_2.html;\n"
+            "    }\n"
+            "}\n");
+        std::vector<ServerConfig> configs = Parser::parseString(sampleConfig, "sample");
+        REQUIRE(configs.size() == 1);
+        REQUIRE(configs[0].routes.size() == 2);
+        REQUIRE(configs[0].routes[0].defaultFile == "index_1.html");
+        REQUIRE(configs[0].routes[1].defaultFile == "index_2.html");
+    }
+
+    SECTION("Correct input all root index directives") {
+        std::string sampleConfig(
+            "server {"
+            "    listen 127.0.0.1:8080;\n"
+            "    index index_0.html;\n"
+            "    \n"
+            "    location / {\n"
+            "    }\n"
+            "    location /download/ {\n"
+            "    }\n"
+            "}\n");
+        std::vector<ServerConfig> configs = Parser::parseString(sampleConfig, "sample");
+        REQUIRE(configs.size() == 1);
+        REQUIRE(configs[0].routes.size() == 2);
+        REQUIRE(configs[0].routes[0].defaultFile == "index_0.html");
+        REQUIRE(configs[0].routes[1].defaultFile == "index_0.html");
+    }
+
+    SECTION("Correct input all default index directives") {
+        std::string sampleConfig(
+            "server {"
+            "    listen 127.0.0.1:8080;\n"
+            "    \n"
+            "    location / {\n"
+            "    }\n"
+            "    location /download/ {\n"
+            "    }\n"
+            "}\n");
+        std::vector<ServerConfig> configs = Parser::parseString(sampleConfig, "sample");
+        REQUIRE(configs.size() == 1);
+        REQUIRE(configs[0].routes.size() == 2);
+        REQUIRE(configs[0].routes[0].defaultFile == "index.html");
+        REQUIRE(configs[0].routes[1].defaultFile == "index.html");
+    }
+
+    SECTION("Correct input one default index directives") {
+        std::string sampleConfig(
+            "server {"
+            "    listen 127.0.0.1:8080;\n"
+            "    \n"
+            "    location / {\n"
+            "        index index_1.html;\n"
+            "    }\n"
+            "    location /download/ {\n"
+            "    }\n"
+            "}\n");
+        std::vector<ServerConfig> configs = Parser::parseString(sampleConfig, "sample");
+        REQUIRE(configs.size() == 1);
+        REQUIRE(configs[0].routes.size() == 2);
+        REQUIRE(configs[0].routes[0].defaultFile == "index_1.html");
+        REQUIRE(configs[0].routes[1].defaultFile == "index.html");
+    }
 }
