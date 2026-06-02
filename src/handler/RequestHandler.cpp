@@ -17,6 +17,8 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
+#include <cstdlib>
+#include <ctime>
 #include <sstream>
 
 #include "Logger.hpp"
