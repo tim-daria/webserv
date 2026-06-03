@@ -21,6 +21,7 @@ directive       ::= listen
                   | autoindex
                   | auth_required
                   | return
+				  | upload_store
                   | cgi_ext
                   | cgi_path ;
 
@@ -34,6 +35,7 @@ limit_except        ::= "limit_except" ws method (ws method)* ;
 autoindex           ::= "autoindex" ws onoff ;
 auth_required       ::= "auth_required" ws onoff ;
 return              ::= "return" ws status ws+ uri ;
+upload_store        ::= "upload_store" ws path ;
 cgi_ext             ::= "cgi_ext" ws ext ;
 cgi_path            ::= "cgi_path" ws path ;
 
