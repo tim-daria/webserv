@@ -31,10 +31,9 @@ class Handler {
     Handler(const Handler& other);
     Handler& operator=(const Handler& other);
 
-    HttpResponse get_default_response(const HttpRequest& request);
     HttpResponse handleGet(const HttpRequest& request, const RouteConfig* _location);
-    // HttpResponse handlePost(const HttpRequest &request, const RouteConfig* _location);
-    // HttpResponse handleDelete(const HttpRequest &request, const RouteConfig* _location);
+    HttpResponse handlePost(const HttpRequest& request, const RouteConfig* _location);
+    HttpResponse handleDelete(const HttpRequest& request, const RouteConfig* _location);
     HttpResponse handleDirectory(const std::string& path, const std::string& uri,
                                  const RouteConfig* _location);
 

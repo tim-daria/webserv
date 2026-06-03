@@ -16,6 +16,8 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
+#include <fstream>
+
 #include "HttpResponse.hpp"
 
 int FileService::checkPath(const std::string& path, struct stat& info) const {
@@ -31,16 +33,36 @@ int FileService::checkPath(const std::string& path, struct stat& info) const {
     return HTTP_OK;
 }
 
-int FileService::readFile(const std::string& path, std::string& content) const {
-    int fd = open(path.c_str(), O_RDONLY);
-    if (fd == -1) {
+int FileService::checkUploadDirectory(const std::string& path, struct stat& info) const {
+    if (stat(path.c_str(), &info) != 0) {
         return HTTP_NOT_FOUND;
     }
-    char buf[1024];
-    int bytes;
-    while ((bytes = read(fd, buf, sizeof(buf))) > 0) {
-        content.append(buf, bytes);
+    if (!S_ISDIR(info.st_mode)) {
+        return HTTP_FORBIDDEN;
     }
-    close(fd);
+    if (access(path.c_str(), X_OK) != 0 || access(path.c_str(), W_OK) != 0) {
+        return HTTP_FORBIDDEN;
+    }
     return HTTP_OK;
 }
+
+int FileService::readFile(const std::string& path, std::string& content) const {
+    std::ifstream file(path.c_str());
+    if (!file.is_open()) {
+        return HTTP_NOT_FOUND;
+    }
+    std::ostringstream ss;
+    ss << file.rdbuf();
+    content = ss.str();
+    return HTTP_OK;
+}
+
+bool FileService::writeFile(const std::string& path, const std::string& content) const {
+    std::ofstream file(path.c_str());
+    if (!file.is_open()) {
+        return false;
+    }
+    file << content;
+    return file.good();
+}
+bool FileService::deleteFile(const std::string& path) const { return unlink(path.c_str()) == 0; }

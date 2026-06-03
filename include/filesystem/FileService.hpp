@@ -16,16 +16,15 @@
 
 class FileService {
    public:
-    // Чтение
+    // Reading
     int readFile(const std::string& path, std::string& content) const;
 
-    // // Запись
-    // bool writeFile(const std::string& path,
-    //                const std::string& content) const;
+    // // Writing
+    bool writeFile(const std::string& path, const std::string& content) const;
 
-    // // Удаление
-    // bool deleteFile(const std::string& path) const;
+    // Deleting
+    bool deleteFile(const std::string& path) const;
 
-    // stat одним вызовом
     int checkPath(const std::string& path, struct stat& info) const;
+    int checkUploadDirectory(const std::string& path, struct stat& info) const;
 };

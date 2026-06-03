@@ -17,6 +17,8 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
+#include <cstdlib>
+#include <ctime>
 #include <sstream>
 
 #include "Logger.hpp"
@@ -37,8 +39,6 @@ HttpResponse Handler::serveFile(const std::string& path) {
     return HttpResponse::make(HTTP_OK, body, PathUtils::getContentType(path));
 }
 
-// const RouteConfig* because routes are read-only after server startup —
-// we only read defaultFile and directoryListing, never mutate the config:
 HttpResponse Handler::handleDirectory(const std::string& path, const std::string& uri,
                                       const RouteConfig* _location) {
     struct stat info;
@@ -61,8 +61,6 @@ HttpResponse Handler::handleDirectory(const std::string& path, const std::string
     return _errorHandler.makeError(HTTP_FORBIDDEN);
 }
 
-// request.getPath() replaces the old direct field access request.path —
-// _path is private, access must go through the getter:
 HttpResponse Handler::handleGet(const HttpRequest& request, const RouteConfig* _location) {
     std::string fullPath = _location->rootDirectory + request.getPath();
     LOG_DEBUG("GET request for path: " + fullPath);
@@ -81,13 +79,57 @@ HttpResponse Handler::handleGet(const HttpRequest& request, const RouteConfig* _
     return serveFile(fullPath);
 }
 
-// handle_request receives an already-parsed and validated request.
-// The 404/405 checks below are defense-in-depth — RequestValidator in ServerHub
-// should have caught these first, but Handle can also be called independently:
+HttpResponse Handler::handlePost(const HttpRequest& request, const RouteConfig* _location) {
+    if (_location->uploadDirectory.empty()) {
+        LOG_WARNING("No uploadPath");
+        return _errorHandler.makeError(HTTP_FORBIDDEN);
+    }
+    std::string uploadPath = _location->rootDirectory + _location->uploadDirectory;
+    LOG_DEBUG("POST request for path: " + uploadPath);
+
+    struct stat info;
+    int status = _fileService.checkUploadDirectory(uploadPath, info);
+    if (status != HTTP_OK) {
+        LOG_WARNING("Path check failed: " + uploadPath);
+        return _errorHandler.makeError(status);
+    }
+
+    std::ostringstream filename;
+    filename << uploadPath << "/" << std::time(0) << "_" << std::rand();
+    LOG_INFO("Created a file: " + uploadPath);
+    if (!_fileService.writeFile(filename.str(), request.getBody())) {
+        LOG_WARNING("Writing to file failed: " + uploadPath);
+        return _errorHandler.makeError(HTTP_INTERNAL_ERROR);
+    }
+    HttpResponse res = HttpResponse::make(HTTP_CREATED, "", "text/html");
+
+    res.addHeader("Location", filename.str());
+    return res;
+}
+
+HttpResponse Handler::handleDelete(const HttpRequest& request, const RouteConfig* _location) {
+    std::string fullPath = _location->rootDirectory + request.getPath();
+    LOG_DEBUG("DELETE request for path: " + fullPath);
+
+    struct stat info;
+    int status = _fileService.checkPath(fullPath, info);
+    if (status != HTTP_OK) {
+        LOG_WARNING("Path check failed: " + fullPath);
+        return _errorHandler.makeError(status);
+    }
+    if (S_ISDIR(info.st_mode)) {
+        LOG_WARNING("Trying to delete directory: " + fullPath);
+        return _errorHandler.makeError(HTTP_FORBIDDEN);
+    }
+    if (!_fileService.deleteFile(fullPath)) {
+        LOG_WARNING("Failed to delete a file: " + fullPath);
+        return _errorHandler.makeError(HTTP_INTERNAL_ERROR);
+    }
+    return HttpResponse::make(HTTP_NO_CONTENT, "", "text/html");
+}
+
 HttpResponse Handler::handle_request(HttpRequest& request) {
     LOG_INFO("Handling request");
-    // findMatchingLocation is now const, returns const RouteConfig* —
-    // routes are not modified during request handling:
     const RouteConfig* _location = _serverConfig.findMatchingLocation(request.getPath());
     if (!_location) {
         LOG_WARNING("Location matching failed: " + request.getPath());
@@ -100,19 +142,10 @@ HttpResponse Handler::handle_request(HttpRequest& request) {
     }
     if (request.getMethod() == "GET") {
         return handleGet(request, _location);
-    } else if (request.getMethod() == "POST" || request.getMethod() == "DELETE") {
-        return get_default_response(request);
+    } else if (request.getMethod() == "POST") {
+        return handlePost(request, _location);
+    } else if (request.getMethod() == "DELETE") {
+        return handleDelete(request, _location);
     }
-    return _errorHandler.makeError(HTTP_METHOD_NOT_ALLOWED);
-}
-
-HttpResponse Handler::get_default_response(const HttpRequest&) {
-    std::stringstream body;
-    std::stringstream len;
-    std::vector<std::pair<std::string, std::string> > default_headers;
-    body << "<h1>Hello webserv!</h1>";
-    default_headers.push_back(std::make_pair("Content-Type", "text/html"));
-    len << body.str().size();
-    default_headers.push_back(std::make_pair("Content-Length", len.str()));
-    return HttpResponse(HTTP_OK, body.str(), default_headers);
+    return _errorHandler.makeError(HTTP_METHOD_NOT_IMPLEMENTED);
 }
