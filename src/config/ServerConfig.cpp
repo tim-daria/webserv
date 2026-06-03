@@ -14,6 +14,8 @@
 
 #include <iostream>
 
+#include "Logger.hpp"
+
 void ServerConfig::print() { std::cout << *this << std::endl; }
 
 ServerConfig ServerConfig::makeDefault() {
