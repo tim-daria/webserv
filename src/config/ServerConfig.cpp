@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerConfig.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tsemenov <tsemenov@student.42berlin.de>    +#+  +:+       +#+        */
+/*   By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 17:06:49 by nefimov           #+#    #+#             */
-/*   Updated: 2026/05/20 21:45:51 by tsemenov         ###   ########.fr       */
+/*   Updated: 2026/06/03 10:35:50 by nefimov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ void ServerConfig::applyDefaults() {
     routes.clear();
 
     serverName = "webserv";
+    rootPath = "./www";
     add_listen("127.0.0.1", 8080);
     set_errorPage(400, "www/errors/400.html");
     set_errorPage(403, "www/errors/403.html");
@@ -41,7 +42,7 @@ void ServerConfig::applyDefaults() {
 
     RouteConfig r;
     r.url = "/";
-    r.rootDirectory = "www";
+    r.rootDirectory = "./www";
     r.defaultFile = "index.html";
     r.add_acceptedMethod("GET");
     r.add_acceptedMethod("POST");
