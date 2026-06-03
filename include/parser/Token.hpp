@@ -6,12 +6,11 @@
 /*   By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/22 16:45:30 by nefimov           #+#    #+#             */
-/*   Updated: 2026/05/22 16:45:31 by nefimov          ###   ########.fr       */
+/*   Updated: 2026/06/03 11:34:40 by nefimov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef TOKEN_HPP
-#define TOKEN_HPP
+#pragma once
 
 #include <string>
 
@@ -23,5 +22,3 @@ struct Token {
     int line;
     int column;
 };
-
-#endif

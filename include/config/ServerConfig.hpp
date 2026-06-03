@@ -6,12 +6,11 @@
 /*   By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 15:09:14 by nefimov           #+#    #+#             */
-/*   Updated: 2026/06/03 10:21:21 by nefimov          ###   ########.fr       */
+/*   Updated: 2026/06/03 11:43:42 by nefimov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SERVERCONFIG_HPP
-#define SERVERCONFIG_HPP
+#pragma once
 
 #include <map>
 #include <string>
@@ -46,5 +45,3 @@ class ServerConfig {
 };
 
 std::ostream& operator<<(std::ostream& out, const ServerConfig& config);
-
-#endif
