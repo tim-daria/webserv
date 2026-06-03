@@ -3,19 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   tests_error_handler.cpp                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dtimofee <dtimofee@student.42berlin.de>    #+#  +:+       +#+        */
+/*   By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026-05-15 10:16:27 by dtimofee          #+#    #+#             */
-/*   Updated: 2026-05-15 10:16:27 by dtimofee         ###   ########.fr       */
+/*   Created: 2026/05/15 10:16:27 by dtimofee          #+#    #+#             */
+/*   Updated: 2026/06/03 11:33:02 by nefimov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ErrorHandler.hpp"
+#include "ServerConfig.hpp"
 #include "catch.hpp"
 
 TEST_CASE("ErrorHandler::makeError returns correct status code", "[ErrorHandler]") {
-    std::map<int, std::string> emptyPages;
-    ErrorHandler errorHandler(emptyPages);
+    ServerConfig conf;
+    ErrorHandler errorHandler(conf);
 
     SECTION("404 error") {
         HttpResponse response = errorHandler.makeError(HTTP_NOT_FOUND);
@@ -37,8 +38,8 @@ TEST_CASE("ErrorHandler::makeError returns correct status code", "[ErrorHandler]
 }
 
 TEST_CASE("ErrorHandler::makeError default page contains status code in body", "[ErrorHandler]") {
-    std::map<int, std::string> emptyPages;
-    ErrorHandler errorHandler(emptyPages);
+    ServerConfig conf;
+    ErrorHandler errorHandler(conf);
 
     HttpResponse response = errorHandler.makeError(HTTP_NOT_FOUND);
     std::string raw = response.toString();
@@ -48,8 +49,8 @@ TEST_CASE("ErrorHandler::makeError default page contains status code in body", "
 }
 
 TEST_CASE("ErrorHandler::makeError has correct Content-Type", "[ErrorHandler]") {
-    std::map<int, std::string> emptyPages;
-    ErrorHandler errorHandler(emptyPages);
+    ServerConfig conf;
+    ErrorHandler errorHandler(conf);
 
     HttpResponse response = errorHandler.makeError(HTTP_NOT_FOUND);
     std::string raw = response.toString();

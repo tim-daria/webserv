@@ -6,7 +6,7 @@
 /*   By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/22 16:46:05 by nefimov           #+#    #+#             */
-/*   Updated: 2026/05/27 12:10:33 by nefimov          ###   ########.fr       */
+/*   Updated: 2026/06/03 10:30:17 by nefimov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -220,6 +220,7 @@ void ParserImpl::parseServerDirective(ServerConfig& cfg, RouteConfig& serverDefa
     }
     if (directive == "root") {
         serverDefaults.rootDirectory = expectWord("expected root path");
+        cfg.rootPath = serverDefaults.rootDirectory;
         expectType(TOKEN_SEMICOLON, "expected ';' after root");
         return;
     }
