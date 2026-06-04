@@ -147,5 +147,5 @@ HttpResponse Handler::handle_request(HttpRequest& request) {
     } else if (request.getMethod() == "DELETE") {
         return handleDelete(request, _location);
     }
-    return _errorHandler.makeError(HTTP_METHOD_NOT_IMPLEMENTED);
+    return _errorHandler.makeError(HTTP_METHOD_NOT_ALLOWED);
 }

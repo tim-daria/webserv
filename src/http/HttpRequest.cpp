@@ -92,7 +92,7 @@ void HttpRequest::_parseFirstLine() {
     _method = line.substr(0, pos1);
     if (!_isImplemented(_method)) {
         _state = PARSING_ERROR;
-        _errorCode = HTTP_METHOD_NOT_IMPLEMENTED;  // 501
+        _errorCode = HTTP_METHOD_NOT_ALLOWED;  // 405
         return;
     }
     _version = line.substr(pos2 + 1);  // do we need to throw an error
