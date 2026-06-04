@@ -60,7 +60,6 @@ TEST_CASE("RequestHandler — no matching location returns 404", "[RequestHandle
     route.rootDirectory = "/tmp/photos";
     route.add_acceptedMethod("GET");
     config.add_route(route);
-    // config.routes.push_back(route);
 
     Handler handler(config);
 
@@ -78,7 +77,6 @@ TEST_CASE("RequestHandler — GET nonexistent file returns 404", "[RequestHandle
     route.url = "/";
     route.rootDirectory = "/tmp/test_handler2";
     route.add_acceptedMethod("GET");
-    // config.routes.push_back(route);
     config.add_route(route);
 
     createDir("/tmp/test_handler2");
@@ -173,6 +171,9 @@ TEST_CASE("POST creates file and returns 201") {
     std::getline(file, content);
 
     REQUIRE(content == "Hello");
+
+    removeFile(location);
+    removeDir("./test_uploads");
 }
 
 TEST_CASE("DELETE removes existing file") {
