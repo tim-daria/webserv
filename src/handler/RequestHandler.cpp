@@ -42,7 +42,8 @@ HttpResponse Handler::serveFile(const std::string& path) {
 HttpResponse Handler::handleDirectory(const std::string& path, const std::string& uri,
                                       const RouteConfig* _location) {
     struct stat info;
-    std::string indexPath = PathUtils::bildPathForDirectory(path, _location->defaultFile);
+    std::string indexPath = PathUtils::concatenatePath(path, _location->defaultFile);
+    // std::string indexPath = PathUtils::bildPathForDirectory(path, _location->defaultFile);
     LOG_DEBUG("Path to default file: " + indexPath);
     int status = _fileService.checkPath(indexPath, info);
     if (status == HTTP_OK && S_ISREG(info.st_mode)) {
@@ -62,7 +63,8 @@ HttpResponse Handler::handleDirectory(const std::string& path, const std::string
 }
 
 HttpResponse Handler::handleGet(const HttpRequest& request, const RouteConfig* _location) {
-    std::string fullPath = _location->rootDirectory + request.getPath();
+    // std::string fullPath = _location->rootDirectory + request.getPath();
+    std::string fullPath = PathUtils::concatenatePath(_location->rootDirectory, request.getPath());
     LOG_DEBUG("GET request for path: " + fullPath);
 
     struct stat info;
@@ -84,7 +86,9 @@ HttpResponse Handler::handlePost(const HttpRequest& request, const RouteConfig* 
         LOG_WARNING("No uploadPath");
         return _errorHandler.makeError(HTTP_FORBIDDEN);
     }
-    std::string uploadPath = _location->rootDirectory + _location->uploadDirectory;
+    // std::string uploadPath = _location->rootDirectory + _location->uploadDirectory;
+    std::string uploadPath =
+        PathUtils::concatenatePath(_location->rootDirectory, _location->uploadDirectory);
     LOG_DEBUG("POST request for path: " + uploadPath);
 
     struct stat info;
@@ -108,7 +112,8 @@ HttpResponse Handler::handlePost(const HttpRequest& request, const RouteConfig* 
 }
 
 HttpResponse Handler::handleDelete(const HttpRequest& request, const RouteConfig* _location) {
-    std::string fullPath = _location->rootDirectory + request.getPath();
+    // std::string fullPath = _location->rootDirectory + request.getPath();
+    std::string fullPath = PathUtils::concatenatePath(_location->rootDirectory, request.getPath());
     LOG_DEBUG("DELETE request for path: " + fullPath);
 
     struct stat info;

@@ -21,9 +21,9 @@ class PathUtils {
     //                              const std::string& location,
     //                              const std::string& request_path);
 
-    static std::string bildPathForDirectory(const std::string& path,
-                                            const std::string& defaultFile);
-    static std::string bildPathForFile(const std::string& root, const std::string& path);
+    // static std::string bildPathForDirectory(const std::string& path,
+    //                                         const std::string& defaultFile);
+    static std::string concatenatePath(const std::string& root, const std::string& path);
 
     static std::string getContentType(const std::string& path);
 
