@@ -6,12 +6,11 @@
 /*   By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 15:09:14 by nefimov           #+#    #+#             */
-/*   Updated: 2026/05/19 16:27:56 by tsemenov         ###   ########.fr       */
+/*   Updated: 2026/06/03 11:43:33 by nefimov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef ROUTECONFIG_HPP
-#define ROUTECONFIG_HPP
+#pragma once
 
 #include <map>
 #include <string>
@@ -44,5 +43,3 @@ class RouteConfig {
 };
 
 std::ostream& operator<<(std::ostream& out, const RouteConfig& conf);
-
-#endif

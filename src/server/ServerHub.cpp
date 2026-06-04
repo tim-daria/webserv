@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerHub.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tsemenov <tsemenov@student.42berlin.de>    +#+  +:+       +#+        */
+/*   By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/06 16:23:17 by tsemenov          #+#    #+#             */
-/*   Updated: 2026/05/20 21:07:49 by tsemenov         ###   ########.fr       */
+/*   Updated: 2026/06/03 11:35:54 by nefimov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include <fcntl.h>
 #include <netinet/in.h>
 #include <poll.h>
-#include <signal.h> 	
+#include <signal.h>
 #include <sys/socket.h>
 #include <unistd.h>
 
@@ -186,7 +186,7 @@ void ServerHub::handleRead(size_t index) {
     // ErrorHandler is constructed here (outside the branches) so it can be
     // used for both parse errors and validation errors without duplicating
     // the config.errorPages lookup:
-    ErrorHandler eh(config.errorPages);
+    ErrorHandler eh(config);
     Handler handler(config);
 
     std::string responseStr;

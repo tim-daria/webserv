@@ -6,12 +6,11 @@
 /*   By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/22 16:44:55 by nefimov           #+#    #+#             */
-/*   Updated: 2026/05/22 16:44:59 by nefimov          ###   ########.fr       */
+/*   Updated: 2026/06/03 11:34:13 by nefimov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LEXER_HPP
-#define LEXER_HPP
+#pragma once
 
 #include <string>
 
@@ -35,5 +34,3 @@ class Lexer {
     void skipWhitespaceAndComments();
     Token readWord();
 };
-
-#endif
