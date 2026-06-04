@@ -29,6 +29,14 @@ Handler::Handler(ServerConfig& config)
 
 Handler::~Handler() {}
 
+HttpResponse Handler::makeRedirection(const std::string& root, int status,
+                                      const std::string& path) {
+    std::string fullPath = PathUtils::concatenatePath(root, path);
+    HttpResponse response = HttpResponse::make(status, "", "text/html");
+    response.addHeader("Location", path);
+    return response;
+}
+
 HttpResponse Handler::serveFile(const std::string& path) {
     std::string body;
     int status = _fileService.readFile(path, body);
@@ -43,7 +51,6 @@ HttpResponse Handler::handleDirectory(const std::string& path, const std::string
                                       const RouteConfig* _location) {
     struct stat info;
     std::string indexPath = PathUtils::concatenatePath(path, _location->defaultFile);
-    // std::string indexPath = PathUtils::bildPathForDirectory(path, _location->defaultFile);
     LOG_DEBUG("Path to default file: " + indexPath);
     int status = _fileService.checkPath(indexPath, info);
     if (status == HTTP_OK && S_ISREG(info.st_mode)) {
@@ -63,7 +70,6 @@ HttpResponse Handler::handleDirectory(const std::string& path, const std::string
 }
 
 HttpResponse Handler::handleGet(const HttpRequest& request, const RouteConfig* _location) {
-    // std::string fullPath = _location->rootDirectory + request.getPath();
     std::string fullPath = PathUtils::concatenatePath(_location->rootDirectory, request.getPath());
     LOG_DEBUG("GET request for path: " + fullPath);
 
@@ -74,6 +80,11 @@ HttpResponse Handler::handleGet(const HttpRequest& request, const RouteConfig* _
         return _errorHandler.makeError(status);
     }
     if (S_ISDIR(info.st_mode)) {
+        if (!PathUtils::endsWithSlash(fullPath)) {
+            LOG_INFO("Directory without slash, redirecting: " + fullPath + "/");
+            return makeRedirection(_serverConfig.rootPath, HTTP_MOVED_PERMANENTLY,
+                                   request.getPath() + "/");
+        }
         LOG_INFO("Serving directory: " + fullPath);
         return handleDirectory(fullPath, request.getPath(), _location);
     }
@@ -86,7 +97,6 @@ HttpResponse Handler::handlePost(const HttpRequest& request, const RouteConfig* 
         LOG_WARNING("No uploadPath");
         return _errorHandler.makeError(HTTP_FORBIDDEN);
     }
-    // std::string uploadPath = _location->rootDirectory + _location->uploadDirectory;
     std::string uploadPath =
         PathUtils::concatenatePath(_location->rootDirectory, _location->uploadDirectory);
     LOG_DEBUG("POST request for path: " + uploadPath);
@@ -112,7 +122,6 @@ HttpResponse Handler::handlePost(const HttpRequest& request, const RouteConfig* 
 }
 
 HttpResponse Handler::handleDelete(const HttpRequest& request, const RouteConfig* _location) {
-    // std::string fullPath = _location->rootDirectory + request.getPath();
     std::string fullPath = PathUtils::concatenatePath(_location->rootDirectory, request.getPath());
     LOG_DEBUG("DELETE request for path: " + fullPath);
 
@@ -141,6 +150,11 @@ HttpResponse Handler::handle_request(HttpRequest& request) {
         return _errorHandler.makeError(HTTP_NOT_FOUND);
     }
     LOG_DEBUG("Found matching location: " + _location->url);
+    if (_location->hasReturn) {
+        LOG_INFO("Redirecting to: " + _location->returnUri);
+        return makeRedirection(_serverConfig.rootPath, _location->returnStatus,
+                               _location->returnUri);
+    }
     if (!_location->isMethodAllowed(request.getMethod())) {
         LOG_WARNING("Method check failed: " + request.getMethod());
         return _errorHandler.makeError(HTTP_METHOD_NOT_ALLOWED);

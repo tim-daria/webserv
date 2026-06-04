@@ -36,8 +36,8 @@ class Handler {
     HttpResponse handleDelete(const HttpRequest& request, const RouteConfig* _location);
     HttpResponse handleDirectory(const std::string& path, const std::string& uri,
                                  const RouteConfig* _location);
-
     HttpResponse serveFile(const std::string& path);
+    HttpResponse makeRedirection(const std::string& root, int status, const std::string& path);
 
    public:
     Handler(ServerConfig& config);

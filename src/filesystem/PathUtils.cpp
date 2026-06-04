@@ -38,17 +38,12 @@ std::string PathUtils::getContentType(const std::string& path) {
     return "application/octet-stream";
 }
 
-// std::string PathUtils::bildPathForDirectory(const std::string& path,
-//                                             const std::string& defaultFile) {
-//     std::string indexPath;
-//     int pathLen = path.length();
-//     if (pathLen > 0 && path[pathLen - 1] == '/') {
-//         indexPath = path + defaultFile;
-//     } else {
-//         indexPath = path + "/" + defaultFile;
-//     }
-//     return indexPath;
-// }
+bool PathUtils::endsWithSlash(const std::string& fullPath) {
+    if (!fullPath.empty() && fullPath[fullPath.length() - 1] == '/') {
+        return true;
+    }
+    return false;
+}
 
 std::string PathUtils::concatenatePath(const std::string& root_path, const std::string& file_path) {
     std::string result_path(root_path);

@@ -16,13 +16,7 @@
 
 class PathUtils {
    public:
-    // На будущее, точно использовать для редирекшенов Собрать путь к файлу
-    // static std::string buildPath(const std::string& root,
-    //                              const std::string& location,
-    //                              const std::string& request_path);
-
-    // static std::string bildPathForDirectory(const std::string& path,
-    //                                         const std::string& defaultFile);
+    static bool endsWithSlash(const std::string& fullPath);
     static std::string concatenatePath(const std::string& root, const std::string& path);
 
     static std::string getContentType(const std::string& path);
