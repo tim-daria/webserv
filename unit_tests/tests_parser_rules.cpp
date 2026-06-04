@@ -6,7 +6,7 @@
 /*   By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/22 16:46:18 by nefimov           #+#    #+#             */
-/*   Updated: 2026/06/02 17:12:52 by nefimov          ###   ########.fr       */
+/*   Updated: 2026/06/04 16:24:23 by nefimov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -270,7 +270,22 @@ TEST_CASE("Check root directive", "[Parser]") {
 
 // client_max_body_size ::= "client_max_body_size" ws number ;
 TEST_CASE("Check client_max_body_size directive", "[Parser]") {
-    SECTION("Correct input") {
+    SECTION("Correct input. Directive in server block") {
+        std::string sampleConfig(
+            "server {"
+            "    client_max_body_size 100000;\n"
+            "    location / {\n"
+            "        client_max_body_size 100;\n"
+            "    }\n"
+            "}\n");
+        std::vector<ServerConfig> configs = Parser::parseString(sampleConfig, "sample");
+        REQUIRE(configs.size() == 1);
+        REQUIRE(configs[0].clientMaxBodySize == 100000);
+        REQUIRE(configs[0].routes[0].clientMaxBodySize == 100);
+		
+    }
+
+	SECTION("Correct input. Directive in server and location blocks") {
         std::string sampleConfig(
             "server {"
             "    client_max_body_size 100000;\n"
@@ -279,7 +294,20 @@ TEST_CASE("Check client_max_body_size directive", "[Parser]") {
         REQUIRE(configs.size() == 1);
         REQUIRE(configs[0].clientMaxBodySize == 100000);
     }
-
+	
+	SECTION("Correct input. Default values") {
+        std::string sampleConfig(
+            "server {"
+            "    location / {\n"
+            "    }\n"
+            "}\n");
+        std::vector<ServerConfig> configs = Parser::parseString(sampleConfig, "sample");
+        REQUIRE(configs.size() == 1);
+        REQUIRE(configs[0].clientMaxBodySize == 1048576);
+        REQUIRE(configs[0].routes[0].clientMaxBodySize == 1048576);
+		
+    }
+	
     SECTION("Correct input. Lowest value") {
         std::string sampleConfig(
             "server {"

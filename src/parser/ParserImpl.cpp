@@ -6,7 +6,7 @@
 /*   By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/22 16:46:05 by nefimov           #+#    #+#             */
-/*   Updated: 2026/05/27 12:10:33 by nefimov          ###   ########.fr       */
+/*   Updated: 2026/06/04 16:34:43 by nefimov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,6 +159,7 @@ ParsedRoute ParserImpl::parseLocationBlock(std::string&) {
     parsed.hasReturn = false;
     parsed.hasCgi = false;
     parsed.hasUpload = false;
+	parsed.hasMaxsize = false;
 
     std::string pendingCgiExt;
     while (peek().type != TOKEN_RBRACE) {
@@ -184,6 +185,7 @@ void ParserImpl::applyServerDefaults(ParsedRoute& parsed, const RouteConfig& ser
     }
     if (!parsed.hasCgi) parsed.route.cgiHandlers = serverDefaults.cgiHandlers;
     if (!parsed.hasUpload) parsed.route.uploadDirectory = serverDefaults.uploadDirectory;
+	if (!parsed.hasMaxsize) parsed.route.clientMaxBodySize = serverDefaults.clientMaxBodySize;
 }
 
 void ParserImpl::parseServerDirective(ServerConfig& cfg, RouteConfig& serverDefaults,
@@ -228,6 +230,7 @@ void ParserImpl::parseServerDirective(ServerConfig& cfg, RouteConfig& serverDefa
         int size = parseInt(valueToken.text, 1, 2147483647);
         if (size == -1) throwError(valueToken, "invalid client_max_body_size");
         cfg.clientMaxBodySize = static_cast<size_t>(size);
+		serverDefaults.clientMaxBodySize = static_cast<size_t>(size);
         expectType(TOKEN_SEMICOLON, "expected ';' after client_max_body_size");
         return;
     }
@@ -390,6 +393,15 @@ void ParserImpl::parseLocationDirective(ParsedRoute& parsed, std::string& pendin
         expectType(TOKEN_SEMICOLON, "expected ';' after cgi_path");
         return;
     }
-
+	if (directive == "client_max_body_size") {
+		Token valueToken = expectWordToken("expected client_max_body_size value");
+        int size = parseInt(valueToken.text, 1, 2147483647);
+        if (size == -1) throwError(valueToken, "invalid client_max_body_size");
+        parsed.hasMaxsize = true;
+        parsed.route.clientMaxBodySize = static_cast<size_t>(size);
+		expectType(TOKEN_SEMICOLON, "expected ';' after client_max_body_size");
+		return;
+    }
+	
     throwError(directiveToken, "unknown directive in location: " + directive);
 }

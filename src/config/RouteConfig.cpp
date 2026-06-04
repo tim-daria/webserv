@@ -6,7 +6,7 @@
 /*   By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2026/06/02 17:08:35 by nefimov          ###   ########.fr       */
+/*   Updated: 2026/06/04 17:05:13 by nefimov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ RouteConfig::RouteConfig()
       directoryListing(false),
       defaultFile("index.html"),
       uploadDirectory(""),
+	  clientMaxBodySize(0),
       authRequired(false),
       hasReturn(false),
       returnStatus(0),
