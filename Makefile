@@ -6,7 +6,7 @@
 #    By: tsemenov <tsemenov@student.42berlin.de>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/04 12:41:15 by dtimofee          #+#    #+#              #
-#    Updated: 2026/05/26 10:29:05 by nefimov          ###   ########.fr        #
+#    Updated: 2026/06/05 16:01:39 by tsemenov         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -50,8 +50,11 @@ TEST_OBJS = $(patsubst $(TEST_DIR)%.cpp, $(TEST_OBJ_DIR)%.o, $(TEST_SRCS))
 
 all: $(NAME)
 
+# prebuild:
+# 	@echo "Building server..."
+
 $(NAME): $(OBJS)
-	@echo "Building server..."
+	
 	@$(CXX) $(CXXFLAGS) -o $(NAME) $(OBJS)
 	@echo "./$(NAME) is ready"
 
@@ -77,11 +80,17 @@ clean:
 	@rm -rf $(OBJ_DIR)
 	@echo "Clean done"
 
-fclean: clean
+fclean: clean kill
 	@echo "Running fclean..."
 	@rm -f $(NAME) $(TEST_NAME)
 	@echo "All cleaned"
 
 re: fclean all
 
-.PHONY: all clean fclean re test
+kill:
+	@pkill -x webserv 2>/dev/null && echo "Killed running webserv" || echo "No webserv running"
+
+run: all kill
+	@./$(NAME)
+
+.PHONY: all clean fclean re test kill run
