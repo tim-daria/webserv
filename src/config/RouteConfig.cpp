@@ -6,7 +6,7 @@
 /*   By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2026/06/05 17:03:47 by nefimov          ###   ########.fr       */
+/*   Updated: 2026/06/05 17:30:10 by nefimov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,8 @@ RouteConfig::RouteConfig()
       returnUri("") {}
 
 void RouteConfig::applyDefaults() {
-    rootDirectory = "./www", defaultFile = "index.html";
+    rootDirectory = "./www";
+    defaultFile = "index.html";
     clientMaxBodySize = 1048576;
 }
 
