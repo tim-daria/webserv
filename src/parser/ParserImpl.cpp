@@ -6,7 +6,7 @@
 /*   By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/22 16:46:05 by nefimov           #+#    #+#             */
-/*   Updated: 2026/06/05 16:37:23 by nefimov          ###   ########.fr       */
+/*   Updated: 2026/06/05 17:06:08 by nefimov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,6 +108,7 @@ ServerConfig ParserImpl::parseServerBlock() {
 
     ServerConfig cfg = ServerConfig::makeDefault();
     RouteConfig serverDefaults;
+    serverDefaults.applyDefaults();
     // if (!cfg.routes.empty()) serverDefaults = cfg.routes[0];
     cfg.routes.clear();
 

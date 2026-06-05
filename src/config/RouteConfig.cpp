@@ -6,7 +6,7 @@
 /*   By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2026/06/04 17:05:13 by nefimov          ###   ########.fr       */
+/*   Updated: 2026/06/05 17:03:47 by nefimov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,16 @@ RouteConfig::RouteConfig()
       directoryListing(false),
       defaultFile("index.html"),
       uploadDirectory(""),
-	  clientMaxBodySize(0),
+      clientMaxBodySize(0),
       authRequired(false),
       hasReturn(false),
       returnStatus(0),
       returnUri("") {}
+
+void RouteConfig::applyDefaults() {
+    rootDirectory = "./www", defaultFile = "index.html";
+    clientMaxBodySize = 1048576;
+}
 
 // Made const so it can be called on const RouteConfig* returned by findMatchingLocation:
 bool RouteConfig::isMethodAllowed(std::string method) const {

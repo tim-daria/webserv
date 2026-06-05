@@ -6,7 +6,7 @@
 /*   By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 15:09:14 by nefimov           #+#    #+#             */
-/*   Updated: 2026/06/05 16:36:40 by nefimov          ###   ########.fr       */
+/*   Updated: 2026/06/05 17:00:08 by nefimov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ class RouteConfig {
     RouteConfig();
 
     void add_acceptedMethod(const std::string& method) { acceptedMethods.push_back(method); }
+    void applyDefaults();
 
     void set_cgiHandler(const std::string& extension, const std::string& handler) {
         cgiHandlers.insert(std::make_pair(extension, handler));
