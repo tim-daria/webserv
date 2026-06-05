@@ -6,7 +6,7 @@
 /*   By: tsemenov <tsemenov@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/20 18:22:51 by dtimofee          #+#    #+#             */
-/*   Updated: 2026/05/20 21:36:09 by tsemenov         ###   ########.fr       */
+/*   Updated: 2026/05/28 22:13:26 by tsemenov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,6 @@ class HttpRequest {
     std::string _buf;
     std::string _method;
     std::string _path;
-    std::string _query;  // part after ?
     std::string _version;
     std::map<std::string, std::string> _headers;
     std::string _body;
@@ -63,7 +62,6 @@ class HttpRequest {
 
     const std::string& getMethod() const;
     const std::string& getPath() const;
-    const std::string& getQuery() const;
     const std::string& getVersion() const;
     std::string getHeader(const std::string& key) const;
     const std::map<std::string, std::string>& getHeaders() const;

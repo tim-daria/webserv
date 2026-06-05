@@ -45,7 +45,6 @@ TEST_CASE("HttpRequest: GET with query string", "[parsing]") {
 
     REQUIRE(req.isDone());
     REQUIRE(req.getPath() == "/search");
-    REQUIRE(req.getQuery() == "q=hello&page=1");
 }
 
 TEST_CASE("HttpRequest: POST with body", "[parsing]") {
@@ -193,4 +192,51 @@ TEST_CASE("HttpRequest: processData after DONE is a no-op", "[parsing]") {
     req.processData(extra.c_str(), extra.size());
     REQUIRE(req.isDone());
     REQUIRE(req.getMethod() == "GET");
+}
+// ──────────────────────────────────────────────
+// Security: path traversal
+// ──────────────────────────────────────────────
+
+TEST_CASE("HttpRequest: path traversal mid-path returns 400", "[parsing][security]") {
+    // /../ segment somewhere in the path
+    HttpRequest req;
+    feedRequest(req, "GET /foo/../etc/passwd HTTP/1.1\r\n\r\n");
+
+    REQUIRE(req.isError());
+    REQUIRE(req.getErrorCode() == HTTP_BAD_REQUEST);
+}
+
+TEST_CASE("HttpRequest: path traversal at end returns 400", "[parsing][security]") {
+    // path ends with /.. (no trailing slash)
+    HttpRequest req;
+    feedRequest(req, "GET /foo/.. HTTP/1.1\r\n\r\n");
+
+    REQUIRE(req.isError());
+    REQUIRE(req.getErrorCode() == HTTP_BAD_REQUEST);
+}
+
+TEST_CASE("HttpRequest: path traversal at root returns 400", "[parsing][security]") {
+    HttpRequest req;
+    feedRequest(req, "GET /../etc/passwd HTTP/1.1\r\n\r\n");
+
+    REQUIRE(req.isError());
+    REQUIRE(req.getErrorCode() == HTTP_BAD_REQUEST);
+}
+
+TEST_CASE("HttpRequest: double dot in filename is allowed", "[parsing][security]") {
+    // .. inside a filename component (not a directory separator pair) must not be rejected
+    HttpRequest req;
+    feedRequest(req, "GET /files/report..pdf HTTP/1.1\r\n\r\n");
+
+    REQUIRE(req.isDone());
+    REQUIRE_FALSE(req.isError());
+    REQUIRE(req.getPath() == "/files/report..pdf");
+}
+
+TEST_CASE("HttpRequest: encoded null byte in URI returns 400", "[parsing][security]") {
+    HttpRequest req;
+    feedRequest(req, "GET /foo%00bar HTTP/1.1\r\n\r\n");
+
+    REQUIRE(req.isError());
+    REQUIRE(req.getErrorCode() == HTTP_BAD_REQUEST);
 }

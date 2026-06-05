@@ -69,11 +69,6 @@ void Server::configureSocket() {
     if (setsockopt(_sockfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes)) != 0) {
         throw std::runtime_error("Failed to set SO_REUSEADDR");
     }
-    // SO_REUSEPORT allows restarting the server immediately after a crash or
-    // Ctrl-Z suspension without waiting for the OS TIME_WAIT period to expire:
-    if (setsockopt(_sockfd, SOL_SOCKET, SO_REUSEPORT, &yes, sizeof(yes)) != 0) {
-        throw std::runtime_error("Failed to set SO_REUSEPORT");
-    }
     if (fcntl(_sockfd, F_SETFL, O_NONBLOCK) < 0) {
         throw std::runtime_error("Failed to set O_NONBLOCK");
     }
