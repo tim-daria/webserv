@@ -25,7 +25,7 @@ SRC_FILES = globals.cpp config/ServerConfig.cpp config/RouteConfig.cpp Logger.cp
 SRC_FILES += parser/Parser.cpp parser/ParserImpl.cpp parser/Lexer.cpp
 SRC_FILES += handler/RequestHandler.cpp handler/AutoIndex.cpp handler/ErrorHandler.cpp
 SRC_FILES += filesystem/FileService.cpp filesystem/PathUtils.cpp
-SRC_FILES += http/HttpResponse.cpp http/HttpRequest.cpp http/RequestValidator.cpp
+SRC_FILES += http/HttpResponse.cpp http/HttpRequest.cpp
 SRC_FILES += server/Server.cpp server/Client.cpp server/ServerHub.cpp
 SRC_FILES += utils.cpp
 ALL_SRC_FILES = main.cpp $(SRC_FILES)
@@ -42,7 +42,7 @@ SRCS_NO_MAIN = $(addprefix $(SRC_DIR), $(SRC_FILES))
 OBJS_NO_MAIN = $(patsubst $(SRC_DIR)%.cpp, $(OBJ_DIR)%.o, $(SRCS_NO_MAIN))
 
 TEST_FILES = io.cpp tests_response.cpp tests_error_handler.cpp tests_filesystem.cpp tests_autoindex.cpp
-TEST_FILES += tests_request_handler.cpp tests_request_parsing.cpp tests_validator.cpp
+TEST_FILES += tests_request_handler.cpp tests_request_parsing.cpp tests_signals.cpp
 TEST_FILES += tests_lexer.cpp tests_parser.cpp tests_parser_read_file.cpp tests_parser_rules.cpp
 TEST_SRCS = $(addprefix $(TEST_DIR), $(TEST_FILES))
 TEST_OBJS = $(patsubst $(TEST_DIR)%.cpp, $(TEST_OBJ_DIR)%.o, $(TEST_SRCS))
@@ -54,7 +54,7 @@ all: $(NAME)
 # 	@echo "Building server..."
 
 $(NAME): $(OBJS)
-	
+
 	@$(CXX) $(CXXFLAGS) -o $(NAME) $(OBJS)
 	@echo "./$(NAME) is ready"
 

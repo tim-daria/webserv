@@ -31,7 +31,6 @@
 #include "RequestHandler.hpp"
 // Added to validate the parsed request against the server config
 // (checks route existence and method allowance) before dispatching:
-#include "RequestValidator.hpp"
 #include "ServerConfig.hpp"
 
 extern volatile sig_atomic_t g_running;
@@ -185,17 +184,10 @@ void ServerHub::handleRead(size_t index) {
         // that HttpRequest set during parsing. No point validating further:
         responseStr = eh.makeError(request.getErrorCode()).toString();
     } else {
-        // Parsing succeeded. Now check the request against the server config:
-        // - 404 if no route matches the path
-        // - 405 if the matched route doesn't allow the method
-        int validationError = RequestValidator::validate(request, config);
-        if (validationError != 0) {
-            responseStr = eh.makeError(validationError).toString();
-        } else {
-            // Request is structurally valid and matches a configured route —
-            // dispatch to the handler to build the actual response:
-            responseStr = handler.handle_request(request).toString();
-        }
+        // Parsing succeeded.
+        // Request is structurally valid — dispatch to the handler to build the actual response:
+        responseStr = handler.handle_request(request).toString();
+        //}
     }
 
     // Log the status line of the response (first line before \r\n):

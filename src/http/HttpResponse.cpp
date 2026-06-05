@@ -43,6 +43,7 @@ std::string HttpResponse::getStatusText(int statusCode) {
                              {HTTP_CREATED, "Created"},
                              {HTTP_NO_CONTENT, "No Content"},
                              {HTTP_MOVED_PERMANENTLY, "Moved Permanently"},
+                             {HTTP_FOUND, "Found"},
                              {HTTP_BAD_REQUEST, "Bad Request"},
                              {HTTP_FORBIDDEN, "Forbidden"},
                              {HTTP_NOT_FOUND, "Not Found"},

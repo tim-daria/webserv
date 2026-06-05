@@ -4,8 +4,7 @@
 
 // Helper: feed a raw string into an existing HttpRequest
 static void feedRequest(HttpRequest& req, const std::string& raw, size_t maxBodySize = 0) {
-    if (maxBodySize > 0)
-        req.setMaxBodySize(maxBodySize);
+    if (maxBodySize > 0) req.setMaxBodySize(maxBodySize);
     req.processData(raw.c_str(), raw.size());
 }
 
@@ -19,10 +18,10 @@ TEST_CASE("HttpRequest: minimal GET request", "[parsing]") {
 
     REQUIRE(req.isDone());
     REQUIRE_FALSE(req.isError());
-    REQUIRE(req.getMethod()  == "GET");
-    REQUIRE(req.getPath()    == "/");
+    REQUIRE(req.getMethod() == "GET");
+    REQUIRE(req.getPath() == "/");
     REQUIRE(req.getVersion() == "HTTP/1.1");
-    REQUIRE(req.getBody()    == "");
+    REQUIRE(req.getBody() == "");
 }
 
 TEST_CASE("HttpRequest: GET with path and headers", "[parsing]") {
@@ -35,8 +34,8 @@ TEST_CASE("HttpRequest: GET with path and headers", "[parsing]") {
     feedRequest(req, raw);
 
     REQUIRE(req.isDone());
-    REQUIRE(req.getPath()               == "/index.html");
-    REQUIRE(req.getHeader("host")       == "localhost");
+    REQUIRE(req.getPath() == "/index.html");
+    REQUIRE(req.getHeader("host") == "localhost");
     REQUIRE(req.getHeader("connection") == "close");
 }
 
@@ -52,14 +51,17 @@ TEST_CASE("HttpRequest: POST with body", "[parsing]") {
     std::string body = "name=Alice&age=30";
     std::string raw =
         "POST /submit HTTP/1.1\r\n"
-        "Content-Length: " + std::to_string(body.size()) + "\r\n"
-        "\r\n" + body;
+        "Content-Length: " +
+        std::to_string(body.size()) +
+        "\r\n"
+        "\r\n" +
+        body;
     HttpRequest req;
     feedRequest(req, raw);
 
     REQUIRE(req.isDone());
     REQUIRE(req.getMethod() == "POST");
-    REQUIRE(req.getBody()   == body);
+    REQUIRE(req.getBody() == body);
 }
 
 TEST_CASE("HttpRequest: DELETE request", "[parsing]") {
@@ -68,7 +70,7 @@ TEST_CASE("HttpRequest: DELETE request", "[parsing]") {
 
     REQUIRE(req.isDone());
     REQUIRE(req.getMethod() == "DELETE");
-    REQUIRE(req.getPath()   == "/resource");
+    REQUIRE(req.getPath() == "/resource");
 }
 
 TEST_CASE("HttpRequest: headers are stored lowercase", "[parsing]") {
@@ -106,7 +108,7 @@ TEST_CASE("HttpRequest: incremental feed — headers split across two chunks", "
 
     HttpRequest req;
     req.processData(part1.c_str(), part1.size());
-    REQUIRE_FALSE(req.isDone()); // still waiting for end of headers
+    REQUIRE_FALSE(req.isDone());  // still waiting for end of headers
 
     req.processData(part2.c_str(), part2.size());
     REQUIRE(req.isDone());
@@ -117,11 +119,12 @@ TEST_CASE("HttpRequest: incremental feed — body split across chunks", "[parsin
     std::string body = "hello=world";
     std::string headers =
         "POST /data HTTP/1.1\r\n"
-        "Content-Length: " + std::to_string(body.size()) + "\r\n\r\n";
+        "Content-Length: " +
+        std::to_string(body.size()) + "\r\n\r\n";
 
     HttpRequest req;
     req.processData(headers.c_str(), headers.size());
-    REQUIRE_FALSE(req.isDone()); // body not yet received
+    REQUIRE_FALSE(req.isDone());  // body not yet received
 
     req.processData(body.c_str(), body.size());
     REQUIRE(req.isDone());
@@ -137,7 +140,7 @@ TEST_CASE("HttpRequest: unknown method returns 501", "[parsing][errors]") {
     feedRequest(req, "PATCH /resource HTTP/1.1\r\n\r\n");
 
     REQUIRE(req.isError());
-    REQUIRE(req.getErrorCode() == HTTP_METHOD_NOT_IMPLEMENTED);
+    REQUIRE(req.getErrorCode() == HTTP_METHOD_NOT_ALLOWED);
 }
 
 TEST_CASE("HttpRequest: malformed first line returns 400", "[parsing][errors]") {
@@ -153,8 +156,11 @@ TEST_CASE("HttpRequest: body exceeds maxBodySize returns 413", "[parsing][errors
     std::string body(100, 'x');
     std::string raw =
         "POST /upload HTTP/1.1\r\n"
-        "Content-Length: " + std::to_string(body.size()) + "\r\n"
-        "\r\n" + body;
+        "Content-Length: " +
+        std::to_string(body.size()) +
+        "\r\n"
+        "\r\n" +
+        body;
 
     // Set maxBodySize smaller than the declared Content-Length
     HttpRequest req;

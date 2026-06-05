@@ -90,14 +90,14 @@ void HttpRequest::_parseFirstLine() {
     _method = line.substr(0, pos1);
     if (!_isImplemented(_method)) {
         _state = PARSING_ERROR;
-        _errorCode = HTTP_METHOD_NOT_IMPLEMENTED;  // 501
+        _errorCode = HTTP_METHOD_NOT_ALLOWED;  // 405
         return;
     }
     _version = line.substr(pos2 + 1);  // do we need to throw an error
     // if the version is higher than 1.1?
 
     std::string uri = line.substr(pos1 + 1, pos2 - pos1 - 1);
-		LOG_DEBUG("URI is: " + uri);
+    LOG_DEBUG("URI is: " + uri);
 
     // Reject encoded null bytes — they are a security risk and bypass path checks:
     if (uri.find("%00") != std::string::npos) {
@@ -109,10 +109,15 @@ void HttpRequest::_parseFirstLine() {
     // Reject path traversal attempts (e.g. /../, /.., /foo/../../etc):
     // Check the path portion only (before '?'):
     std::string pathPart = uri.substr(0, uri.find('?'));
-    bool hasTraversalSegment = pathPart.find("/../") != std::string::npos; // is there "/../"?
-		if (hasTraversalSegment) {LOG_DEBUG("/../ found!");};
-    bool endsWithTraversal = pathPart.size() >= 3 && pathPart.substr(pathPart.size() - 3) == "/.."; // does the path end with "/.."?
-		if (endsWithTraversal) {LOG_DEBUG("/.. found!");};
+    bool hasTraversalSegment = pathPart.find("/../") != std::string::npos;  // is there "/../"?
+    if (hasTraversalSegment) {
+        LOG_DEBUG("/../ found!");
+    };
+    bool endsWithTraversal = pathPart.size() >= 3 && pathPart.substr(pathPart.size() - 3) ==
+                                                         "/..";  // does the path end with "/.."?
+    if (endsWithTraversal) {
+        LOG_DEBUG("/.. found!");
+    };
 
     if (hasTraversalSegment || endsWithTraversal) {
         _state = PARSING_ERROR;
