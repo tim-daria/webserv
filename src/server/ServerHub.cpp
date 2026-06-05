@@ -31,7 +31,6 @@
 #include "RequestHandler.hpp"
 // Added to validate the parsed request against the server config
 // (checks route existence and method allowance) before dispatching:
-#include "RequestValidator.hpp"
 #include "ServerConfig.hpp"
 
 extern volatile sig_atomic_t g_running;
