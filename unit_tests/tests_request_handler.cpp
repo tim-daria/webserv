@@ -244,4 +244,60 @@ TEST_CASE("DELETE directory returns 403") {
     HttpResponse response = handler.handle_request(request);
 
     REQUIRE(response.getStatusCode() == HTTP_FORBIDDEN);
+
+    removeDir("./delete_test_dir");
+}
+
+TEST_CASE("GET returns 301 redirect from config") {
+    ServerConfig config;
+
+    RouteConfig route;
+    route.url = "/old";
+    route.hasReturn = true;
+    route.returnStatus = 301;
+    route.returnUri = "/new";
+
+    config.add_route(route);
+
+    Handler handler(config);
+
+    HttpRequest request;
+
+    std::string raw = "GET /old HTTP/1.1\r\n";
+
+    request.processData(raw.c_str(), raw.size());
+
+    HttpResponse response = handler.handle_request(request);
+
+    std::string text = response.toString();
+
+    REQUIRE(text.find("301") != std::string::npos);
+    REQUIRE(text.find("Location: /new") != std::string::npos);
+}
+
+TEST_CASE("Directory without trailing slash returns redirect") {
+    ServerConfig config;
+
+    RouteConfig route;
+    route.url = "/uploads";
+    route.rootDirectory = "./www";
+    route.add_acceptedMethod("GET");
+
+    config.add_route(route);
+
+    Handler handler(config);
+
+    HttpRequest request;
+
+    std::string raw = "GET /uploads HTTP/1.1\r\n";
+
+    request.processData(raw.c_str(), raw.size());
+
+    HttpResponse response = handler.handle_request(request);
+
+    std::string text = response.toString();
+
+    INFO(response.toString());
+    REQUIRE(text.find("301") != std::string::npos);
+    REQUIRE(text.find("Location: /uploads/") != std::string::npos);
 }

@@ -195,15 +195,8 @@ void ServerHub::handleRead(size_t index) {
         // that HttpRequest set during parsing. No point validating further:
         responseStr = eh.makeError(request.getErrorCode()).toString();
     } else {
-        // Parsing succeeded. Now check the request against the server config:
-        // - 404 if no route matches the path
-        // - 405 if the matched route doesn't allow the method
-        // int validationError = RequestValidator::validate(request, config);
-        // if (validationError != 0) {
-        //     responseStr = eh.makeError(validationError).toString();
-        // } else {
-        // Request is structurally valid and matches a configured route —
-        // dispatch to the handler to build the actual response:
+        // Parsing succeeded.
+        // Request is structurally valid — dispatch to the handler to build the actual response:
         responseStr = handler.handle_request(request).toString();
         //}
     }
