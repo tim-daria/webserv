@@ -6,12 +6,11 @@
 /*   By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/22 16:45:04 by nefimov           #+#    #+#             */
-/*   Updated: 2026/06/04 15:55:24 by nefimov          ###   ########.fr       */
+/*   Updated: 2026/06/05 16:38:47 by nefimov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PARSEDROUTE_HPP
-#define PARSEDROUTE_HPP
+#pragma once
 
 #include "config/RouteConfig.hpp"
 
@@ -25,7 +24,5 @@ struct ParsedRoute {
     bool hasReturn;
     bool hasCgi;
     bool hasUpload;
-	bool hasMaxsize;
+    bool hasMaxsize;
 };
-
-#endif

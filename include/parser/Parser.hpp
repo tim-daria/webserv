@@ -6,12 +6,11 @@
 /*   By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/22 16:45:15 by nefimov           #+#    #+#             */
-/*   Updated: 2026/05/22 16:45:16 by nefimov          ###   ########.fr       */
+/*   Updated: 2026/06/03 11:34:31 by nefimov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PARSER_HPP
-#define PARSER_HPP
+#pragma once
 
 #include <string>
 #include <vector>
@@ -24,5 +23,3 @@ class Parser {
     static std::vector<ServerConfig> parseString(const std::string& content,
                                                  const std::string& sourceName);
 };
-
-#endif

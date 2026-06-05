@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   RequestHandler.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tsemenov <tsemenov@student.42berlin.de>    +#+  +:+       +#+        */
+/*   By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 13:53:22 by dtimofee          #+#    #+#             */
-/*   Updated: 2026/05/20 20:49:59 by tsemenov         ###   ########.fr       */
+/*   Updated: 2026/06/03 10:45:24 by nefimov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@
 #include "PathUtils.hpp"
 
 Handler::Handler(ServerConfig& config)
-    : _serverConfig(config), _errorHandler(config.errorPages), _fileService(), _autoIndex() {}
+    : _serverConfig(config), _errorHandler(config), _fileService(), _autoIndex() {}
 
 Handler::~Handler() {}
 
