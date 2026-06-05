@@ -27,7 +27,7 @@ std::string ErrorHandler::getCustomPage(int code) const {
     }
 
     std::string body;
-    std::string full_path = PathUtils::bildPathForFile(_rootPath, it->second);
+    std::string full_path = PathUtils::concatenatePath(_rootPath, it->second);
     int status = _fileService.readFile(full_path, body);
     if (status != HTTP_OK) {
         LOG_WARNING("Incorrect path for custom error page: " + full_path);
