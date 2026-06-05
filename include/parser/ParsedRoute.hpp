@@ -6,7 +6,7 @@
 /*   By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/22 16:45:04 by nefimov           #+#    #+#             */
-/*   Updated: 2026/06/03 11:34:23 by nefimov          ###   ########.fr       */
+/*   Updated: 2026/06/05 16:38:47 by nefimov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,4 +24,5 @@ struct ParsedRoute {
     bool hasReturn;
     bool hasCgi;
     bool hasUpload;
+    bool hasMaxsize;
 };
