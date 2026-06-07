@@ -40,7 +40,7 @@
       list.innerHTML = links
         .map((a) => {
           const name = a.textContent.trim();
-          // The autoindex prints "<a>name</a>   SIZE\n", so this row's size is
+          // The autoindex prints "NAME   SIZE\n", so this row's size is
           // the text node right after the link (up to the newline), not the
           // whole <pre> block.
           const next = a.nextSibling;
@@ -90,6 +90,38 @@
     } catch (e) {
       showResult("error", "Delete failed: could not reach the server.");
     }
+  }
+
+  // helper function for file upload.
+  async function handleUpload(event) {
+    event.preventDefault();
+    const fileInput = document.getElementById("file");
+    if (!fileInput || !fileInput.files.length) {
+      showResult("error", "Please choose a file first.");
+      return;
+    }
+
+    showResult("", "Uploading\u2026");
+    const data = new FormData(uploadForm);
+
+    try {
+      const res = await fetch("/upload", { method: "POST", body: data });
+      if (res.ok || res.status === 201) {
+        showResult("success", "File uploaded successfully.");
+        uploadForm.reset();
+        loadFileList();
+      } else {
+        showResult("error", "Upload failed (HTTP " + res.status + ").");
+      }
+    } catch (e) {
+      showResult("error", "Upload failed: could not reach the server.");
+    }
+  }
+
+  // Only wire up the upload form if this page has one.
+  const uploadForm = document.querySelector("form[action='/upload']");
+  if (uploadForm) {
+    uploadForm.addEventListener("submit", handleUpload(event));
   }
 
   // Only wire up the delete form if this page actually has one.

@@ -8,6 +8,11 @@
   --darkest-blue: #0a0a14;
   --red: #ff0054;
   --purple: #6e44ff;
+  --dark-green: #0d2b1a;
+  --green: #27ae60;
+  --brown: #2b0d0d;
+  --orange: #c0392b;
+  --l-orange: #e57373;
 
   /* fonts: */
   --text-color: white;
@@ -40,13 +45,13 @@
   --form-desc: #888;
   --label-color: var(--text-color);
   --input-border: var(--lilac);
-  --input-focus: #8888cc;
-  --result-success-bg: #0d2b1a;
-  --result-success-border: #27ae60;
-  --result-success-color: #4caf80;
-  --result-error-bg: #2b0d0d;
-  --result-error-border: #c0392b;
-  --result-error-color: #e57373;
+  --input-focus: var(--lilac);
+  --result-success-bg: var(--dark-green);
+  --result-success-border: var(--green);
+  --result-success-color: var(--green);
+  --result-error-bg: var(--brown);
+  --result-error-border: var(--orange);
+  --result-error-color: var(--l-orange);
 }
 
 [data-theme="light"] {
@@ -88,12 +93,9 @@
   --label-color: var(--text-color);
   --input-border: var(--card-bg);
   --input-focus: var(--l-white);
-  --result-success-bg: #0d2b1a;
-  --result-success-border: #27ae60;
-  --result-success-color: #4caf80;
-  --result-error-bg: #2b0d0d;
-  --result-error-border: #c0392b;
-  --result-error-color: #e57373;
+  --result-success-bg: var(--green);
+  --result-success-border: var(--green);
+  --result-success-color: var(--l-white);
 }
 
 body::after {
@@ -398,44 +400,12 @@ section.secondaryText {
 .listFiles {
   margin: 1.5rem 0;
 
-  & ul {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-  }
-
-  & li {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: var(--card-bg);
-    border-radius: 6px;
-    padding: 0.5rem 1rem;
+  &.empty {
+    color: var(--secondary-text-color);
     font-size: 0.9rem;
-
-    & a {
-      color: var(--text-color);
-      text-decoration: none;
-
-      &:hover {
-        text-decoration: underline;
-      }
-    }
-
-    &.file-size {
-      color: var(--secondary-text-color);
-      font-size: 0.8rem;
-    }
-
-    &.empty {
-      color: var(--secondary-text-color);
-      font-size: 0.9rem;
-    }
   }
 }
 
-/* Flat rules (the browser does not apply the nested syntax above). */
 .listFiles ul {
   list-style: none;
   display: flex;
@@ -457,6 +427,22 @@ section.secondaryText {
   border-radius: 6px;
   padding: 0.5rem 1rem;
   font-size: 0.9rem;
+
+  & a {
+    color: var(--text-color);
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.listFiles .file-name,
+.listFiles .file-size {
+  font-size: 0.85rem;
+  color: var(--text-color);
+  white-space: nowrap;
 }
 
 .listFiles .file-name {
@@ -464,12 +450,6 @@ section.secondaryText {
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.listFiles .file-size {
-  color: var(--text-color);
-  font-size: 0.85rem;
   white-space: nowrap;
 }
 
@@ -524,7 +504,7 @@ section.secondaryText {
 }
 
 .form-group textarea {
-  /* resize: vertical; */
+  resize: vertical;
   min-height: 90px;
 }
 
