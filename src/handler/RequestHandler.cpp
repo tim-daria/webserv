@@ -25,7 +25,11 @@
 #include "PathUtils.hpp"
 
 Handler::Handler(ServerConfig& config)
-    : _serverConfig(config), _errorHandler(config), _fileService(), _autoIndex() {}
+    : _serverConfig(config),
+      _errorHandler(config),
+      _cgiHandler(config),
+      _fileService(),
+      _autoIndex() {}
 
 Handler::~Handler() {}
 
@@ -158,6 +162,10 @@ HttpResponse Handler::handle_request(HttpRequest& request) {
     if (!_location->isMethodAllowed(request.getMethod())) {
         LOG_WARNING("Method check failed: " + request.getMethod());
         return _errorHandler.makeError(HTTP_METHOD_NOT_ALLOWED);
+    }
+    if (_location->isCGI(request.getPath())) {
+        LOG_INFO("CGI detected on path: " + request.getPath());
+        return _cgiHandler.execute(request, _location);
     }
     if (request.getMethod() == "GET") {
         return handleGet(request, _location);

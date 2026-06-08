@@ -28,20 +28,15 @@ class ServerConfig {
     size_t clientMaxBodySize;                          // Max allowd size for client request body
     std::vector<RouteConfig> routes;                   // List of routes for this server
 
-    void add_listen(const std::string& interface, int port) {
-        listen.push_back(std::make_pair(interface, port));
-    }
+    void add_listen(const std::string& interface, int port);
+    void set_errorPage(int code, const std::string& path);
+    void add_route(const RouteConfig& route);
 
-    void set_errorPage(int code, const std::string& path) {
-        errorPages.insert(std::make_pair(code, path));
-    }
-
-    void add_route(const RouteConfig& route) { routes.push_back(route); }
     const RouteConfig* findMatchingLocation(std::string path) const;
 
     static ServerConfig makeDefault();
     void applyDefaults();
-    void print();
+    // void print();
 };
 
-std::ostream& operator<<(std::ostream& out, const ServerConfig& config);
+// std::ostream& operator<<(std::ostream& out, const ServerConfig& config);

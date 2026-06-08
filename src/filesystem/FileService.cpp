@@ -46,6 +46,16 @@ int FileService::checkUploadDirectory(const std::string& path, struct stat& info
     return HTTP_OK;
 }
 
+int FileService::checkCGI(const std::string& path, struct stat& info) const {
+    if (stat(path.c_str(), &info) != 0) return HTTP_NOT_FOUND;
+
+    if (!S_ISREG(info.st_mode)) return HTTP_FORBIDDEN;
+
+    if (access(path.c_str(), X_OK) != 0) return HTTP_FORBIDDEN;
+
+    return HTTP_OK;
+}
+
 int FileService::readFile(const std::string& path, std::string& content) const {
     std::ifstream file(path.c_str());
     if (!file.is_open()) {
