@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tests_filesystem.cpp                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tsemenov <tsemenov@student.42berlin.de>    +#+  +:+       +#+        */
+/*   By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/15 10:42:44 by dtimofee          #+#    #+#             */
-/*   Updated: 2026/05/20 11:12:05 by tsemenov         ###   ########.fr       */
+/*   Updated: 2026/06/02 18:52:48 by nefimov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,12 +101,56 @@ TEST_CASE("PathUtils::buildPathForDirectory returns correct path", "[PathUtils]"
     SECTION("Path ending without /") {
         std::string path = "./www/upload";
         std::string defaultFile = "index.html";
-        REQUIRE(PathUtils::bildPathForDirectory(path, defaultFile) == "./www/upload/index.html");
+        REQUIRE(PathUtils::concatenatePath(path, defaultFile) == "./www/upload/index.html");
     }
 
     SECTION("Path ending with /") {
         std::string path = "./www/upload/";
         std::string defaultFile = "index.html";
-        REQUIRE(PathUtils::bildPathForDirectory(path, defaultFile) == "./www/upload/index.html");
+        REQUIRE(PathUtils::concatenatePath(path, defaultFile) == "./www/upload/index.html");
+    }
+}
+
+TEST_CASE("PathUtils::buildPathForFile returns correct path", "[PathUtils]") {
+    SECTION("File path starting without '/', root path ending without '/'") {
+        std::string root_path = "./www/upload";
+        std::string file_path = "index.html";
+        REQUIRE(PathUtils::concatenatePath(root_path, file_path) == "./www/upload/index.html");
+    }
+
+    SECTION("File path starting without '/', root path ending with '/'") {
+        std::string root_path = "./www/upload/";
+        std::string file_path = "index.html";
+        REQUIRE(PathUtils::concatenatePath(root_path, file_path) == "./www/upload/index.html");
+    }
+
+    SECTION("File path starting with '/', root path ending without '/'") {
+        std::string root_path = "./www/upload";
+        std::string file_path = "/index.html";
+        REQUIRE(PathUtils::concatenatePath(root_path, file_path) == "./www/upload/index.html");
+    }
+
+    SECTION("File path starting with '/', root path ending with '/'") {
+        std::string root_path = "./www/upload/";
+        std::string file_path = "/index.html";
+        REQUIRE(PathUtils::concatenatePath(root_path, file_path) == "./www/upload/index.html");
+    }
+
+    SECTION("File path starting with '/', root path is '/'") {
+        std::string root_path = "/";
+        std::string file_path = "/index.html";
+        REQUIRE(PathUtils::concatenatePath(root_path, file_path) == "/index.html");
+    }
+
+    SECTION("File path is empty string") {
+        std::string root_path = "./www/upload";
+        std::string file_path = "";
+        REQUIRE(PathUtils::concatenatePath(root_path, file_path) == "./www/upload");
+    }
+
+    SECTION("Root path is empty string") {
+        std::string root_path = "";
+        std::string file_path = "/index.html";
+        REQUIRE(PathUtils::concatenatePath(root_path, file_path) == "/index.html");
     }
 }

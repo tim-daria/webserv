@@ -6,7 +6,7 @@
 /*   By: tsemenov <tsemenov@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/06 16:23:17 by tsemenov          #+#    #+#             */
-/*   Updated: 2026/05/20 21:07:49 by tsemenov         ###   ########.fr       */
+/*   Updated: 2026/06/04 16:27:14 by tsemenov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,12 @@
 #include <fcntl.h>
 #include <netinet/in.h>
 #include <poll.h>
-#include <signal.h> 	
+#include <signal.h>
 #include <sys/socket.h>
 #include <unistd.h>
 
 #include <cerrno>
 #include <iostream>
-#include <sstream>
 #include <stdexcept>
 
 #include "Logger.hpp"
@@ -32,7 +31,6 @@
 #include "RequestHandler.hpp"
 // Added to validate the parsed request against the server config
 // (checks route existence and method allowance) before dispatching:
-#include "RequestValidator.hpp"
 #include "ServerConfig.hpp"
 
 extern volatile sig_atomic_t g_running;
@@ -123,9 +121,7 @@ void ServerHub::acceptNewClient(int server_fd, size_t serverIndex) {
 
     // make it non-blocking:
     if (fcntl(client_fd, F_SETFL, O_NONBLOCK) < 0) {
-        std::ostringstream oss_fcntl;
-        oss_fcntl << "fcntl failed for client fd " << client_fd;
-        LOG_DEBUG(oss_fcntl.str());
+        LOG_DEBUG("fcntl failed for client fd " << client_fd);
         close(client_fd);
         return;
     }
@@ -140,9 +136,7 @@ void ServerHub::acceptNewClient(int server_fd, size_t serverIndex) {
     pfd.events = POLLIN;
     _fds.push_back(pfd);
 
-    std::ostringstream oss_accept;
-    oss_accept << "New client connected on fd: " << client_fd;
-    LOG_DEBUG(oss_accept.str());
+    LOG_DEBUG("New client connected on fd: " << client_fd);
 }
 
 void ServerHub::handleRead(size_t index) {
@@ -158,9 +152,7 @@ void ServerHub::handleRead(size_t index) {
     // if the received message is missing header/body
     if (!client.isRequestComplete()) return;  // wait for more data
 
-    std::ostringstream oss_req;
-    oss_req << "Request received from fd " << client_fd;
-    LOG_DEBUG(oss_req.str());
+    LOG_DEBUG("Request received from fd " << client_fd);
 
     ServerConfig& config = _servers[client.getServerIndex()].getConfig();
 
@@ -177,16 +169,13 @@ void ServerHub::handleRead(size_t index) {
     request.processData(raw.c_str(), raw.size());
 
     if (!request.isError()) {
-        std::ostringstream oss_req_log;
-        oss_req_log << request.getMethod() << " " << request.getPath();
-        if (!request.getQuery().empty()) oss_req_log << "?" << request.getQuery();
-        LOG_INFO(oss_req_log.str());
+        LOG_INFO(request.getMethod() << " " << request.getPath());
     }
 
     // ErrorHandler is constructed here (outside the branches) so it can be
     // used for both parse errors and validation errors without duplicating
     // the config.errorPages lookup:
-    ErrorHandler eh(config.errorPages);
+    ErrorHandler eh(config);
     Handler handler(config);
 
     std::string responseStr;
@@ -195,22 +184,15 @@ void ServerHub::handleRead(size_t index) {
         // that HttpRequest set during parsing. No point validating further:
         responseStr = eh.makeError(request.getErrorCode()).toString();
     } else {
-        // Parsing succeeded. Now check the request against the server config:
-        // - 404 if no route matches the path
-        // - 405 if the matched route doesn't allow the method
-        int validationError = RequestValidator::validate(request, config);
-        if (validationError != 0) {
-            responseStr = eh.makeError(validationError).toString();
-        } else {
-            // Request is structurally valid and matches a configured route —
-            // dispatch to the handler to build the actual response:
-            responseStr = handler.handle_request(request).toString();
-        }
+        // Parsing succeeded.
+        // Request is structurally valid — dispatch to the handler to build the actual response:
+        responseStr = handler.handle_request(request).toString();
+        //}
     }
 
     // Log the status line of the response (first line before \r\n):
     size_t status_end = responseStr.find("\r\n");
-    LOG_INFO(status_end != std::string::npos ? responseStr.substr(0, status_end) : responseStr);
+    LOG_INFO((status_end != std::string::npos ? responseStr.substr(0, status_end) : responseStr));
 
     client.setWriteBuffer(responseStr);
 
@@ -238,9 +220,7 @@ void ServerHub::handleWrite(size_t index) {
 
 void ServerHub::disconnectClient(size_t index) {
     int client_fd = _fds[index].fd;
-    std::ostringstream oss_disc;
-    oss_disc << "Client on fd " << client_fd << " disconnected by the server";
-    LOG_DEBUG(oss_disc.str());
+    LOG_DEBUG("Client on fd " << client_fd << " disconnected by the server");
     close(client_fd);  // ServerHub owns the fd lifecycle
     _clients.erase(client_fd);
     _fds.erase(_fds.begin() + index);
@@ -254,9 +234,7 @@ void ServerHub::checkTimeouts() {
         Client& client = _clients.at(client_fd);
 
         if (now - client.getLastActive() > TIMEOUT) {
-            std::ostringstream oss_timeout;
-            oss_timeout << "Client on fd " << client_fd << " timed out";
-            LOG_DEBUG(oss_timeout.str());
+            LOG_DEBUG("Client on fd " << client_fd << " timed out");
             disconnectClient(i);
         } else {
             ++i;

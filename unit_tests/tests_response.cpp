@@ -55,18 +55,14 @@ TEST_CASE("HttpResponse::getStatusText returns Unknown for unknown code", "[Http
 }
 
 TEST_CASE("HttpResponse::toString format is correct", "[HttpResponse]") {
-    std::vector<std::pair<std::string, std::string>> headers;
-    headers.push_back(std::make_pair("Content-Type", "text/html"));
-    headers.push_back(std::make_pair("Content-Length", "5"));
+    std::map<std::string, std::string> headers;
+    headers["Content-Type"] = "text/html";
+    headers["Content-Length"] = "5";
 
     HttpResponse response(HTTP_OK, "hello", headers);
     std::string raw = response.toString();
 
     SECTION("Status line - known code") { REQUIRE(raw.find("HTTP/1.0 200 OK") == 0); }
-
-    SECTION("Headers order preserved") {
-        REQUIRE(raw.find("Content-Type") < raw.find("Content-Length"));
-    }
 
     SECTION("Empty line before body") {
         size_t separator = raw.find("\r\n\r\n");

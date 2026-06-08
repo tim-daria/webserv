@@ -6,13 +6,15 @@
 /*   By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 17:06:49 by nefimov           #+#    #+#             */
-/*   Updated: 2026/06/01 16:07:52 by nefimov          ###   ########.fr       */
+/*   Updated: 2026/06/08 16:01:59 by nefimov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ServerConfig.hpp"
 
 #include <iostream>
+
+#include "Logger.hpp"
 
 void ServerConfig::print() { std::cout << *this << std::endl; }
 
@@ -28,13 +30,15 @@ void ServerConfig::applyDefaults() {
     routes.clear();
 
     serverName = "webserv";
+    rootPath = "./www";
     add_listen("127.0.0.1", 8080);
     clientMaxBodySize = 1048576;
 
     RouteConfig r;
     r.url = "/";
-    r.rootDirectory = "www";
+    r.rootDirectory = "./www";
     r.defaultFile = "index.html";
+    r.clientMaxBodySize = 1048576;
     r.add_acceptedMethod("GET");
     add_route(r);
 

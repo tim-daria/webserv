@@ -6,7 +6,7 @@
 #    By: tsemenov <tsemenov@student.42berlin.de>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/04 12:41:15 by dtimofee          #+#    #+#              #
-#    Updated: 2026/05/26 10:29:05 by nefimov          ###   ########.fr        #
+#    Updated: 2026/06/05 16:01:39 by tsemenov         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,7 +25,7 @@ SRC_FILES = globals.cpp config/ServerConfig.cpp config/RouteConfig.cpp Logger.cp
 SRC_FILES += parser/Parser.cpp parser/ParserImpl.cpp parser/Lexer.cpp
 SRC_FILES += handler/RequestHandler.cpp handler/AutoIndex.cpp handler/ErrorHandler.cpp
 SRC_FILES += filesystem/FileService.cpp filesystem/PathUtils.cpp
-SRC_FILES += http/HttpResponse.cpp http/HttpRequest.cpp http/RequestValidator.cpp
+SRC_FILES += http/HttpResponse.cpp http/HttpRequest.cpp
 SRC_FILES += server/Server.cpp server/Client.cpp server/ServerHub.cpp
 SRC_FILES += utils.cpp
 ALL_SRC_FILES = main.cpp $(SRC_FILES)
@@ -42,7 +42,7 @@ SRCS_NO_MAIN = $(addprefix $(SRC_DIR), $(SRC_FILES))
 OBJS_NO_MAIN = $(patsubst $(SRC_DIR)%.cpp, $(OBJ_DIR)%.o, $(SRCS_NO_MAIN))
 
 TEST_FILES = io.cpp tests_response.cpp tests_error_handler.cpp tests_filesystem.cpp tests_autoindex.cpp
-TEST_FILES += tests_request_handler.cpp tests_request_parsing.cpp tests_validator.cpp
+TEST_FILES += tests_request_handler.cpp tests_request_parsing.cpp tests_signals.cpp
 TEST_FILES += tests_lexer.cpp tests_parser.cpp tests_parser_read_file.cpp tests_parser_rules.cpp
 TEST_SRCS = $(addprefix $(TEST_DIR), $(TEST_FILES))
 TEST_OBJS = $(patsubst $(TEST_DIR)%.cpp, $(TEST_OBJ_DIR)%.o, $(TEST_SRCS))
@@ -50,8 +50,11 @@ TEST_OBJS = $(patsubst $(TEST_DIR)%.cpp, $(TEST_OBJ_DIR)%.o, $(TEST_SRCS))
 
 all: $(NAME)
 
+# prebuild:
+# 	@echo "Building server..."
+
 $(NAME): $(OBJS)
-	@echo "Building server..."
+
 	@$(CXX) $(CXXFLAGS) -o $(NAME) $(OBJS)
 	@echo "./$(NAME) is ready"
 
@@ -77,11 +80,17 @@ clean:
 	@rm -rf $(OBJ_DIR)
 	@echo "Clean done"
 
-fclean: clean
+fclean: clean kill
 	@echo "Running fclean..."
 	@rm -f $(NAME) $(TEST_NAME)
 	@echo "All cleaned"
 
 re: fclean all
 
-.PHONY: all clean fclean re test
+kill:
+	@pkill -x webserv 2>/dev/null && echo "Killed running webserv" || echo "No webserv running"
+
+run: all kill
+	@./$(NAME)
+
+.PHONY: all clean fclean re test kill run

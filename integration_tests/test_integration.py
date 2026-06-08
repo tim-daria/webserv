@@ -1,4 +1,6 @@
 import requests
+import pathlib
+import socket
 
 class TestServerBasics:
     """Basic server health tests"""
@@ -62,18 +64,18 @@ class TestHTTPMethods:
             data={"key": "value"}
         )
 
-        assert response.status_code in [200, 405]
+        assert response.status_code in [201, 403, 404, 405]
 
     def test_delete_request(self, server_url, client):
         response = client.delete(f"{server_url}/")
 
         assert response.status_code in [200, 405]
 
-    def test_put_request_returns_501(self, server_url, client):
+    def test_put_request_returns_405(self, server_url, client):
         """PUT is not implemented by this server"""
         response = client.put(f"{server_url}/")
 
-        assert response.status_code == 501
+        assert response.status_code == 405
 
     def test_get_on_delete_only_route_returns_405(self, server_url, client):
         """GET is a known method but not allowed on /method_not_allowed"""
@@ -141,3 +143,56 @@ class TestAdvancedCases:
         )
 
         assert response.status_code in [404, 414]
+
+    def test_path_traversal_rejected(self, server_url):
+        """Path traversal (/../) must be rejected with 400 — sent via raw socket
+        to bypass URL normalization done by requests/curl."""
+        from urllib.parse import urlparse
+        parsed = urlparse(server_url)
+        host = parsed.hostname
+        port = parsed.port or 80
+
+        raw_request = (
+            "GET /uploads/../../../etc/passwd HTTP/1.1\r\n"
+            f"Host: {host}\r\n"
+            "Connection: close\r\n"
+            "\r\n"
+        )
+
+        with socket.create_connection((host, port), timeout=5) as sock:
+            sock.sendall(raw_request.encode())
+            response = b""
+            while True:
+                chunk = sock.recv(4096)
+                if not chunk:
+                    break
+                response += chunk
+
+        first_line = response.split(b"\r\n")[0].decode()
+        assert "400" in first_line, f"Expected 400, got: {first_line}"
+
+    def test_encoded_null_byte_rejected(self, server_url):
+        """Encoded null byte (%00) in path must be rejected with 400."""
+        from urllib.parse import urlparse
+        parsed = urlparse(server_url)
+        host = parsed.hostname
+        port = parsed.port or 80
+
+        raw_request = (
+            "GET /index%00.html HTTP/1.1\r\n"
+            f"Host: {host}\r\n"
+            "Connection: close\r\n"
+            "\r\n"
+        )
+
+        with socket.create_connection((host, port), timeout=5) as sock:
+            sock.sendall(raw_request.encode())
+            response = b""
+            while True:
+                chunk = sock.recv(4096)
+                if not chunk:
+                    break
+                response += chunk
+
+        first_line = response.split(b"\r\n")[0].decode()
+        assert "400" in first_line, f"Expected 400, got: {first_line}"

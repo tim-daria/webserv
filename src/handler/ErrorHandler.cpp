@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ErrorHandler.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dtimofee <dtimofee@student.42berlin.de>    #+#  +:+       +#+        */
+/*   By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026-05-11 14:04:17 by dtimofee          #+#    #+#             */
-/*   Updated: 2026-05-11 14:04:17 by dtimofee         ###   ########.fr       */
+/*   Created: 2026/05/11 14:04:17 by dtimofee          #+#    #+#             */
+/*   Updated: 2026/06/03 11:35:07 by nefimov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,10 @@
 
 #include "HttpResponse.hpp"
 #include "Logger.hpp"
+#include "PathUtils.hpp"
 
-ErrorHandler::ErrorHandler(const std::map<int, std::string>& errorPages)
-    : _errorPages(errorPages), _fileService() {}
+ErrorHandler::ErrorHandler(const ServerConfig& conf)
+    : _errorPages(conf.errorPages), _fileService(), _rootPath(conf.rootPath) {}
 
 std::string ErrorHandler::getCustomPage(int code) const {
     std::map<int, std::string>::const_iterator it = _errorPages.find(code);
@@ -26,9 +27,10 @@ std::string ErrorHandler::getCustomPage(int code) const {
     }
 
     std::string body;
-    int status = _fileService.readFile(it->second, body);
+    std::string full_path = PathUtils::concatenatePath(_rootPath, it->second);
+    int status = _fileService.readFile(full_path, body);
     if (status != HTTP_OK) {
-        LOG_WARNING("Incorrect path for custom error page: " + it->second);
+        LOG_WARNING("Incorrect path for custom error page: " + full_path);
         return "";
     }
     return body;

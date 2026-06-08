@@ -6,7 +6,7 @@
 /*   By: tsemenov <tsemenov@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/05 16:21:17 by tsemenov          #+#    #+#             */
-/*   Updated: 2026/05/20 21:41:04 by tsemenov         ###   ########.fr       */
+/*   Updated: 2026/06/05 15:55:39 by tsemenov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,6 @@ HttpRequest& HttpRequest::operator=(const HttpRequest& other) {
         _buf = other._buf;
         _method = other._method;
         _path = other._path;
-        _query = other._query;
         _version = other._version;
         _headers = other._headers;
         _body = other._body;
@@ -50,7 +49,6 @@ size_t HttpRequest::getMaxBodySize() const { return _maxBodySize; }
 HttpRequest::ParsingState HttpRequest::getState() const { return _state; }
 const std::string& HttpRequest::getMethod() const { return _method; }
 const std::string& HttpRequest::getPath() const { return _path; }
-const std::string& HttpRequest::getQuery() const { return _query; }
 const std::string& HttpRequest::getVersion() const { return _version; }
 const std::string& HttpRequest::getBody() const { return _body; }
 const std::map<std::string, std::string>& HttpRequest::getHeaders() const { return _headers; }
@@ -92,16 +90,36 @@ void HttpRequest::_parseFirstLine() {
     _method = line.substr(0, pos1);
     if (!_isImplemented(_method)) {
         _state = PARSING_ERROR;
-        _errorCode = HTTP_METHOD_NOT_IMPLEMENTED;  // 501
+        _errorCode = HTTP_METHOD_NOT_ALLOWED;  // 405
         return;
     }
     _version = line.substr(pos2 + 1);  // do we need to throw an error
     // if the version is higher than 1.1?
 
     std::string uri = line.substr(pos1 + 1, pos2 - pos1 - 1);
+    LOG_DEBUG("URI is: " + uri);
 
     // Reject encoded null bytes — they are a security risk and bypass path checks:
     if (uri.find("%00") != std::string::npos) {
+        _state = PARSING_ERROR;
+        _errorCode = HTTP_BAD_REQUEST;
+        return;
+    }
+
+    // Reject path traversal attempts (e.g. /../, /.., /foo/../../etc):
+    // Check the path portion only (before '?'):
+    std::string pathPart = uri.substr(0, uri.find('?'));
+    bool hasTraversalSegment = pathPart.find("/../") != std::string::npos;  // is there "/../"?
+    if (hasTraversalSegment) {
+        LOG_DEBUG("/../ found!");
+    };
+    bool endsWithTraversal = pathPart.size() >= 3 && pathPart.substr(pathPart.size() - 3) ==
+                                                         "/..";  // does the path end with "/.."?
+    if (endsWithTraversal) {
+        LOG_DEBUG("/.. found!");
+    };
+
+    if (hasTraversalSegment || endsWithTraversal) {
         _state = PARSING_ERROR;
         _errorCode = HTTP_BAD_REQUEST;
         return;
@@ -111,7 +129,6 @@ void HttpRequest::_parseFirstLine() {
 
     if (q_start != std::string::npos) {
         _path = uri.substr(0, q_start);
-        _query = uri.substr(q_start + 1);
     } else {
         _path = uri;
     }
@@ -208,8 +225,7 @@ void HttpRequest::processData(const char* data, size_t len) {
 
 void HttpRequest::_logResult(const std::string& preview) const {
     if (_state == DONE) {
-        std::string msg = "Parsed: " + _method + " " + _path +
-                          (_query.empty() ? "" : "?" + _query) + " " + _version +
+        std::string msg = "Parsed: " + _method + " " + _path + " " + _version +
                           " | headers: " + toString(static_cast<int>(_headers.size())) +
                           " | body: " + toString(static_cast<int>(_body.size())) + "B";
         LOG_DEBUG(msg);

@@ -22,6 +22,7 @@ enum HttpStatus {
     HTTP_CREATED = 201,
     HTTP_NO_CONTENT = 204,
     HTTP_MOVED_PERMANENTLY = 301,
+    HTTP_FOUND = 302,
     HTTP_BAD_REQUEST = 400,
     HTTP_FORBIDDEN = 403,
     HTTP_NOT_FOUND = 404,
@@ -35,18 +36,22 @@ class HttpResponse {
    private:
     int _statusCode;
     std::string _body;
-    std::vector<std::pair<std::string, std::string> > _headers;
+    std::map<std::string, std::string> _headers;
 
     HttpResponse();
     HttpResponse& operator=(const HttpResponse& other);
 
    public:
     HttpResponse(int status_code, const std::string& body,
-                 const std::vector<std::pair<std::string, std::string> >& headers);
+                 const std::map<std::string, std::string>& _headers);
     HttpResponse(const HttpResponse& other);
     ~HttpResponse();
 
     static std::string getStatusText(int statusCode);
+    int getStatusCode() const;
+    std::string getHeader(const std::string& key) const;
+
+    void addHeader(const std::string& key, const std::string& value);
     static HttpResponse make(int status_code, const std::string& body,
                              const std::string& content_type);
     std::string toString() const;

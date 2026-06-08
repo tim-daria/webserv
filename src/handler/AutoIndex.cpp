@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   AutoIndex.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dtimofee <dtimofee@student.42berlin.de>    #+#  +:+       +#+        */
+/*   By: tsemenov <tsemenov@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026-05-11 16:23:52 by dtimofee          #+#    #+#             */
-/*   Updated: 2026-05-11 16:23:52 by dtimofee         ###   ########.fr       */
+/*   Created: 2026/05/11 16:23:52 by dtimofee          #+#    #+#             */
+/*   Updated: 2026/06/04 22:32:50 by tsemenov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

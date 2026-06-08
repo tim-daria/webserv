@@ -6,12 +6,11 @@
 /*   By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/22 16:45:23 by nefimov           #+#    #+#             */
-/*   Updated: 2026/05/22 16:45:24 by nefimov          ###   ########.fr       */
+/*   Updated: 2026/06/03 11:34:03 by nefimov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PARSERIMPL_HPP
-#define PARSERIMPL_HPP
+#pragma once
 
 #include <string>
 #include <vector>
@@ -53,5 +52,3 @@ class ParserImpl {
                               std::string& pendingCgiExt);
     void parseLocationDirective(ParsedRoute& parsed, std::string& pendingCgiExt);
 };
-
-#endif
