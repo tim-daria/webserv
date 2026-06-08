@@ -43,11 +43,12 @@ std::string HttpResponse::getStatusText(int statusCode) {
                              {HTTP_CREATED, "Created"},
                              {HTTP_NO_CONTENT, "No Content"},
                              {HTTP_MOVED_PERMANENTLY, "Moved Permanently"},
-                             {HTTP_FOUND, "Found"},
+                             {HTTP_FOUND, "Found (Moved Temporarily)"},
                              {HTTP_BAD_REQUEST, "Bad Request"},
                              {HTTP_FORBIDDEN, "Forbidden"},
                              {HTTP_NOT_FOUND, "Not Found"},
                              {HTTP_METHOD_NOT_ALLOWED, "Method Not Allowed"},
+                             {HTTP_PAYLOAD_TOO_LARGE, "Payload Too Large"},
                              {HTTP_INTERNAL_ERROR, "Internal Server Error"}};
 
     size_t size = sizeof(statuses) / sizeof(statuses[0]);

@@ -41,8 +41,17 @@ TEST_CASE("RequestHandler — method not allowed", "[RequestHandler]") {
     }
 
     SECTION("POST not allowed returns 405") {
+        ServerConfig config;
+        RouteConfig route;
+        route.url = "/upload";
+        route.uploadDirectory = "";
+        route.rootDirectory = "./www";
+        route.add_acceptedMethod("POST");
+        route.clientMaxBodySize = 7;
+        config.add_route(route);
+
         HttpRequest request;
-        std::string raw = "POST /index.html HTTP/1.1\r\nContent-Length: 0\r\n\r\n";
+        std::string raw = "POST /upload/index.html HTTP/1.1\r\nContent-Length: 10\r\n\r\n";
         request.processData(raw.c_str(), raw.size());
 
         HttpResponse response = handler.handle_request(request);
@@ -69,6 +78,26 @@ TEST_CASE("RequestHandler — no matching location returns 404", "[RequestHandle
 
     HttpResponse response = handler.handle_request(request);
     REQUIRE(response.getStatusCode() == HTTP_NOT_FOUND);
+}
+
+TEST_CASE("RequestHandler — body exceeds maxBodySize returns 413", "[RequestHandler]") {
+    ServerConfig config;
+    RouteConfig route;
+    route.url = "/upload";
+    route.uploadDirectory = "";
+    route.rootDirectory = "./www";
+    route.add_acceptedMethod("POST");
+    route.clientMaxBodySize = 1;
+    config.add_route(route);
+
+    Handler handler(config);
+
+    HttpRequest request;
+    std::string raw = "POST /upload HTTP/1.1\r\nContent-Length: 5\r\n\r\nHello";
+    request.processData(raw.c_str(), raw.size());
+
+    HttpResponse response = handler.handle_request(request);
+    REQUIRE(response.getStatusCode() == HTTP_PAYLOAD_TOO_LARGE);
 }
 
 TEST_CASE("RequestHandler — GET nonexistent file returns 404", "[RequestHandler]") {
