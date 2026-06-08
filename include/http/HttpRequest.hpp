@@ -6,7 +6,7 @@
 /*   By: tsemenov <tsemenov@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/20 18:22:51 by dtimofee          #+#    #+#             */
-/*   Updated: 2026/05/28 22:13:26 by tsemenov         ###   ########.fr       */
+/*   Updated: 2026/06/07 14:52:26 by tsemenov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 3. on error, returns corresponding error code:
         - 400 BAD REQUEST
         - 413 PAYLOAD TOO LARGE
-        - 501 METHOD NOT IMPLEMENTED
+        - 501 METHOD NOT IMPLEMENTED - changed to 405 to copmly with nginx
 */
 
 class HttpRequest {

@@ -6,7 +6,7 @@
 /*   By: tsemenov <tsemenov@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/20 16:43:12 by dtimofee          #+#    #+#             */
-/*   Updated: 2026/05/20 00:09:03 by tsemenov         ###   ########.fr       */
+/*   Updated: 2026/06/07 14:41:36 by tsemenov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ enum HttpStatus {
     HTTP_METHOD_NOT_ALLOWED = 405,
     HTTP_PAYLOAD_TOO_LARGE = 413,
     HTTP_INTERNAL_ERROR = 500,
-    HTTP_METHOD_NOT_IMPLEMENTED = 501
+    // HTTP_METHOD_NOT_IMPLEMENTED = 501
 };
 
 class HttpResponse {

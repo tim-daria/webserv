@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webserv | Home</title>
+    <link rel="stylesheet" href="/assets/styles.css">
+    <script src="/assets/theme.js"></script>
+</head>
+<body>
+    <header>
+      <a href="/">Webserv</a>
+      <button class="toggle" onclick="toggleTheme(this)" aria-label="Toggle theme">Make it wild 💖</button>
+    </header>
+
+    <main>
+			<section class="hero">
+        <h1>Welcome to Webserv</h1>
+        <p class="secondaryText">An HTTP/1.0 server — 42 Berlin</p>
+      </section>
+
+      <section>
+        <h2>Choose your fighter:</h2>
+        <div class="grid">
+					<div class="card">
+						<h3>GET /</h3>
+						<p>Static file serving. Serves this home page - <code>index.html</code>, assets, and all pages from <code>./www</code>.</p>
+						<a href="/" class="btn">Home</a>
+					</div>
+
+					<div class="card">
+						<h3>POST /upload</h3>
+						<p>Upload a file to the server using <code>multipart/form-data</code>. Files are stored in <code>/uploads</code>.</p>
+						<a href="/upload" class="btn">Upload File</a>
+					</div>
+
+					<div class="card">
+						<h3>GET /uploads</h3>
+						<p>Directory listing served directly by autoindex. No custom HTML — just the server's built-in file browser.</p>
+						<a href="/uploads" class="btn">Browse Uploads</a>
+					</div>
+
+					<div class="card">
+						<h3>POST /submit</h3>
+						<p>Submit a form using <code>application/x-www-form-urlencoded</code>.</p>
+						<a href="/submit" class="btn">Submit Form</a>
+					</div>
+
+					<div class="card">
+						<h3>DELETE /delete</h3>
+						<p>Send DELETE requests to remove files from the server.</p>
+						<a href="/delete" class="btn danger">Delete File</a>
+					</div>
+
+					<div class="card">
+						<h3>GET POST /cgi-bin</h3>
+						<p>Run CGI scripts. Python scripts are executed via <code>/usr/bin/python3</code>.</p>
+						<a href="/cgi-bin/script.py" class="btn">Run CGI Script</a>
+					</div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Test the response codes:</h2>
+        <div class="errorTestGrid">
+          <a href="/redirect" class="btn test">301 Moved permanently</a>
+          <a href="/bad%00.html" class="btn test">400 Bad Request</a>
+          <a href="/forbidden" class="btn test">403 Forbidden</a>
+          <a href="/somewhere" class="btn test">404 Not Found</a>
+          <a href="/method_not_allowed" class="btn test">405 Method Not Allowed</a>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>&copy; 2026 42 School Project &mdash; Nikolai Efimov, Tanya Semenova, Daria Timofeeva</p>
+    </footer>
+  
+</body>
+</html>

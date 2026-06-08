@@ -6,7 +6,7 @@
 /*   By: tsemenov <tsemenov@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/06 16:23:17 by tsemenov          #+#    #+#             */
-/*   Updated: 2026/06/04 16:27:14 by tsemenov         ###   ########.fr       */
+/*   Updated: 2026/06/07 16:58:30 by tsemenov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,9 +154,11 @@ void ServerHub::handleRead(size_t index) {
 
     LOG_DEBUG("Request received from fd " << client_fd);
 
-    ServerConfig& config = _servers[client.getServerIndex()].getConfig();
-
-    // config.print();
+    // Parse the request first with the socket-assigned server's max body size.
+    // We need the Host header to pick the right virtual host, but we also need
+    // a body size limit before parsing. Use the default server's limit first,
+    // then re-select the config based on the Host header after parsing headers.
+    ServerConfig* configPtr = &_servers[client.getServerIndex()].getConfig();
 
     // Feed the raw read buffer into HttpRequest's incremental parser.
     // setMaxBodySize must be called first so the parser can reject oversized
@@ -164,9 +166,30 @@ void ServerHub::handleRead(size_t index) {
     // extraction, header parsing, and body accumulation, setting error codes
     // (400, 413, 501) internally if anything is malformed:
     HttpRequest request;
-    request.setMaxBodySize(config.clientMaxBodySize);
+    request.setMaxBodySize(configPtr->clientMaxBodySize);
     const std::string& raw = client.getReadBuffer();
     request.processData(raw.c_str(), raw.size());
+
+    // Virtual host selection: match the Host header against serverName.
+    // Strip the port suffix from Host (e.g. "webserv:8080" -> "webserv").
+    // Fall back to the socket-assigned server if no name matches.
+    if (!request.isError()) {
+        std::string hostHeader = request.getHeader("host");
+        size_t colon = hostHeader.find(':');
+        if (colon != std::string::npos)
+            hostHeader = hostHeader.substr(0, colon);
+        if (!hostHeader.empty()) {
+            for (size_t s = 0; s < _servers.size(); ++s) {
+                if (_servers[s].getConfig().serverName == hostHeader) {
+                    configPtr = &_servers[s].getConfig();
+                    LOG_DEBUG("Virtual host matched: " + hostHeader);
+                    break;
+                }
+            }
+        }
+    }
+
+    ServerConfig& config = *configPtr;
 
     if (!request.isError()) {
         LOG_INFO(request.getMethod() << " " << request.getPath());
