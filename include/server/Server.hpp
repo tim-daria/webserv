@@ -6,7 +6,7 @@
 /*   By: tsemenov <tsemenov@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 16:12:38 by tsemenov          #+#    #+#             */
-/*   Updated: 2026/05/19 22:46:41 by tsemenov         ###   ########.fr       */
+/*   Updated: 2026/06/09 16:45:33 by tsemenov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,8 @@ class Server {
     Server();
 
     // init helpers:
-    struct addrinfo* createAddress(int port);
+    struct addrinfo* createAddress(const std::string& host, int port);
+		// struct addrinfo* createAddress(int port);
     void createSocket(struct addrinfo* addr);
     void configureSocket();
     void bindAndListen(struct addrinfo* addr);

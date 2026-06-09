@@ -9,23 +9,36 @@
 </head>
 <body>
     <header>
-      <a href="/">Webserv</a>
+      <a href="/">Other server</a>
       <button class="toggle" onclick="toggleTheme(this)" aria-label="Toggle theme">Make it wild 💖</button>
     </header>
 
     <main>
 			<section class="hero">
-        <h1>Welcome to Webserv</h1>
+        <h1>Welcome to other server</h1>
         <p class="secondaryText">An HTTP/1.0 server — 42 Berlin</p>
       </section>
 
       <section>
         <h2>Choose your fighter:</h2>
         <div class="grid">
+
+					<div class="card">
+						<h3>GET /uploads</h3>
+						<p>Directory listing served directly by autoindex. No custom HTML — just the server's built-in file browser.</p>
+						<a href="/uploads" class="btn">Browse Uploads</a>
+					</div>
+
 					<div class="card">
 						<h3>GET /</h3>
 						<p>Static file serving. Serves this home page - <code>index.html</code>, assets, and all pages from <code>./www</code>.</p>
 						<a href="/" class="btn">Home</a>
+					</div>
+
+					<div class="card">
+						<h3>DELETE /delete</h3>
+						<p>Send DELETE requests to remove files from the server.</p>
+						<a href="/delete" class="btn danger">Delete File</a>
 					</div>
 
 					<div class="card">
@@ -35,21 +48,9 @@
 					</div>
 
 					<div class="card">
-						<h3>GET /uploads</h3>
-						<p>Directory listing served directly by autoindex. No custom HTML — just the server's built-in file browser.</p>
-						<a href="/uploads" class="btn">Browse Uploads</a>
-					</div>
-
-					<div class="card">
 						<h3>POST /submit</h3>
 						<p>Submit a form using <code>application/x-www-form-urlencoded</code>.</p>
 						<a href="/submit" class="btn">Submit Form</a>
-					</div>
-
-					<div class="card">
-						<h3>DELETE /delete</h3>
-						<p>Send DELETE requests to remove files from the server.</p>
-						<a href="/delete" class="btn danger">Delete File</a>
 					</div>
 
 					<div class="card">

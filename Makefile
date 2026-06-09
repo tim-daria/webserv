@@ -1,21 +1,3 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2024/12/04 12:41:15 by dtimofee          #+#    #+#              #
-<<<<<<< New base: Add: JS for upload page
-#    Updated: 2026/06/09 15:08:55 by nefimov          ###   ########.fr        #
-||||||| Common ancestor
-#    Updated: 2026/06/05 16:01:39 by tsemenov         ###   ########.fr        #
-=======
-#    Updated: 2026/06/08 11:00:11 by tsemenov         ###   ########.fr        #
->>>>>>> Current commit: Fix: read hostname, typo in scripts.js
-#                                                                              #
-# **************************************************************************** #
-
 CXX = c++
 
 INC_DIRS = include include/config include/server include/handler include/http include/filesystem include/parser

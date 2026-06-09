@@ -6,7 +6,7 @@
 /*   By: tsemenov <tsemenov@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 16:07:29 by tsemenov          #+#    #+#             */
-/*   Updated: 2026/05/19 23:24:35 by tsemenov         ###   ########.fr       */
+/*   Updated: 2026/06/09 16:47:32 by tsemenov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,17 +41,23 @@ int Server::getFd() const { return _sockfd; }
 ServerConfig& Server::getConfig() { return _config; }
 
 // Resolves the port to an addrinfo struct. Caller must freeaddrinfo
-struct addrinfo* Server::createAddress(int port) {
+struct addrinfo* Server::createAddress(const std::string& host, int port) {
     struct addrinfo hints = {};       // set all to 0 upon creation
     hints.ai_family = AF_INET;        // IPv4
     hints.ai_socktype = SOCK_STREAM;  // TCP
-    hints.ai_flags = AI_PASSIVE;      // if no addr, set INADDR_ANY
+    // AI_PASSIVE only applies when host is NULL (bind to all interfaces).
+    // When a specific host is given, omit it so getaddrinfo resolves the address.
+    // if (host.empty() || host == "0.0.0.0")
+    //     hints.ai_flags = AI_PASSIVE;
+
+		hints.ai_flags = AI_PASSIVE;      // if no addr, set INADDR_ANY
 
     std::stringstream ss;
     ss << port;
 
+    const char* node = (host.empty() || host == "0.0.0.0") ? NULL : host.c_str();
     struct addrinfo* result = NULL;
-    if (getaddrinfo(NULL, ss.str().c_str(), &hints, &result) != 0) {
+    if (getaddrinfo(node, ss.str().c_str(), &hints, &result) != 0) {
         throw std::runtime_error(std::string("getaddrinfo failed: ") + strerror(errno));
     }
     return result;
@@ -86,8 +92,9 @@ void Server::bindAndListen(struct addrinfo* addr) {
 void Server::initServ(size_t index) {
     if (index >= _config.listen.size()) throw std::runtime_error("listen index out of range");
 
+    const std::string& host = _config.listen[index].first;
     int port = _config.listen[index].second;
-    struct addrinfo* addr = createAddress(port);
+    struct addrinfo* addr = createAddress(host, port);
 
     // RAII guard — freeaddrinfo on any exit including throws
     struct AddrInfoGuard {
@@ -101,7 +108,7 @@ void Server::initServ(size_t index) {
     bindAndListen(addr);
 
     std::ostringstream oss_fcntl;
-    oss_fcntl << "Server listening on port " << port << " (fd " << _sockfd << ")";
+    oss_fcntl << "Server listening on " << host << ":" << port << " (fd " << _sockfd << ")";
     LOG_INFO(oss_fcntl.str());
 }
 

@@ -6,7 +6,7 @@
 /*   By: tsemenov <tsemenov@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/06 16:23:17 by tsemenov          #+#    #+#             */
-/*   Updated: 2026/06/07 16:58:30 by tsemenov         ###   ########.fr       */
+/*   Updated: 2026/06/09 15:13:43 by tsemenov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,13 @@ ServerHub::~ServerHub() {
 
 // one Server per listen entry across all configs:
 ServerHub::ServerHub(std::vector<ServerConfig>& configs) {
+    // Pre-reserve so push_back never reallocates and copy-constructs Servers
+    // (which would close the socket fd in the original's destructor).
+    size_t total = 0;
+    for (size_t i = 0; i < configs.size(); ++i)
+        total += configs[i].listen.size();
+    _servers.reserve(total);
+
     // create and initialize servers, store them in arr:
     for (size_t i = 0; i < configs.size(); ++i) {
         for (size_t j = 0; j < configs[i].listen.size(); ++j) {
@@ -158,7 +165,9 @@ void ServerHub::handleRead(size_t index) {
     // We need the Host header to pick the right virtual host, but we also need
     // a body size limit before parsing. Use the default server's limit first,
     // then re-select the config based on the Host header after parsing headers.
-    ServerConfig* configPtr = &_servers[client.getServerIndex()].getConfig();
+    // ServerConfig* configPtr = &_servers[client.getServerIndex()].getConfig();
+
+		ServerConfig& config = _servers[client.getServerIndex()].getConfig();
 
     // Feed the raw read buffer into HttpRequest's incremental parser.
     // setMaxBodySize must be called first so the parser can reject oversized
@@ -166,30 +175,9 @@ void ServerHub::handleRead(size_t index) {
     // extraction, header parsing, and body accumulation, setting error codes
     // (400, 413, 501) internally if anything is malformed:
     HttpRequest request;
-    request.setMaxBodySize(configPtr->clientMaxBodySize);
+		request.setMaxBodySize(config.clientMaxBodySize);
     const std::string& raw = client.getReadBuffer();
     request.processData(raw.c_str(), raw.size());
-
-    // Virtual host selection: match the Host header against serverName.
-    // Strip the port suffix from Host (e.g. "webserv:8080" -> "webserv").
-    // Fall back to the socket-assigned server if no name matches.
-    if (!request.isError()) {
-        std::string hostHeader = request.getHeader("host");
-        size_t colon = hostHeader.find(':');
-        if (colon != std::string::npos)
-            hostHeader = hostHeader.substr(0, colon);
-        if (!hostHeader.empty()) {
-            for (size_t s = 0; s < _servers.size(); ++s) {
-                if (_servers[s].getConfig().serverName == hostHeader) {
-                    configPtr = &_servers[s].getConfig();
-                    LOG_DEBUG("Virtual host matched: " + hostHeader);
-                    break;
-                }
-            }
-        }
-    }
-
-    ServerConfig& config = *configPtr;
 
     if (!request.isError()) {
         LOG_INFO(request.getMethod() << " " << request.getPath());
