@@ -6,7 +6,7 @@
 /*   By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/22 16:46:18 by nefimov           #+#    #+#             */
-/*   Updated: 2026/06/04 16:24:23 by nefimov          ###   ########.fr       */
+/*   Updated: 2026/06/09 15:18:09 by nefimov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -282,10 +282,9 @@ TEST_CASE("Check client_max_body_size directive", "[Parser]") {
         REQUIRE(configs.size() == 1);
         REQUIRE(configs[0].clientMaxBodySize == 100000);
         REQUIRE(configs[0].routes[0].clientMaxBodySize == 100);
-		
     }
 
-	SECTION("Correct input. Directive in server and location blocks") {
+    SECTION("Correct input. Directive in server and location blocks") {
         std::string sampleConfig(
             "server {"
             "    client_max_body_size 100000;\n"
@@ -294,8 +293,8 @@ TEST_CASE("Check client_max_body_size directive", "[Parser]") {
         REQUIRE(configs.size() == 1);
         REQUIRE(configs[0].clientMaxBodySize == 100000);
     }
-	
-	SECTION("Correct input. Default values") {
+
+    SECTION("Correct input. Default values") {
         std::string sampleConfig(
             "server {"
             "    location / {\n"
@@ -305,9 +304,8 @@ TEST_CASE("Check client_max_body_size directive", "[Parser]") {
         REQUIRE(configs.size() == 1);
         REQUIRE(configs[0].clientMaxBodySize == 1048576);
         REQUIRE(configs[0].routes[0].clientMaxBodySize == 1048576);
-		
     }
-	
+
     SECTION("Correct input. Lowest value") {
         std::string sampleConfig(
             "server {"

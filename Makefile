@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: tsemenov <tsemenov@student.42berlin.de>    +#+  +:+       +#+         #
+#    By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/04 12:41:15 by dtimofee          #+#    #+#              #
-#    Updated: 2026/06/05 16:01:39 by tsemenov         ###   ########.fr        #
+#    Updated: 2026/06/09 15:08:55 by nefimov          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -44,6 +44,8 @@ OBJS_NO_MAIN = $(patsubst $(SRC_DIR)%.cpp, $(OBJ_DIR)%.o, $(SRCS_NO_MAIN))
 TEST_FILES = io.cpp tests_response.cpp tests_error_handler.cpp tests_filesystem.cpp tests_autoindex.cpp
 TEST_FILES += tests_request_handler.cpp tests_request_parsing.cpp tests_signals.cpp
 TEST_FILES += tests_lexer.cpp tests_parser.cpp tests_parser_read_file.cpp tests_parser_rules.cpp
+TEST_FILES += tests_parserImpl.cpp
+# TEST_FILES += tests_request_handler.cpp tests_parserImpl.cpp
 TEST_SRCS = $(addprefix $(TEST_DIR), $(TEST_FILES))
 TEST_OBJS = $(patsubst $(TEST_DIR)%.cpp, $(TEST_OBJ_DIR)%.o, $(TEST_SRCS))
 
