@@ -40,6 +40,9 @@
 # debug information files
 *.dwo
 
+# UV lock file
+*.lock
+
 .vscode
 obj/
 .DS_Store
