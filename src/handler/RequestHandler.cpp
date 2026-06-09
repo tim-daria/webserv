@@ -159,6 +159,9 @@ HttpResponse Handler::handle_request(HttpRequest& request) {
         LOG_WARNING("Method check failed: " + request.getMethod());
         return _errorHandler.makeError(HTTP_METHOD_NOT_ALLOWED);
     }
+    if (!request.checkMaxBodySize(_location->clientMaxBodySize)) {
+        return _errorHandler.makeError(HTTP_PAYLOAD_TOO_LARGE);
+    }
     if (request.getMethod() == "GET") {
         return handleGet(request, _location);
     } else if (request.getMethod() == "POST") {

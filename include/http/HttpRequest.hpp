@@ -49,7 +49,7 @@ class HttpRequest {
     void _parseBody();
     void _parseData();
     void _logResult(const std::string& preview) const;
-		bool _isImplemented(const std::string& method);
+    bool _isImplemented(const std::string& method);
 
     HttpRequest(const HttpRequest& other);
     HttpRequest& operator=(const HttpRequest& other);
@@ -76,4 +76,5 @@ class HttpRequest {
 
     bool isDone() const;
     bool isError() const;
+    bool checkMaxBodySize(size_t maxSize) const;
 };
