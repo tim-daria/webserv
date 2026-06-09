@@ -6,7 +6,7 @@
 /*   By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/22 16:46:05 by nefimov           #+#    #+#             */
-/*   Updated: 2026/06/05 17:06:08 by nefimov          ###   ########.fr       */
+/*   Updated: 2026/06/08 17:20:51 by nefimov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -202,13 +202,16 @@ void ParserImpl::parseServerDirective(ServerConfig& cfg, RouteConfig& serverDefa
             cfg.listen.clear();
             hasExplicitListen = true;
         }
-        std::string host = "127.0.0.1";
+        std::string host = "0.0.0.0";
+        // std::string host;
         std::string portStr = value;
         size_t colon = value.find(':');
         if (colon != std::string::npos) {
             host = value.substr(0, colon);
             portStr = value.substr(colon + 1);
-            if (host.empty()) throwError(valueToken, "empty host in listen");
+            // if (host.empty()) throwError(valueToken, "empty host in listen");
+            if (host == "localhost") host = "127.0.0.1";
+            if (portStr.empty()) throwError(valueToken, "empty port in listen");
         }
         int port = parseInt(portStr, 1, 65535);
         if (port == -1) throwError(valueToken, "invalid listen port");
