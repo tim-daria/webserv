@@ -6,7 +6,7 @@
 /*   By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/22 16:45:23 by nefimov           #+#    #+#             */
-/*   Updated: 2026/06/03 11:34:03 by nefimov          ###   ########.fr       */
+/*   Updated: 2026/06/09 13:50:04 by nefimov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ class ParserImpl {
     static int parseInt(const std::string& text, int minValue, int maxValue);
     static bool isValidMethod(const std::string& method);
     static bool isOnOff(const std::string& value);
+	static bool isIpAdress(const std::string& value);
 
     ServerConfig parseServerBlock();
     ParsedRoute parseLocationBlock(std::string& pendingCgiExt);
