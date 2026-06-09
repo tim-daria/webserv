@@ -6,7 +6,7 @@
 /*   By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 13:53:22 by dtimofee          #+#    #+#             */
-/*   Updated: 2026/06/03 10:45:24 by nefimov          ###   ########.fr       */
+/*   Updated: 2026/06/09 18:43:23 by nefimov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ HttpResponse Handler::handleDirectory(const std::string& path, const std::string
             return HttpResponse::make(HTTP_OK, body, "text/html");
         }
     }
-    return _errorHandler.makeError(HTTP_FORBIDDEN);
+    return _errorHandler.makeError(status);
 }
 
 HttpResponse Handler::handleGet(const HttpRequest& request, const RouteConfig* _location) {

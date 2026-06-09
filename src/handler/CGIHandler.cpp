@@ -3,16 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   CGIHandler.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dtimofee <dtimofee@student.42berlin.de>    #+#  +:+       +#+        */
+/*   By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026-06-08 17:51:59 by dtimofee          #+#    #+#             */
-/*   Updated: 2026-06-08 17:51:59 by dtimofee         ###   ########.fr       */
+/*   Created: 2026/06/08 17:51:59 by dtimofee          #+#    #+#             */
+/*   Updated: 2026/06/09 18:55:39 by nefimov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "CGIHandler.hpp"
 
 #include <sys/stat.h>
+#include <sys/wait.h>
 #include <unistd.h>
 
 #include "Logger.hpp"
@@ -27,11 +28,12 @@ std::vector<std::string> CGIHandler::buildEnvironment(const HttpRequest& request
     env.push_back("REQUEST_METHOD=" + request.getMethod());
     // env.push_back("SCRIPT_FILENAME=" + script_path);
     env.push_back("PATH_INFO=" + _scriptPath);
-    env.push_back("CONTENT_LENGTH=" + std::to_string(request.getBody().size()));
+    env.push_back("CONTENT_LENGTH=" + toString(request.getBody().size()));
     env.push_back("SERVER_NAME" + _config.serverName);
     env.push_back("SERVER_PORT=8080");
     env.push_back("GATEWAY_INTERFACE=CGI/1.1");
     env.push_back("QUERY_STRING=");
+	env.push_back("SERVER_PROTOCOL=HTTP/1.0");
     std::string content_type = request.getHeader("Content-Type");
     if (!content_type.empty()) env.push_back("CONTENT_TYPE=" + content_type);
 
@@ -106,7 +108,7 @@ std::string CGIHandler::runScript(const RouteConfig* _location, char** env, cons
         if (execve(interpreterPath.c_str(), argv, env) == -1) {
             LOG_WARNING("Execution failed");
             freeCharArray(env, envSize);
-            std::exit(1);
+            _exit(1);
         }
     }
     close(pipe_in[0]);
