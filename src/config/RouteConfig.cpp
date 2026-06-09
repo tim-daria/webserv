@@ -6,7 +6,7 @@
 /*   By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2026/06/02 17:08:35 by nefimov          ###   ########.fr       */
+/*   Updated: 2026/06/05 17:32:08 by nefimov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,19 @@ RouteConfig::RouteConfig()
     : url(""),
       rootDirectory(""),
       directoryListing(false),
-      defaultFile("index.html"),
+      defaultFile(""),
       uploadDirectory(""),
+      clientMaxBodySize(0),
       authRequired(false),
       hasReturn(false),
       returnStatus(0),
       returnUri("") {}
+
+void RouteConfig::applyDefaults() {
+    rootDirectory = "./www";
+    defaultFile = "index.html";
+    clientMaxBodySize = 1048576;
+}
 
 void RouteConfig::add_acceptedMethod(const std::string& method) {
     acceptedMethods.push_back(method);

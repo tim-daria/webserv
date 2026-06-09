@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2026/06/03 11:53:51 by nefimov          ###   ########.fr       */
+/*   Created: 2026/03/26 17:06:49 by nefimov           #+#    #+#             */
+/*   Updated: 2026/06/05 16:35:21 by nefimov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ void ServerConfig::applyDefaults() {
     r.url = "/";
     r.rootDirectory = "./www";
     r.defaultFile = "index.html";
+    r.clientMaxBodySize = 1048576;
     r.add_acceptedMethod("GET");
     add_route(r);
 

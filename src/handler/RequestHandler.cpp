@@ -163,6 +163,9 @@ HttpResponse Handler::handle_request(HttpRequest& request) {
         LOG_WARNING("Method check failed: " + request.getMethod());
         return _errorHandler.makeError(HTTP_METHOD_NOT_ALLOWED);
     }
+    if (!request.checkMaxBodySize(_location->clientMaxBodySize)) {
+        return _errorHandler.makeError(HTTP_PAYLOAD_TOO_LARGE);
+    }
     if (_location->isCGI(request.getPath())) {
         LOG_INFO("CGI detected on path: " + request.getPath());
         return _cgiHandler.execute(request, _location);

@@ -163,6 +163,7 @@ void HttpRequest::_parseHeaders() {
         std::string val = stripSpaces(str.substr(colon + 1));
 
         _headers[key] = val;
+        // LOG_DEBUG("Request header:" + _headers[key]);
     }
 }
 
@@ -171,11 +172,7 @@ void HttpRequest::_checkBody() {
 
     if (!temp.empty()) {
         _contentLen = static_cast<size_t>(std::atol(temp.c_str()));
-        if (_maxBodySize > 0 && _contentLen > _maxBodySize) {
-            _state = PARSING_ERROR;
-            _errorCode = HTTP_PAYLOAD_TOO_LARGE;  // 413
-            return;
-        } else if (_contentLen == 0) {
+        if (_contentLen == 0) {
             _state = DONE;
         } else {
             _state = READ_BODY;
@@ -183,6 +180,13 @@ void HttpRequest::_checkBody() {
     } else {
         _state = DONE;
     }  // no body
+}
+
+bool HttpRequest::checkMaxBodySize(size_t maxSize) const {
+    if (maxSize > 0 && _contentLen > maxSize) {
+        return false;
+    }
+    return true;
 }
 
 void HttpRequest::_parseBody() {
