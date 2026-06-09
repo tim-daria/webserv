@@ -18,14 +18,15 @@
 
 class CGIHandler {
    private:
+    const ServerConfig& _config;
     FileService _fileService;
     ErrorHandler _errorHandler;
-    const ServerConfig& _config;
     std::string _scriptPath;
 
-    std::vector<std::string> buildEnvironment(const HttpRequest& request,
-                                              const std::string& script_path);
-    std::string runScript(const RouteConfig* _location, char** env, const std::string& body);
+    std::vector<std::string> buildEnvironment(const HttpRequest& request);
+    std::string runScript(const RouteConfig* _location, char** env, const std::string& body,
+                          size_t size);
+    std::string findInterpreter(const RouteConfig* _location);
     char** toCharArray(const std::vector<std::string>& env);
     void freeCharArray(char** arr, size_t size);
 
