@@ -6,7 +6,7 @@
 /*   By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/22 16:46:05 by nefimov           #+#    #+#             */
-/*   Updated: 2026/06/09 15:09:49 by nefimov          ###   ########.fr       */
+/*   Updated: 2026/06/09 15:15:54 by nefimov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ bool ParserImpl::isValidMethod(const std::string& method) {
 
 bool ParserImpl::isOnOff(const std::string& value) { return value == "on" || value == "off"; }
 
-bool ParserImpl::isIpAdress(const std::string& value) {
+bool ParserImpl::isIpAddress(const std::string& value) {
 	std::string numStr;
 	size_t dot = 0;
 	size_t pos = 0; 
@@ -229,7 +229,7 @@ void ParserImpl::parseServerDirective(ServerConfig& cfg, RouteConfig& serverDefa
             if (host == "localhost") host = "127.0.0.1";
             if (portStr.empty()) throwError(valueToken, "empty port in listen");
         }
-		if (!isIpAdress(host)) throwError(valueToken, "invalid host address");
+		if (!isIpAddress(host)) throwError(valueToken, "invalid host address");
         int port = parseInt(portStr, 1, 65535);
         if (port == -1) throwError(valueToken, "invalid listen port");
         cfg.add_listen(host, port);
