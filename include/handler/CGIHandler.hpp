@@ -27,7 +27,7 @@ class CGIHandler {
 
     std::vector<std::string> buildEnvironment(const HttpRequest& request);
     std::string runScript(const RouteConfig* _location, char** env, const std::string& body,
-                          size_t size);
+                          size_t size, int& script_failed);
     std::string findInterpreter(const RouteConfig* _location);
     char** toCharArray(const std::vector<std::string>& env);
     void freeCharArray(char** arr, size_t size);

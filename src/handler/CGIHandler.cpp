@@ -76,26 +76,30 @@ std::string CGIHandler::findInterpreter(const RouteConfig* _location) {
 }
 
 std::string CGIHandler::runScript(const RouteConfig* _location, char** env, const std::string& body,
-                                  size_t envSize) {
+                                  size_t envSize, int& script_failed) {
     int pipe_in[2];
     int pipe_out[2];
 
     if (pipe(pipe_in) == -1 || pipe(pipe_out) == -1) {
         LOG_WARNING("Piping failed");
+        script_failed = 1;
         return "";
     }
     pid_t pid = fork();
     if (pid == -1) {
+        script_failed = 1;
         LOG_WARNING("Forking failed");
         return "";
     }
     if (pid == 0) {
         if (dup2(pipe_in[0], STDIN_FILENO) == -1) {
             LOG_WARNING("Dup2 failed");
+            script_failed = 1;
             _exit(1);
         }
         if (dup2(pipe_out[1], STDOUT_FILENO) == -1) {
             LOG_WARNING("Dup2 failed");
+            script_failed = 1;
             _exit(1);
         }
         close(pipe_in[1]);
@@ -103,6 +107,7 @@ std::string CGIHandler::runScript(const RouteConfig* _location, char** env, cons
         std::string interpreterPath = findInterpreter(_location);
         if (interpreterPath.empty()) {
             LOG_WARNING("Failed to find interpreter for path:" + _scriptPath);
+            script_failed = 1;
             _exit(1);
             ;
         }
@@ -115,6 +120,7 @@ std::string CGIHandler::runScript(const RouteConfig* _location, char** env, cons
         if (execve(interpreterPath.c_str(), argv, env) == -1) {
             LOG_WARNING("Script execution failed");
             freeCharArray(env, envSize);
+            script_failed = 1;
             _exit(1);
         }
     }
@@ -148,6 +154,7 @@ HttpResponse CGIHandler::execute(const HttpRequest& request, const RouteConfig* 
     }
     _scriptDir = _scriptPath.substr(0, lastSlash);
     _scriptName = _scriptPath.substr(lastSlash + 1);
+    int script_failed = 0;
 
     struct stat info;
     int status = _fileService.checkCGI(_scriptPath, info);
@@ -159,9 +166,10 @@ HttpResponse CGIHandler::execute(const HttpRequest& request, const RouteConfig* 
     LOG_INFO("Environment have been built successfully");
     char** env = toCharArray(env_vec);
 
-    std::string output = runScript(_location, env, request.getBody(), env_vec.size());
+    std::string output =
+        runScript(_location, env, request.getBody(), env_vec.size(), script_failed);
     freeCharArray(env, env_vec.size());
-    if (output.empty()) {
+    if (output.empty() && script_failed) {
         LOG_WARNING("Failed to get output");
         return _errorHandler.makeError(HTTP_INTERNAL_ERROR);
     }
