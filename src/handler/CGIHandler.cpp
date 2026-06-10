@@ -20,20 +20,25 @@
 #include "PathUtils.hpp"
 
 CGIHandler::CGIHandler(const ServerConfig& conf)
-    : _config(conf), _fileService(), _errorHandler(conf), _scriptPath("") {}
+    : _config(conf),
+      _fileService(),
+      _errorHandler(conf),
+      _scriptPath(""),
+      _scriptDir(""),
+      _scriptName("") {}
 
 std::vector<std::string> CGIHandler::buildEnvironment(const HttpRequest& request) {
     std::vector<std::string> env;
 
     env.push_back("REQUEST_METHOD=" + request.getMethod());
-    // env.push_back("SCRIPT_FILENAME=" + script_path);
+    env.push_back("SCRIPT_FILENAME=" + _scriptName);
     env.push_back("PATH_INFO=" + _scriptPath);
     env.push_back("CONTENT_LENGTH=" + toString(request.getBody().size()));
-    env.push_back("SERVER_NAME" + _config.serverName);
+    env.push_back("SERVER_NAME=" + _config.serverName);
     env.push_back("SERVER_PORT=8080");
     env.push_back("GATEWAY_INTERFACE=CGI/1.1");
-    env.push_back("QUERY_STRING=");
-	env.push_back("SERVER_PROTOCOL=HTTP/1.0");
+    env.push_back("QUERY_STRING=" + request.getQuery());
+    env.push_back("SERVER_PROTOCOL=HTTP/1.0");
     std::string content_type = request.getHeader("Content-Type");
     if (!content_type.empty()) env.push_back("CONTENT_TYPE=" + content_type);
 
@@ -63,7 +68,7 @@ void CGIHandler::freeCharArray(char** arr, size_t size) {
 std::string CGIHandler::findInterpreter(const RouteConfig* _location) {
     for (std::map<std::string, std::string>::const_iterator it = _location->cgiHandlers.begin();
          it != _location->cgiHandlers.end(); ++it) {
-        if (_scriptPath.find(it->first)) {
+        if (_scriptPath.find(it->first) != std::string::npos) {
             return it->second;
         }
     }
@@ -87,26 +92,28 @@ std::string CGIHandler::runScript(const RouteConfig* _location, char** env, cons
     if (pid == 0) {
         if (dup2(pipe_in[0], STDIN_FILENO) == -1) {
             LOG_WARNING("Dup2 failed");
-            return "";
+            _exit(1);
         }
         if (dup2(pipe_out[1], STDOUT_FILENO) == -1) {
             LOG_WARNING("Dup2 failed");
-            return "";
+            _exit(1);
         }
         close(pipe_in[1]);
         close(pipe_out[0]);
         std::string interpreterPath = findInterpreter(_location);
         if (interpreterPath.empty()) {
             LOG_WARNING("Failed to find interpreter for path:" + _scriptPath);
-            return "";
+            _exit(1);
+            ;
         }
         char* argv[] = {
             const_cast<char*>(interpreterPath.c_str()),
-            const_cast<char*>(_scriptPath.c_str()),
+            const_cast<char*>(_scriptName.c_str()),
             NULL,
         };
+        chdir(_scriptDir.c_str());
         if (execve(interpreterPath.c_str(), argv, env) == -1) {
-            LOG_WARNING("Execution failed");
+            LOG_WARNING("Script execution failed");
             freeCharArray(env, envSize);
             _exit(1);
         }
@@ -135,6 +142,12 @@ std::string CGIHandler::runScript(const RouteConfig* _location, char** env, cons
 
 HttpResponse CGIHandler::execute(const HttpRequest& request, const RouteConfig* _location) {
     _scriptPath = PathUtils::concatenatePath(_location->rootDirectory, request.getPath());
+    size_t lastSlash = _scriptPath.rfind('/');
+    if (lastSlash == std::string::npos) {
+        return _errorHandler.makeError(HTTP_BAD_REQUEST);
+    }
+    _scriptDir = _scriptPath.substr(0, lastSlash);
+    _scriptName = _scriptPath.substr(lastSlash + 1);
 
     struct stat info;
     int status = _fileService.checkCGI(_scriptPath, info);

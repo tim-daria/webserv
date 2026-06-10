@@ -50,6 +50,7 @@ HttpRequest::ParsingState HttpRequest::getState() const { return _state; }
 const std::string& HttpRequest::getMethod() const { return _method; }
 const std::string& HttpRequest::getPath() const { return _path; }
 const std::string& HttpRequest::getVersion() const { return _version; }
+const std::string& HttpRequest::getQuery() const { return _query; }
 const std::string& HttpRequest::getBody() const { return _body; }
 const std::map<std::string, std::string>& HttpRequest::getHeaders() const { return _headers; }
 int HttpRequest::getErrorCode() const { return _errorCode; }
@@ -129,6 +130,7 @@ void HttpRequest::_parseFirstLine() {
 
     if (q_start != std::string::npos) {
         _path = uri.substr(0, q_start);
+        _query = uri.substr(q_start + 1);
     } else {
         _path = uri;
     }

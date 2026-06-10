@@ -22,6 +22,8 @@ class CGIHandler {
     FileService _fileService;
     ErrorHandler _errorHandler;
     std::string _scriptPath;
+    std::string _scriptDir;
+    std::string _scriptName;
 
     std::vector<std::string> buildEnvironment(const HttpRequest& request);
     std::string runScript(const RouteConfig* _location, char** env, const std::string& body,
