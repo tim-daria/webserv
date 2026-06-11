@@ -33,15 +33,10 @@ class RouteConfig {
 
     RouteConfig();
 
-    void add_acceptedMethod(const std::string& method) { acceptedMethods.push_back(method); }
+    void add_acceptedMethod(const std::string& method);
+    void set_cgiHandler(const std::string& extension, const std::string& handler);
     void applyDefaults();
 
-    void set_cgiHandler(const std::string& extension, const std::string& handler) {
-        cgiHandlers.insert(std::make_pair(extension, handler));
-    }
-
-    bool isMethodAllowed(std::string method) const;
-    void print();
+    bool isMethodAllowed(const std::string& method) const;
+    bool isCGI(const std::string& path) const;
 };
-
-std::ostream& operator<<(std::ostream& out, const RouteConfig& conf);

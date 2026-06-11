@@ -6,7 +6,7 @@
 /*   By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 13:53:22 by dtimofee          #+#    #+#             */
-/*   Updated: 2026/06/03 10:45:24 by nefimov          ###   ########.fr       */
+/*   Updated: 2026/06/09 18:43:23 by nefimov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,11 @@
 #include "PathUtils.hpp"
 
 Handler::Handler(ServerConfig& config)
-    : _serverConfig(config), _errorHandler(config), _fileService(), _autoIndex() {}
+    : _serverConfig(config),
+      _errorHandler(config),
+      _cgiHandler(config),
+      _fileService(),
+      _autoIndex() {}
 
 Handler::~Handler() {}
 
@@ -66,7 +70,7 @@ HttpResponse Handler::handleDirectory(const std::string& path, const std::string
             return HttpResponse::make(HTTP_OK, body, "text/html");
         }
     }
-    return _errorHandler.makeError(HTTP_FORBIDDEN);
+    return _errorHandler.makeError(status);
 }
 
 HttpResponse Handler::handleGet(const HttpRequest& request, const RouteConfig* _location) {
@@ -161,6 +165,10 @@ HttpResponse Handler::handle_request(HttpRequest& request) {
     }
     if (!request.checkMaxBodySize(_location->clientMaxBodySize)) {
         return _errorHandler.makeError(HTTP_PAYLOAD_TOO_LARGE);
+    }
+    if (_location->isCGI(request.getPath())) {
+        LOG_INFO("CGI detected on path: " + request.getPath());
+        return _cgiHandler.execute(request, _location);
     }
     if (request.getMethod() == "GET") {
         return handleGet(request, _location);

@@ -13,6 +13,7 @@
 #pragma once
 
 #include "AutoIndex.hpp"
+#include "CGIHandler.hpp"
 #include "ErrorHandler.hpp"
 #include "FileService.hpp"
 #include "HttpRequest.hpp"
@@ -24,6 +25,7 @@ class Handler {
    private:
     ServerConfig& _serverConfig;
     ErrorHandler _errorHandler;
+    CGIHandler _cgiHandler;
     FileService _fileService;
     AutoIndex _autoIndex;
 
