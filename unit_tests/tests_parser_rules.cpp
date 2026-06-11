@@ -6,7 +6,7 @@
 /*   By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/22 16:46:18 by nefimov           #+#    #+#             */
-/*   Updated: 2026/06/09 15:18:09 by nefimov          ###   ########.fr       */
+/*   Updated: 2026/06/11 15:42:24 by nefimov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ TEST_CASE("Check config rule", "[Parser]") {
     }
 
     SECTION("Correct input. Two server blocks") {
-        std::string sampleConfig(" server {} \nserver{}\n");
+        std::string sampleConfig(" server {} \nserver{ listen 8000;}\n");
         std::vector<ServerConfig> configs = Parser::parseString(sampleConfig, "sample");
         REQUIRE(configs.size() == 2);
     }

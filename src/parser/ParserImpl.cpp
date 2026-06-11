@@ -6,7 +6,7 @@
 /*   By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/22 16:46:05 by nefimov           #+#    #+#             */
-/*   Updated: 2026/06/09 15:15:54 by nefimov          ###   ########.fr       */
+/*   Updated: 2026/06/11 18:57:37 by nefimov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,21 +103,21 @@ bool ParserImpl::isValidMethod(const std::string& method) {
 bool ParserImpl::isOnOff(const std::string& value) { return value == "on" || value == "off"; }
 
 bool ParserImpl::isIpAddress(const std::string& value) {
-	std::string numStr;
-	size_t dot = 0;
-	size_t pos = 0; 
-	for (int i = 0; i < 3; ++i) {
-		dot = value.find('.', pos);
-		if (dot == std::string::npos) return false;
-		numStr = value.substr(pos, dot - pos);
-		if (parseInt(numStr, 0, 255) == -1) return false;
-		pos = dot + 1;
-	}
-	dot = value.find('.', pos);
-	if (dot != std::string::npos) return false;
-	numStr = value.substr(pos);
-	if (parseInt(numStr, 0, 255) == -1) return false;
-	return true;
+    std::string numStr;
+    size_t dot = 0;
+    size_t pos = 0;
+    for (int i = 0; i < 3; ++i) {
+        dot = value.find('.', pos);
+        if (dot == std::string::npos) return false;
+        numStr = value.substr(pos, dot - pos);
+        if (parseInt(numStr, 0, 255) == -1) return false;
+        pos = dot + 1;
+    }
+    dot = value.find('.', pos);
+    if (dot != std::string::npos) return false;
+    numStr = value.substr(pos);
+    if (parseInt(numStr, 0, 255) == -1) return false;
+    return true;
 }
 
 ServerConfig ParserImpl::parseServerBlock() {
@@ -149,7 +149,9 @@ ServerConfig ParserImpl::parseServerBlock() {
     // Check for mandatory server root directive
     // LOG_DEBUG("serverDefaults.rootDirectory: " + serverDefaults.rootDirectory);
     // if (serverDefaults.rootDirectory.empty()) throwError(peek(), "no server root location");
-
+    if (!hasExplicitListen && !cfg.listen.empty()) {
+        checkAddress(cfg.listen[0], peek());
+    }
     if (parsedRoutes.empty()) {
         cfg.routes.push_back(serverDefaults);
     } else {
@@ -229,9 +231,10 @@ void ParserImpl::parseServerDirective(ServerConfig& cfg, RouteConfig& serverDefa
             if (host == "localhost") host = "127.0.0.1";
             if (portStr.empty()) throwError(valueToken, "empty port in listen");
         }
-		if (!isIpAddress(host)) throwError(valueToken, "invalid host address");
+        if (!isIpAddress(host)) throwError(valueToken, "invalid host address");
         int port = parseInt(portStr, 1, 65535);
         if (port == -1) throwError(valueToken, "invalid listen port");
+        checkAddress(std::make_pair(host, port), valueToken);
         cfg.add_listen(host, port);
         expectType(TOKEN_SEMICOLON, "expected ';' after listen");
         return;
@@ -426,4 +429,22 @@ void ParserImpl::parseLocationDirective(ParsedRoute& parsed, std::string& pendin
     }
 
     throwError(directiveToken, "unknown directive in location: " + directive);
+}
+
+void ParserImpl::checkAddress(std::pair<std::string, int> new_addr, const Token& valueToken) {
+    std::string host = new_addr.first;
+    int port = new_addr.second;
+    for (size_t i = 0; i < _addresses.size(); ++i) {
+        if (port == _addresses[i].second) {
+            if (host == "0.0.0.0" || _addresses[i].first == "0.0.0.0") {
+                std::string msg = "port " + toString(port) + " is already declared";
+                throwError(valueToken, msg);
+            }
+            if (host == _addresses[i].first) {
+                std::string msg = "address " + host + ":" + toString(port) + " is already declared";
+                throwError(valueToken, msg);
+            }
+        }
+    }
+    _addresses.push_back(new_addr);
 }
