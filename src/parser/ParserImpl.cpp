@@ -6,7 +6,7 @@
 /*   By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/22 16:46:05 by nefimov           #+#    #+#             */
-/*   Updated: 2026/06/05 17:06:08 by nefimov          ###   ########.fr       */
+/*   Updated: 2026/06/09 15:15:54 by nefimov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,6 +102,24 @@ bool ParserImpl::isValidMethod(const std::string& method) {
 
 bool ParserImpl::isOnOff(const std::string& value) { return value == "on" || value == "off"; }
 
+bool ParserImpl::isIpAddress(const std::string& value) {
+	std::string numStr;
+	size_t dot = 0;
+	size_t pos = 0; 
+	for (int i = 0; i < 3; ++i) {
+		dot = value.find('.', pos);
+		if (dot == std::string::npos) return false;
+		numStr = value.substr(pos, dot - pos);
+		if (parseInt(numStr, 0, 255) == -1) return false;
+		pos = dot + 1;
+	}
+	dot = value.find('.', pos);
+	if (dot != std::string::npos) return false;
+	numStr = value.substr(pos);
+	if (parseInt(numStr, 0, 255) == -1) return false;
+	return true;
+}
+
 ServerConfig ParserImpl::parseServerBlock() {
     expectKeyword("server");
     expectType(TOKEN_LBRACE, "expected '{' after server");
@@ -109,7 +127,6 @@ ServerConfig ParserImpl::parseServerBlock() {
     ServerConfig cfg = ServerConfig::makeDefault();
     RouteConfig serverDefaults;
     serverDefaults.applyDefaults();
-    // if (!cfg.routes.empty()) serverDefaults = cfg.routes[0];
     cfg.routes.clear();
 
     bool hasExplicitListen = false;
@@ -202,14 +219,17 @@ void ParserImpl::parseServerDirective(ServerConfig& cfg, RouteConfig& serverDefa
             cfg.listen.clear();
             hasExplicitListen = true;
         }
-        std::string host = "127.0.0.1";
+        std::string host = "0.0.0.0";
         std::string portStr = value;
         size_t colon = value.find(':');
         if (colon != std::string::npos) {
             host = value.substr(0, colon);
             portStr = value.substr(colon + 1);
-            if (host.empty()) throwError(valueToken, "empty host in listen");
+            // if (host.empty()) throwError(valueToken, "empty host in listen");
+            if (host == "localhost") host = "127.0.0.1";
+            if (portStr.empty()) throwError(valueToken, "empty port in listen");
         }
+		if (!isIpAddress(host)) throwError(valueToken, "invalid host address");
         int port = parseInt(portStr, 1, 65535);
         if (port == -1) throwError(valueToken, "invalid listen port");
         cfg.add_listen(host, port);
