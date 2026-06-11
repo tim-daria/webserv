@@ -6,7 +6,7 @@
 /*   By: tsemenov <tsemenov@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 16:07:29 by tsemenov          #+#    #+#             */
-/*   Updated: 2026/06/09 16:47:32 by tsemenov         ###   ########.fr       */
+/*   Updated: 2026/06/10 00:09:47 by tsemenov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,10 +47,10 @@ struct addrinfo* Server::createAddress(const std::string& host, int port) {
     hints.ai_socktype = SOCK_STREAM;  // TCP
     // AI_PASSIVE only applies when host is NULL (bind to all interfaces).
     // When a specific host is given, omit it so getaddrinfo resolves the address.
-    // if (host.empty() || host == "0.0.0.0")
-    //     hints.ai_flags = AI_PASSIVE;
+    if (host.empty() || host == "0.0.0.0")
+        hints.ai_flags = AI_PASSIVE;
 
-		hints.ai_flags = AI_PASSIVE;      // if no addr, set INADDR_ANY
+		// hints.ai_flags = AI_PASSIVE;      // if no addr, set INADDR_ANY
 
     std::stringstream ss;
     ss << port;

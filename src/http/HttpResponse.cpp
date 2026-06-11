@@ -50,6 +50,7 @@ std::string HttpResponse::getStatusText(int statusCode) {
                              {HTTP_FORBIDDEN, "Forbidden"},
                              {HTTP_NOT_FOUND, "Not Found"},
                              {HTTP_METHOD_NOT_ALLOWED, "Method Not Allowed"},
+                             {HTTP_LENGTH_REQUIRED, "Length Required"},
                              {HTTP_PAYLOAD_TOO_LARGE, "Payload Too Large"},
                              {HTTP_INTERNAL_ERROR, "Internal Server Error"}};
 

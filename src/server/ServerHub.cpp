@@ -6,7 +6,7 @@
 /*   By: tsemenov <tsemenov@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/06 16:23:17 by tsemenov          #+#    #+#             */
-/*   Updated: 2026/06/09 15:13:43 by tsemenov         ###   ########.fr       */
+/*   Updated: 2026/06/12 10:44:32 by tsemenov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,13 +24,9 @@
 #include <stdexcept>
 
 #include "Logger.hpp"
-// Added to allow constructing error responses directly in handleRead,
-// without going through Handler (which requires a fully valid request):
 #include "ErrorHandler.hpp"
 #include "HttpRequest.hpp"
 #include "RequestHandler.hpp"
-// Added to validate the parsed request against the server config
-// (checks route existence and method allowance) before dispatching:
 #include "ServerConfig.hpp"
 
 extern volatile sig_atomic_t g_running;

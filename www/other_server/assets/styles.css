@@ -240,6 +240,10 @@ section.secondaryText {
   font-size: 1.05rem;
 }
 
+section .desc {
+  margin-top: 20px;
+}
+
 .hero {
   /* margin-top: 1.5rem; */
   padding: 1.5rem 0;

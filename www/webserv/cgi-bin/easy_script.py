@@ -7,7 +7,10 @@ import os
 # POST body
 if os.environ.get("REQUEST_METHOD") == "POST":
     body = sys.stdin.read()
-    print(body)
+    print("Content-Type: text/plain")
+    print()
+    print("=== CGI TEST (POST) ===")
+    print("Body:", body)
 if os.environ.get("REQUEST_METHOD") == "GET":
 	print("Content-Type: text/plain")
 	print()

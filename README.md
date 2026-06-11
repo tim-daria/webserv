@@ -6,7 +6,7 @@ _This project has been created as part of the 42 curriculum by dtimofee, nefimov
 
 The goal of this project is to gain a deep understanding of how HTTP servers work by building one from scratch in C++98 — handling raw sockets, I/O multiplexing, and the HTTP protocol without relying on external libraries.
 
-The result is a lightweight HTTP/1.1 web server that handles concurrent connections using a non-blocking I/O model with `poll()`, supports CGI script execution, serves static files, and is fully configurable via a Nginx-inspired `.conf` file. Features include custom error pages, file uploads, redirects, directory listing, and per-route method restrictions.
+The result is a lightweight HTTP/1.0 web server that handles concurrent connections using a non-blocking I/O model with `poll()`, supports CGI script execution, serves static files, and is fully configurable via a Nginx-inspired `.conf` file. Features include custom error pages, file uploads, redirects, directory listing, and per-route method restrictions.
 
 ### Project Structure
 
@@ -125,10 +125,7 @@ uv run pytest -v
 <details>
 <summary>Manual testing</summary>
 
-<blockquote>
-
-<details>
-<summary>curl</summary>
+### curl
 
 ```bash
 # GET a file
@@ -150,10 +147,7 @@ curl -X DELETE http://localhost:8080/upload/file.txt
 curl -L http://localhost:8080/old-path
 ```
 
-</details>
-
-<details>
-<summary>telnet</summary>
+### telnet
 
 ```bash
 telnet localhost 8080
@@ -162,17 +156,14 @@ telnet localhost 8080
 Then type a raw HTTP request:
 
 ```
-GET / HTTP/1.1
+GET / HTTP/1.0
 Host: localhost
 
 ```
 
 _(Press Enter twice to send)_
 
-</details>
-
-<details>
-<summary>siege (load testing)</summary>
+### siege (load testing)
 
 ```bash
 # Install siege (macOS)
@@ -187,10 +178,6 @@ siege -c10 -t30s http://localhost:8080/
 # Run with a list of URLs
 siege -c10 -t30s -f urls.txt
 ```
-
-</details>
-
-</blockquote>
 
 </details>
 
