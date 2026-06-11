@@ -6,7 +6,7 @@
 /*   By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/22 16:46:05 by nefimov           #+#    #+#             */
-/*   Updated: 2026/06/11 15:42:06 by nefimov          ###   ########.fr       */
+/*   Updated: 2026/06/11 18:40:28 by nefimov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -437,7 +437,7 @@ void ParserImpl::checkAddress(std::pair<std::string, int> new_addr, const Token&
     for (size_t i = 0; i < addresses.size(); ++i) {
         if (port == addresses[i].second) {
             if (host == "0.0.0.0" || addresses[i].first == "0.0.0.0") {
-                std::string msg = "port" + toString(port) + "is already declared";
+                std::string msg = "port " + toString(port) + " is already declared";
                 throwError(valueToken, msg);
             }
             if (host == addresses[i].first) {
