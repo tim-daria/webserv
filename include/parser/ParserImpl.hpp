@@ -6,7 +6,7 @@
 /*   By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/22 16:45:23 by nefimov           #+#    #+#             */
-/*   Updated: 2026/06/11 15:40:01 by nefimov          ###   ########.fr       */
+/*   Updated: 2026/06/11 18:57:37 by nefimov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ class ParserImpl {
     std::string _sourceName;
     std::vector<Token> _tokens;
     std::string::size_type _pos;
-    std::vector<std::pair<std::string, int> > addresses;
+    std::vector<std::pair<std::string, int> > _addresses;
 
     const Token& peek() const;
     const Token& consume();
