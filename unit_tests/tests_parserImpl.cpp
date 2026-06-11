@@ -6,7 +6,7 @@
 /*   By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/22 16:46:18 by nefimov           #+#    #+#             */
-/*   Updated: 2026/06/11 18:43:44 by nefimov          ###   ########.fr       */
+/*   Updated: 2026/06/11 18:49:05 by nefimov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,21 @@ TEST_CASE("Parse listen directive. Correct config, one listener all zerows", "[P
     std::string sampleConfig(
         "server {"
         "    listen 0.0.0.0:8080;\n"
+        "}\n");
+
+    ParserImpl parser(sampleConfig, "test");
+    std::vector<ServerConfig> configs = parser.parseConfig();
+    REQUIRE(configs.size() == 1);
+    REQUIRE(configs[0].listen.size() == 1);
+    REQUIRE(configs[0].listen[0].first == "0.0.0.0");
+    REQUIRE(configs[0].listen[0].second == 8080);
+    LOG_DEBUG(configs[0].listen[0].first + ":" + toString(configs[0].listen[0].second));
+}
+
+TEST_CASE("Parse listen directive. Correct config, one listener only port", "[ParserImpl]") {
+    std::string sampleConfig(
+        "server {"
+        "    listen 8080;\n"
         "}\n");
 
     ParserImpl parser(sampleConfig, "test");
