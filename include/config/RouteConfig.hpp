@@ -39,7 +39,4 @@ class RouteConfig {
 
     bool isMethodAllowed(const std::string& method) const;
     bool isCGI(const std::string& path) const;
-    // void print();
 };
-
-// std::ostream& operator<<(std::ostream& out, const RouteConfig& conf);

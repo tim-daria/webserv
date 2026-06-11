@@ -51,8 +51,6 @@ int FileService::checkCGI(const std::string& path, struct stat& info) const {
 
     if (!S_ISREG(info.st_mode)) return HTTP_FORBIDDEN;
 
-    // if (access(path.c_str(), F_OK) != 0) return HTTP_FORBIDDEN;
-
     return HTTP_OK;
 }
 

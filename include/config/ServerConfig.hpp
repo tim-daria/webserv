@@ -17,7 +17,6 @@
 #include <vector>
 
 #include "RouteConfig.hpp"
-// class RouteConfig;
 
 class ServerConfig {
    public:
@@ -36,7 +35,4 @@ class ServerConfig {
 
     static ServerConfig makeDefault();
     void applyDefaults();
-    // void print();
 };
-
-// std::ostream& operator<<(std::ostream& out, const ServerConfig& config);
