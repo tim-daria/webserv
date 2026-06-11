@@ -16,6 +16,12 @@
 #include "HttpRequest.hpp"
 #include "HttpResponse.hpp"
 
+typedef struct s_data {
+    int pipe_in[2];
+    int pipe_out[2];
+    pid_t pid;
+} t_data;
+
 class CGIHandler {
    private:
     const ServerConfig& _config;
@@ -26,8 +32,8 @@ class CGIHandler {
     std::string _scriptName;
 
     std::vector<std::string> buildEnvironment(const HttpRequest& request);
-    std::string runScript(const RouteConfig* _location, char** env, const std::string& body,
-                          size_t size, int& script_failed);
+    std::string runScript(const RouteConfig* _location, char** env, const std::string& body);
+    std::string parentProcess(s_data& info, const std::string& body);
     std::string findInterpreter(const RouteConfig* _location);
     char** toCharArray(const std::vector<std::string>& env);
     void freeCharArray(char** arr, size_t size);
