@@ -6,7 +6,7 @@
 /*   By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/22 16:45:23 by nefimov           #+#    #+#             */
-/*   Updated: 2026/06/09 15:15:54 by nefimov          ###   ########.fr       */
+/*   Updated: 2026/06/11 15:40:01 by nefimov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ class ParserImpl {
     std::string _sourceName;
     std::vector<Token> _tokens;
     std::string::size_type _pos;
+    std::vector<std::pair<std::string, int> > addresses;
 
     const Token& peek() const;
     const Token& consume();
@@ -43,7 +44,7 @@ class ParserImpl {
     static int parseInt(const std::string& text, int minValue, int maxValue);
     static bool isValidMethod(const std::string& method);
     static bool isOnOff(const std::string& value);
-	static bool isIpAddress(const std::string& value);
+    static bool isIpAddress(const std::string& value);
 
     ServerConfig parseServerBlock();
     ParsedRoute parseLocationBlock(std::string& pendingCgiExt);
@@ -52,4 +53,5 @@ class ParserImpl {
                               bool& hasExplicitListen, bool& hasExplicitErrorPages,
                               std::string& pendingCgiExt);
     void parseLocationDirective(ParsedRoute& parsed, std::string& pendingCgiExt);
+    void checkAddress(std::pair<std::string, int> new_addr, const Token& valueToken);
 };
