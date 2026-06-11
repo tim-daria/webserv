@@ -1,6 +1,7 @@
 import requests
 import pathlib
 import socket
+import time
 
 class TestServerBasics:
     """Basic server health tests"""
@@ -24,29 +25,6 @@ class TestGETRequests:
 
         assert response.status_code == 200
         assert "html" in response.text.lower()
-
-    # def test_get_existing_text_file(self, server_url, client):
-    #     response = client.get(f"{server_url}/test.txt")
-
-    #     assert response.status_code == 200
-    #     assert len(response.text) > 0
-
-    # def test_get_nonexistent_file(self, server_url, client):
-    #     response = client.get(f"{server_url}/does_not_exist.txt")
-
-    #     assert response.status_code == 404
-
-    # def test_get_empty_file(self, server_url, client):
-    #     response = client.get(f"{server_url}/empty.txt")
-
-    #     assert response.status_code == 200
-    #     assert response.text == ""
-
-    # def test_get_large_file(self, server_url, client):
-    #     response = client.get(f"{server_url}/large.txt")
-
-    #     assert response.status_code == 200
-    #     assert len(response.content) > 100000
 
     def test_binary_file(self, server_url, client):
         response = client.get(f"{server_url}/uploads/cat.jpg")

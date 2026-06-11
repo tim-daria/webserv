@@ -27,4 +27,5 @@ class FileService {
 
     int checkPath(const std::string& path, struct stat& info) const;
     int checkUploadDirectory(const std::string& path, struct stat& info) const;
+    int checkCGI(const std::string& path, struct stat& info) const;
 };

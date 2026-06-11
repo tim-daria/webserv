@@ -16,8 +16,6 @@
 
 #include "Logger.hpp"
 
-void ServerConfig::print() { std::cout << *this << std::endl; }
-
 ServerConfig ServerConfig::makeDefault() {
     ServerConfig cfg;
     cfg.applyDefaults();
@@ -51,6 +49,16 @@ void ServerConfig::applyDefaults() {
     add_route(method_not_allowed);
 }
 
+void ServerConfig::add_listen(const std::string& interface, int port) {
+    listen.push_back(std::make_pair(interface, port));
+}
+
+void ServerConfig::set_errorPage(int code, const std::string& path) {
+    errorPages.insert(std::make_pair(code, path));
+}
+
+void ServerConfig::add_route(const RouteConfig& route) { routes.push_back(route); }
+
 // Made const so it can be called on const ServerConfig& (e.g. in RequestValidator).
 // Returns const RouteConfig* because the caller should not mutate config data:
 const RouteConfig* ServerConfig::findMatchingLocation(std::string path) const {
@@ -75,37 +83,4 @@ const RouteConfig* ServerConfig::findMatchingLocation(std::string path) const {
         }
     }
     return best_match;
-}
-
-std::ostream& operator<<(std::ostream& out, const ServerConfig& cfg) {
-    out << "server {" << std::endl;
-    {
-        // Print Interface:Port pairs from listen
-        for (std::vector<std::pair<std::string, int> >::const_iterator it = cfg.listen.begin();
-             it != cfg.listen.end(); ++it) {
-            out << "    listen ";
-            out << it->first << ":" << it->second << ";" << std::endl;
-        }
-        // Print server name
-        out << "    server_name " << cfg.serverName << std::endl;
-        // Print error pages
-        out << std::endl;
-        for (std::map<int, std::string>::const_iterator it = cfg.errorPages.begin();
-             it != cfg.errorPages.end(); ++it) {
-            out << "    error_page ";
-            out << it->first << " " << it->second << ";" << std::endl;
-        }
-        // Print client max body size
-        out << "    client_max_body_size " << cfg.clientMaxBodySize << std::endl;
-        // Print routes
-        for (std::vector<RouteConfig>::const_iterator it = cfg.routes.begin();
-             it != cfg.routes.end(); ++it) {
-            out << std::endl;
-            out << *it;
-        }
-        out << std::endl;
-    }
-    out << "}";
-
-    return out;
 }
