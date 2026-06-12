@@ -14,6 +14,7 @@
 
 #include <cctype>
 #include <cstdlib>
+#include <ctime>
 #include <sstream>
 
 #include "HttpResponse.hpp"
