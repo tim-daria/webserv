@@ -12,6 +12,8 @@
 
 #include "PathUtils.hpp"
 
+#include <stdlib.h>
+
 #include <ctime>
 #include <sstream>
 
