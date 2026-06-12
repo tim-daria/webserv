@@ -36,11 +36,11 @@ std::vector<std::string> CGIHandler::buildEnvironment(const HttpRequest& request
     env.push_back("SCRIPT_NAME=" + _scriptName);
     env.push_back("PATH_INFO=");
     env.push_back("CONTENT_LENGTH=" + toString(request.getBody().size()));
-    env.push_back("SERVER_NAME=8080" + _config.serverName);
+    env.push_back("SERVER_NAME=" + _config.serverName);
     if (!_config.listen.empty()) {
         env.push_back("SERVER_PORT=" + toString(_config.listen[0].second));
     } else {
-        env.push_back("SERVER_PORT=");
+        env.push_back("SERVER_PORT=8080");
     }
     env.push_back("GATEWAY_INTERFACE=CGI/1.1");
     env.push_back("QUERY_STRING=" + request.getQuery());

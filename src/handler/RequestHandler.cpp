@@ -60,7 +60,7 @@ HttpResponse Handler::handleDirectory(const std::string& path, const std::string
     return _errorHandler.makeError(status);
 }
 
-HttpResponse Handler::handleGet(HttpRequest& request, const RouteConfig* _location) {
+HttpResponse Handler::handleGet(const HttpRequest& request, const RouteConfig* _location) {
     std::string fullPath = PathUtils::concatenatePath(_location->rootDirectory, request.getPath());
     LOG_DEBUG("GET request for path: " + fullPath);
 
@@ -83,7 +83,7 @@ HttpResponse Handler::handleGet(HttpRequest& request, const RouteConfig* _locati
     return serveFile(fullPath);
 }
 
-HttpResponse Handler::handlePost(HttpRequest& request, const RouteConfig* _location) {
+HttpResponse Handler::handlePost(const HttpRequest& request, const RouteConfig* _location) {
     if (_location->uploadDirectory.empty()) {
         LOG_WARNING("No uploadPath");
         return _errorHandler.makeError(HTTP_FORBIDDEN);
@@ -127,7 +127,7 @@ HttpResponse Handler::handlePost(HttpRequest& request, const RouteConfig* _locat
     return res;
 }
 
-HttpResponse Handler::handleDelete(HttpRequest& request, const RouteConfig* _location) {
+HttpResponse Handler::handleDelete(const HttpRequest& request, const RouteConfig* _location) {
     std::string fullPath = PathUtils::concatenatePath(_location->rootDirectory, request.getPath());
     LOG_DEBUG("DELETE request for path: " + fullPath);
 
@@ -148,7 +148,7 @@ HttpResponse Handler::handleDelete(HttpRequest& request, const RouteConfig* _loc
     return HttpResponse::make(HTTP_NO_CONTENT, "", "text/html");
 }
 
-HttpResponse Handler::handle_request(HttpRequest& request) {
+HttpResponse Handler::handle_request(const HttpRequest& request) {
     LOG_INFO("Handling request");
     const RouteConfig* _location = _serverConfig.findMatchingLocation(request.getPath());
     if (!_location) {

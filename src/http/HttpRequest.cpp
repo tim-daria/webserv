@@ -248,7 +248,7 @@ void HttpRequest::_logResult(const std::string& preview) const {
     }
 }
 
-std::string HttpRequest::extractMultipartFilename() {
+std::string HttpRequest::extractMultipartFilename() const {
     std::string body = _body;
     size_t pos = body.find("filename=\"");
     if (pos == std::string::npos) {
@@ -264,7 +264,7 @@ std::string HttpRequest::extractMultipartFilename() {
     return body.substr(pos, end - pos);
 }
 
-std::string HttpRequest::extractMultipartBody() {
+std::string HttpRequest::extractMultipartBody() const {
     std::string contentType = getHeader("Content-Type");
     std::string body = _body;
     LOG_DEBUG("Content type from extractMultipart " + contentType);
