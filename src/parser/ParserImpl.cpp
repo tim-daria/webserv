@@ -154,6 +154,9 @@ ServerConfig ParserImpl::parseServerBlock() {
 ParsedRoute ParserImpl::parseLocationBlock(std::string&) {
     expectKeyword("location");
     std::string path = expectWord("expected location path");
+    if (path.size() > 1 && path[path.size() - 1] == '/') {
+        path.erase(path.size() - 1);
+    }
     expectType(TOKEN_LBRACE, "expected '{' after location path");
 
     ParsedRoute parsed;
