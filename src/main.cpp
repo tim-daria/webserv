@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+        */
+/*   By: tsemenov <tsemenov@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2026/06/02 17:10:45 by nefimov          ###   ########.fr       */
+/*   Updated: 2026/06/10 15:58:41 by tsemenov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

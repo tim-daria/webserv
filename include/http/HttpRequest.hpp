@@ -6,7 +6,7 @@
 /*   By: tsemenov <tsemenov@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/20 18:22:51 by dtimofee          #+#    #+#             */
-/*   Updated: 2026/05/28 22:13:26 by tsemenov         ###   ########.fr       */
+/*   Updated: 2026/06/11 22:51:27 by tsemenov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 3. on error, returns corresponding error code:
         - 400 BAD REQUEST
         - 413 PAYLOAD TOO LARGE
-        - 501 METHOD NOT IMPLEMENTED
+        - 501 METHOD NOT IMPLEMENTED - changed to 405 to copmly with nginx
 */
 
 class HttpRequest {
@@ -31,8 +31,8 @@ class HttpRequest {
     std::string _buf;
     std::string _method;
     std::string _path;
-    std::string _version;
     std::string _query;
+    std::string _version;
     std::map<std::string, std::string> _headers;
     std::string _body;
 
@@ -63,8 +63,8 @@ class HttpRequest {
 
     const std::string& getMethod() const;
     const std::string& getPath() const;
-    const std::string& getVersion() const;
     const std::string& getQuery() const;
+    const std::string& getVersion() const;
     std::string getHeader(const std::string& key) const;
     const std::map<std::string, std::string>& getHeaders() const;
     const std::string& getBody() const;
