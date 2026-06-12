@@ -175,6 +175,7 @@ TEST_CASE("POST creates file and returns 201") {
     route.uploadDirectory = "/test_uploads";
     route.add_acceptedMethod("POST");
     config.add_route(route);
+    config.listen.push_back(std::make_pair("127.0.0.1", 8080));
     Handler handler(config);
 
     HttpRequest request;
@@ -192,8 +193,8 @@ TEST_CASE("POST creates file and returns 201") {
 
     REQUIRE_FALSE(location.empty());
 
-    std::ifstream file(location.c_str());
-
+    std::string filePath = "." + location;
+    std::ifstream file(filePath.c_str());
     REQUIRE(file.good());
 
     std::string content;
@@ -201,7 +202,7 @@ TEST_CASE("POST creates file and returns 201") {
 
     REQUIRE(content == "Hello");
 
-    removeFile(location);
+    removeFile(filePath);
     removeDir("./test_uploads");
 }
 
