@@ -34,6 +34,19 @@
         </section>
 
         <div class="form-card">
+            <h2>GET hello.py</h2>
+            <p class="desc">Sends your name as a query string — the script replies with
+               <code>Hello</code>.</p>
+
+            <form method="GET" action="/cgi-bin/hello.py">
+                <div class="form-group">
+                    <input type="text" name="name" placeholder="Name" required>
+                </div>
+                <button type="submit" class="btn">Say Hello</button>
+            </form>
+        </div>
+
+        <div class="form-card">
             <h2>POST to easy_script.py</h2>
             <p class="desc">Sends <code>application/x-www-form-urlencoded</code> data to the Python CGI script.
                The script echoes the request body.</p>
