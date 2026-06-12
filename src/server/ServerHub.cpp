@@ -168,6 +168,8 @@ void ServerHub::handleRead(size_t index) {
     const std::string& raw = client.getReadBuffer();
     request.processData(raw.c_str(), raw.size());
 
+    client.clearReadBuffer();
+
     if (!request.isError()) {
         LOG_INFO(request.getMethod() << " " << request.getPath());
     }

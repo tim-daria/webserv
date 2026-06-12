@@ -18,7 +18,6 @@
 #include <unistd.h>
 
 #include <cstdlib>
-#include <ctime>
 #include <sstream>
 
 #include "Logger.hpp"
@@ -73,7 +72,7 @@ HttpResponse Handler::handleDirectory(const std::string& path, const std::string
     return _errorHandler.makeError(status);
 }
 
-HttpResponse Handler::handleGet(const HttpRequest& request, const RouteConfig* _location) {
+HttpResponse Handler::handleGet(HttpRequest& request, const RouteConfig* _location) {
     std::string fullPath = PathUtils::concatenatePath(_location->rootDirectory, request.getPath());
     LOG_DEBUG("GET request for path: " + fullPath);
 
@@ -96,7 +95,7 @@ HttpResponse Handler::handleGet(const HttpRequest& request, const RouteConfig* _
     return serveFile(fullPath);
 }
 
-HttpResponse Handler::handlePost(const HttpRequest& request, const RouteConfig* _location) {
+HttpResponse Handler::handlePost(HttpRequest& request, const RouteConfig* _location) {
     if (_location->uploadDirectory.empty()) {
         LOG_WARNING("No uploadPath");
         return _errorHandler.makeError(HTTP_FORBIDDEN);
@@ -111,21 +110,36 @@ HttpResponse Handler::handlePost(const HttpRequest& request, const RouteConfig* 
         LOG_WARNING("Path check failed: " + uploadPath);
         return _errorHandler.makeError(status);
     }
+    std::string contentType = request.getHeader("Content-Type");
+    std::string body;
+    std::string filename;
 
-    std::ostringstream filename;
-    filename << uploadPath << "/" << std::time(0) << "_" << std::rand();
-    LOG_INFO("Created a file: " + uploadPath);
-    if (!_fileService.writeFile(filename.str(), request.getBody())) {
-        LOG_WARNING("Writing to file failed: " + uploadPath);
+    if (contentType.find("multipart/form-data") != std::string::npos) {
+        filename = request.extractMultipartFilename();
+        LOG_DEBUG("Filename is " + filename);
+        body = request.extractMultipartBody();
+        if (body.empty()) {
+            LOG_WARNING("Failed to parse multipart body");
+            return _errorHandler.makeError(HTTP_BAD_REQUEST);
+        }
+    } else {
+        body = request.getBody();
+        filename = PathUtils::generateFilename(contentType);
+    }
+
+    std::string fullPath = PathUtils::concatenatePath(uploadPath, filename);
+    LOG_INFO("Created a file: " + fullPath);
+    if (!_fileService.writeFile(fullPath, body)) {
+        LOG_WARNING("Writing to file failed: " + fullPath);
         return _errorHandler.makeError(HTTP_INTERNAL_ERROR);
     }
     HttpResponse res = HttpResponse::make(HTTP_CREATED, "", "text/html");
 
-    res.addHeader("Location", filename.str());
+    res.addHeader("Location", _location->uploadDirectory + "/" + filename);
     return res;
 }
 
-HttpResponse Handler::handleDelete(const HttpRequest& request, const RouteConfig* _location) {
+HttpResponse Handler::handleDelete(HttpRequest& request, const RouteConfig* _location) {
     std::string fullPath = PathUtils::concatenatePath(_location->rootDirectory, request.getPath());
     LOG_DEBUG("DELETE request for path: " + fullPath);
 

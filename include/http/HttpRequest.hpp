@@ -79,4 +79,6 @@ class HttpRequest {
     bool isDone() const;
     bool isError() const;
     bool checkMaxBodySize(size_t maxSize) const;
+    std::string extractMultipartFilename();
+    std::string extractMultipartBody();
 };

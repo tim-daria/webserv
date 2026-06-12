@@ -14,6 +14,7 @@
 
 #include <cctype>
 #include <cstdlib>
+#include <sstream>
 
 #include "HttpResponse.hpp"
 #include "Logger.hpp"
@@ -238,4 +239,49 @@ void HttpRequest::_logResult(const std::string& preview) const {
     } else if (_state == PARSING_ERROR) {
         LOG_WARNING("Parse error " + toString(_errorCode) + " on: " + preview);
     }
+}
+
+std::string HttpRequest::extractMultipartFilename() {
+    std::string body = _body;
+    size_t pos = body.find("filename=\"");
+    if (pos == std::string::npos) {
+        std::ostringstream filename;
+        filename << std::time(0) << "_" << std::rand() << ".bin";
+        return filename.str();
+    }
+    pos += 10;
+    size_t end = body.find("\"", pos);
+    if (end == std::string::npos) {
+        return "";
+    }
+    return body.substr(pos, end - pos);
+}
+
+std::string HttpRequest::extractMultipartBody() {
+    std::string contentType = getHeader("Content-Type");
+    std::string body = _body;
+    LOG_DEBUG("Content type from extractMultipart " + contentType);
+    // Find boundary
+    size_t pos = contentType.find("boundary=");
+    if (pos == std::string::npos) return body;  // no boundary — return whole body
+
+    std::string boundary = "--" + contentType.substr(pos + 9);
+
+    size_t boundary_start = body.find(boundary);
+    if (boundary_start == std::string::npos) {
+        LOG_WARNING("Boundary not found in body!");
+        return "";
+    }
+    // Find end of headers — empty line \r\n\r\n
+    size_t header_end = body.find("\r\n\r\n", boundary_start);
+    if (header_end == std::string::npos) return "";
+
+    size_t data_start = header_end + 4;
+
+    // Find ending boundary
+    size_t data_end = body.find("\r\n" + boundary, data_start);
+    if (data_end == std::string::npos)
+        return body.substr(data_start);  // no ending boundary — take everything
+
+    return body.substr(data_start, data_end - data_start);
 }

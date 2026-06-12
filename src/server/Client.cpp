@@ -90,4 +90,5 @@ const std::string& Client::getReadBuffer() const { return _readBuffer; }
 const std::string& Client::getWriteBuffer() const { return _writeBuffer; }
 void Client::setWriteBuffer(const std::string& response) { _writeBuffer = response; }
 void Client::clearWriteBuffer(size_t bytes) { _writeBuffer.erase(0, bytes); }
+void Client::clearReadBuffer() { _readBuffer.clear(); }
 time_t Client::getLastActive() const { return _lastActive; }
