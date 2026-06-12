@@ -6,7 +6,7 @@
 /*   By: tsemenov <tsemenov@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/15 10:57:35 by dtimofee          #+#    #+#             */
-/*   Updated: 2026/05/19 23:51:53 by tsemenov         ###   ########.fr       */
+/*   Updated: 2026/06/12 13:26:10 by tsemenov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -309,7 +309,7 @@ TEST_CASE("Directory without trailing slash returns redirect") {
 
     RouteConfig route;
     route.url = "/uploads";
-    route.rootDirectory = "./www";
+    route.rootDirectory = "./www/webserv";
     route.add_acceptedMethod("GET");
 
     config.add_route(route);

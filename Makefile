@@ -1,15 +1,3 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: nefimov <nefimov@student.42berlin.de>      +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2024/12/04 12:41:15 by dtimofee          #+#    #+#              #
-#    Updated: 2026/06/09 15:08:55 by nefimov          ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
-
 CXX = c++
 
 INC_DIRS = include include/config include/server include/handler include/http include/filesystem include/parser

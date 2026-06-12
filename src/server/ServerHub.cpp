@@ -6,7 +6,7 @@
 /*   By: tsemenov <tsemenov@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/06 16:23:17 by tsemenov          #+#    #+#             */
-/*   Updated: 2026/06/04 16:27:14 by tsemenov         ###   ########.fr       */
+/*   Updated: 2026/06/12 10:44:32 by tsemenov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,13 +24,9 @@
 #include <stdexcept>
 
 #include "Logger.hpp"
-// Added to allow constructing error responses directly in handleRead,
-// without going through Handler (which requires a fully valid request):
 #include "ErrorHandler.hpp"
 #include "HttpRequest.hpp"
 #include "RequestHandler.hpp"
-// Added to validate the parsed request against the server config
-// (checks route existence and method allowance) before dispatching:
 #include "ServerConfig.hpp"
 
 extern volatile sig_atomic_t g_running;
@@ -52,6 +48,13 @@ ServerHub::~ServerHub() {
 
 // one Server per listen entry across all configs:
 ServerHub::ServerHub(std::vector<ServerConfig>& configs) {
+    // Pre-reserve so push_back never reallocates and copy-constructs Servers
+    // (which would close the socket fd in the original's destructor).
+    size_t total = 0;
+    for (size_t i = 0; i < configs.size(); ++i)
+        total += configs[i].listen.size();
+    _servers.reserve(total);
+
     // create and initialize servers, store them in arr:
     for (size_t i = 0; i < configs.size(); ++i) {
         for (size_t j = 0; j < configs[i].listen.size(); ++j) {
@@ -154,9 +157,13 @@ void ServerHub::handleRead(size_t index) {
 
     LOG_DEBUG("Request received from fd " << client_fd);
 
-    ServerConfig& config = _servers[client.getServerIndex()].getConfig();
+    // Parse the request first with the socket-assigned server's max body size.
+    // We need the Host header to pick the right virtual host, but we also need
+    // a body size limit before parsing. Use the default server's limit first,
+    // then re-select the config based on the Host header after parsing headers.
+    // ServerConfig* configPtr = &_servers[client.getServerIndex()].getConfig();
 
-    // config.print();
+		ServerConfig& config = _servers[client.getServerIndex()].getConfig();
 
     // Feed the raw read buffer into HttpRequest's incremental parser.
     // setMaxBodySize must be called first so the parser can reject oversized
@@ -164,7 +171,7 @@ void ServerHub::handleRead(size_t index) {
     // extraction, header parsing, and body accumulation, setting error codes
     // (400, 413, 501) internally if anything is malformed:
     HttpRequest request;
-    request.setMaxBodySize(config.clientMaxBodySize);
+		request.setMaxBodySize(config.clientMaxBodySize);
     const std::string& raw = client.getReadBuffer();
     request.processData(raw.c_str(), raw.size());
 

@@ -6,7 +6,7 @@
 /*   By: tsemenov <tsemenov@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/20 16:42:41 by dtimofee          #+#    #+#             */
-/*   Updated: 2026/05/05 16:21:02 by tsemenov         ###   ########.fr       */
+/*   Updated: 2026/06/09 16:42:17 by tsemenov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ std::string HttpResponse::getStatusText(int statusCode) {
                              {HTTP_FORBIDDEN, "Forbidden"},
                              {HTTP_NOT_FOUND, "Not Found"},
                              {HTTP_METHOD_NOT_ALLOWED, "Method Not Allowed"},
+                             {HTTP_LENGTH_REQUIRED, "Length Required"},
                              {HTTP_PAYLOAD_TOO_LARGE, "Payload Too Large"},
                              {HTTP_INTERNAL_ERROR, "Internal Server Error"}};
 

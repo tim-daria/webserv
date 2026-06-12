@@ -6,7 +6,7 @@
 /*   By: tsemenov <tsemenov@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/05 16:21:17 by tsemenov          #+#    #+#             */
-/*   Updated: 2026/06/05 15:55:39 by tsemenov         ###   ########.fr       */
+/*   Updated: 2026/06/11 22:52:13 by tsemenov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ HttpRequest& HttpRequest::operator=(const HttpRequest& other) {
         _buf = other._buf;
         _method = other._method;
         _path = other._path;
+        _query = other._query;
         _version = other._version;
         _headers = other._headers;
         _body = other._body;
@@ -49,8 +50,8 @@ size_t HttpRequest::getMaxBodySize() const { return _maxBodySize; }
 HttpRequest::ParsingState HttpRequest::getState() const { return _state; }
 const std::string& HttpRequest::getMethod() const { return _method; }
 const std::string& HttpRequest::getPath() const { return _path; }
-const std::string& HttpRequest::getVersion() const { return _version; }
 const std::string& HttpRequest::getQuery() const { return _query; }
+const std::string& HttpRequest::getVersion() const { return _version; }
 const std::string& HttpRequest::getBody() const { return _body; }
 const std::map<std::string, std::string>& HttpRequest::getHeaders() const { return _headers; }
 int HttpRequest::getErrorCode() const { return _errorCode; }
@@ -172,6 +173,11 @@ void HttpRequest::_parseHeaders() {
 void HttpRequest::_checkBody() {
     std::string temp = getHeader("content-length");
 
+    if (temp.empty() && _method == "POST") {
+        _state = PARSING_ERROR;
+        _errorCode = HTTP_LENGTH_REQUIRED;  // 411
+        return;
+    }
     if (!temp.empty()) {
         _contentLen = static_cast<size_t>(std::atol(temp.c_str()));
         if (_contentLen == 0) {

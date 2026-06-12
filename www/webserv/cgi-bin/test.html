@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webserv | CGI Test</title>
+    <link rel="stylesheet" href="/assets/styles.css">
+    <script src="/assets/theme.js"></script>
+</head>
+<body>
+
+    <header>
+      <a href="/">Webserv</a>
+      <button class="toggle" onclick="toggleTheme(this)" aria-label="Toggle theme">Make it wild 💖</button>
+    </header>
+
+    <main>
+        <section class="hero">
+            <h1>CGI Script Tester</h1>
+            <p class="secondaryText">Run the CGI scripts in <code>/cgi-bin</code> with GET or POST and inspect the raw output.</p>
+        </section>
+
+        <section>
+            <h2>GET requests</h2>
+            <div class="errorTestGrid">
+                <a href="/cgi-bin/easy_script.py" class="btn test">easy_script.py</a>
+                <a href="/cgi-bin/easy_script.py?name=42&amp;course=webserv" class="btn test">easy_script.py?query</a>
+                <a href="/cgi-bin/script.pl" class="btn test">script.pl</a>
+                <a href="/cgi-bin/error_script.py" class="btn test">error_script.py (500)</a>
+                <a href="/cgi-bin/infinite_loop.py" class="btn test">infinite_loop.py (timeout)</a>
+            </div>
+            <p class="desc">Python runs via <code>/usr/bin/python3</code>, Perl via <code>/usr/bin/perl</code> —
+               both registered in the <code>/cgi-bin</code> location.</p>
+        </section>
+
+        <div class="form-card">
+            <h2>POST to easy_script.py</h2>
+            <p class="desc">Sends <code>application/x-www-form-urlencoded</code> data to the Python CGI script.
+               The script echoes the request body.</p>
+
+            <form method="POST" action="/cgi-bin/easy_script.py">
+                <div class="form-group">
+                    <input type="text" name="name" placeholder="Name" required>
+                </div>
+                <div class="form-group">
+                    <input type="text" name="message" placeholder="Message" required>
+                </div>
+                <button type="submit" class="btn">POST to Python CGI</button>
+            </form>
+        </div>
+
+        <div class="form-card">
+            <h2>POST to script.pl</h2>
+            <p class="desc">Same data sent to the Perl CGI script (requires Perl registered in the config).</p>
+
+            <form method="POST" action="/cgi-bin/script.pl">
+                <div class="form-group">
+                    <input type="text" name="name" placeholder="Name" required>
+                </div>
+                <div class="form-group">
+                    <input type="text" name="message" placeholder="Message" required>
+                </div>
+                <button type="submit" class="btn">POST to Perl CGI</button>
+            </form>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 42 School Project &mdash; Nikolai Efimov, Tanya Semenova, Daria Timofeeva</p>
+    </footer>
+
+</body>
+</html>
