@@ -44,4 +44,5 @@ class Client {
     void setWriteBuffer(const std::string& response);
 
     void clearWriteBuffer(size_t bytes);
+    void clearReadBuffer();
 };

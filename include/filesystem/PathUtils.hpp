@@ -20,6 +20,7 @@ class PathUtils {
     static std::string concatenatePath(const std::string& root, const std::string& path);
 
     static std::string getContentType(const std::string& path);
+    static std::string generateFilename(const std::string& contentType);
 
    private:
     struct MimeType {

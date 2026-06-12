@@ -12,6 +12,11 @@
 
 #include "PathUtils.hpp"
 
+#include <stdlib.h>
+
+#include <ctime>
+#include <sstream>
+
 std::string PathUtils::getContentType(const std::string& path) {
     size_t dot_pos = path.rfind('.');
     if (dot_pos == std::string::npos) {
@@ -36,6 +41,29 @@ std::string PathUtils::getContentType(const std::string& path) {
         }
     }
     return "application/octet-stream";
+}
+
+std::string PathUtils::generateFilename(const std::string& contentType) {
+    std::ostringstream filename;
+
+    filename << std::time(0) << "_" << std::rand();
+    if (contentType.find("text/plain") != std::string::npos) {
+        return filename.str() + ".txt";
+    }
+    if (contentType.find("text/html") != std::string::npos) {
+        return filename.str() + ".html";
+    }
+    if (contentType.find("image/jpeg") != std::string::npos) {
+        return filename.str() + ".jpg";
+    }
+    if (contentType.find("image/png") != std::string::npos) {
+        return filename.str() + ".png";
+    }
+    if (contentType.find("application/json") != std::string::npos) {
+        return filename.str() + ".json";
+    }
+
+    return filename.str() + ".bin";
 }
 
 bool PathUtils::endsWithSlash(const std::string& fullPath) {

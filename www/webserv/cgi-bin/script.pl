@@ -2,12 +2,15 @@
 
 print "Content-Type: text/plain\n\n";
 
-print "=== CGI PERL TEST ===\n";
-print "Method: $ENV{'REQUEST_METHOD'}\n";
-print "Query: $ENV{'QUERY_STRING'}\n";
+my @messages = (
+    "Today is a good day to write C++98.",
+    "Every bug is just an undocumented feature.",
+    "Remember to close your file descriptors.",
+    "One more test can save one hour of debugging.",
+    "CGI is older than some developers."
+);
 
-if ($ENV{'REQUEST_METHOD'} eq "POST") {
-    read(STDIN, my $body, $ENV{'CONTENT_LENGTH'});
-    print "\n--- BODY ---\n";
-    print $body;
-}
+my $index = time() % scalar(@messages);
+
+print "Fortune Cookie:\n";
+print "$messages[$index]\n";

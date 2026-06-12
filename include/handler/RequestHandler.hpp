@@ -45,5 +45,5 @@ class Handler {
     Handler(ServerConfig& config);
     ~Handler();
 
-    HttpResponse handle_request(HttpRequest& request);
+    HttpResponse handle_request(const HttpRequest& request);
 };

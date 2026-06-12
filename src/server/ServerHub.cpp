@@ -23,9 +23,9 @@
 #include <iostream>
 #include <stdexcept>
 
-#include "Logger.hpp"
 #include "ErrorHandler.hpp"
 #include "HttpRequest.hpp"
+#include "Logger.hpp"
 #include "RequestHandler.hpp"
 #include "ServerConfig.hpp"
 
@@ -51,8 +51,7 @@ ServerHub::ServerHub(std::vector<ServerConfig>& configs) {
     // Pre-reserve so push_back never reallocates and copy-constructs Servers
     // (which would close the socket fd in the original's destructor).
     size_t total = 0;
-    for (size_t i = 0; i < configs.size(); ++i)
-        total += configs[i].listen.size();
+    for (size_t i = 0; i < configs.size(); ++i) total += configs[i].listen.size();
     _servers.reserve(total);
 
     // create and initialize servers, store them in arr:
@@ -163,7 +162,7 @@ void ServerHub::handleRead(size_t index) {
     // then re-select the config based on the Host header after parsing headers.
     // ServerConfig* configPtr = &_servers[client.getServerIndex()].getConfig();
 
-		ServerConfig& config = _servers[client.getServerIndex()].getConfig();
+    ServerConfig& config = _servers[client.getServerIndex()].getConfig();
 
     // Feed the raw read buffer into HttpRequest's incremental parser.
     // setMaxBodySize must be called first so the parser can reject oversized
@@ -171,9 +170,11 @@ void ServerHub::handleRead(size_t index) {
     // extraction, header parsing, and body accumulation, setting error codes
     // (400, 413, 501) internally if anything is malformed:
     HttpRequest request;
-		request.setMaxBodySize(config.clientMaxBodySize);
+    request.setMaxBodySize(config.clientMaxBodySize);
     const std::string& raw = client.getReadBuffer();
     request.processData(raw.c_str(), raw.size());
+
+    client.clearReadBuffer();
 
     if (!request.isError()) {
         LOG_INFO(request.getMethod() << " " << request.getPath());

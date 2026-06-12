@@ -39,6 +39,7 @@ static void removeFile(const std::string& path) { ::unlink(path.c_str()); }
 static ServerConfig makeConfig() {
     ServerConfig config;
     config.serverName = "localhost";
+    config.listen.push_back(std::make_pair("127.0.0.1", 8080));
     return config;
 }
 
